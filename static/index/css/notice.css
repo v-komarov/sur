@@ -1,0 +1,91 @@
+.notice_btn {
+    background: #FFDCA8;
+    position: fixed;
+    border: 1px solid #FFA858;
+    text-align: center;
+    cursor: pointer;
+    margin: 10px 0 0 15px;
+    float: left;
+    z-index: 2;
+    border-radius: 5px;
+    padding: 8px 18px;
+}
+.notice_list {
+    margin: 12px 0 0 15px;
+    float: left;
+    z-index: 2;
+    background: #FFDCA8;
+    position: fixed;
+    border: 1px solid #FFA858;
+    min-width: 200px;
+    min-height: 200px;
+    border-radius: 5px;
+    padding: 5px;
+    display: none;
+    max-width: 450px;
+}
+.notice_list .top {
+    border-bottom: 1px solid #FFA858;
+    width: 100%;
+    float: left;
+    padding: 0 0 5px;
+}
+.notice_list .title {
+    float: left;
+    padding: 5px;
+    font-size: 15px;
+    cursor: default;
+}
+
+.notice .body {
+    padding: 3px 0 0 0;
+    float: left;
+    width: 100%;
+    max-height: 500px;
+    overflow: overlay;
+}
+.notice .notice__item {
+    margin: 0 20px 0 0;
+}
+.notice .notice__item:hover {
+    background: #ffb16a;
+}
+.notice .notice__item .date {
+    float: left;
+    padding: 8px 0 0 5px;
+    font-size: 12px;
+}
+.notice .notice__item .log_type {
+    padding: 0 5px 5px;
+}
+a.client_object {
+    color: #3B8713;
+    padding: 0 5px 5px;
+    font-weight: bold;
+}
+a.client_object:hover {
+    text-decoration: underline;
+}
+.notice .notice__item .later {
+    margin: 2px 5px 5px;
+    float: right;
+    padding: 4px 0 2px 8px;
+}
+.notice .notice__item .later:hover {
+    background: #FFDCA8;
+}
+.notice .notice__item .later__title,
+.notice .notice__item .later__item {
+    color: #999999;
+    padding: 0 8px 5px;
+    cursor: pointer;
+    font-size: 12px;
+    text-align: right;
+}
+.notice .notice__item .later__title:hover,
+.notice .notice__item .later__item:hover {
+    text-decoration: underline;
+}
+.notice .notice__item .later__item {
+    display: none;
+}

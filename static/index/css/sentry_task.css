@@ -1,0 +1,335 @@
+.tableInfo .ui_btn {
+    cursor: pointer;
+    min-width: 30px;
+    min-height: 29px;
+    float: right;
+    background: url("../img/ui/ui_minimal.gif") no-repeat -256px -128px #fff;
+    border-radius: 3px;
+    margin: 5px 5px 5px 0;
+    opacity: .4;
+    border: 1px solid #999;
+}
+.tableInfo .ui_btn:hover, .timetable .ui_btn:hover {
+    background-color: #fff;
+    opacity: 1;
+}
+.tableInfo .reset {
+    background-position: -128px -65px;
+    margin: 0 0 0 10px;
+    opacity: .4;
+}
+
+table.list {
+    border-collapse: collapse;
+    margin: 10px 25px 0 0;
+    border: 1px solid #fff;
+    display: inline-block;
+    vertical-align: top;
+}
+table.list td {
+    vertical-align: top;
+}
+.list td.border-left {
+    border-left: 1px solid #ccc;
+    border-radius: 0;
+}
+.list td.border-right {
+    border-right: 1px solid #ccc;
+    border-radius: 0;
+}
+.list td.input {
+    padding: 5px 20px 5px 10px;
+    vertical-align: middle;
+}
+.list td.select {
+    padding: 5px 10px;
+    vertical-align: middle;
+}
+.list td.input input,
+.list td.select select {
+    width: 100%;
+    padding: 4px 5px;
+}
+.list td.select select {
+    padding: 3px 5px;
+}
+.pop tr[task_status=new],
+.list td.task[status=new] {
+    background-color: #fff800;
+}
+.pop tr[task_status=process],
+.list td.task[status=process] {
+    background-color: #ffeeb5;
+}
+.pop tr[task_status=done],
+.list td.task[status=done] {
+    background-color: #ccffcc;
+}
+.pop tr[task_status=expired],
+.list td.task[status=expired] {
+    background-color: #f16868;
+    color: #fff;
+}
+.pop tr[task_status=paused],
+.list td.task[status=paused] {
+    background-color: #e3a8ff;
+}
+
+.pop .service_list {
+    width: 100%;
+}
+
+.caution {
+    background: url("../img/caution_bg.png") repeat;
+}
+.list div.split_title {
+    font-size: 23px;
+    margin: 15px;
+    padding: 5px 10px 3px;
+    background-color: #fff;
+    border: 1px solid #7CB2C8;
+}
+.list div.split_title .date {
+    display: inline-block;
+    font-size: 15px;
+    padding: 0 10px 0 0;
+    margin: 0;
+}
+.list div.split_title .count {
+    display: inline-block;
+    font-size: 20px;
+    padding: 0 10px;
+    margin: 0;
+    float: right;
+}
+
+
+.list .id {
+    font-size: 12px;
+    padding: 5px;
+    white-space: nowrap;
+}
+.list .client {
+    font-size: 12px;
+    padding: 5px 5px 5px;
+    text-align: right;
+    margin: 0;
+    border-top: 1px solid #ccc;
+}
+.list .type {
+    font-size: 13px;
+    padding: 5px 7px;
+    border-top: 1px solid #ccc;
+    text-align: right;
+}
+.list .datetime {
+    padding: 7px;
+    text-align: right;
+    line-height: 1.6em;
+    font-size: 13px;
+}
+.list .complete_date {
+    border-bottom: none;
+    padding-top: 10px;
+    border-top: 1px solid #ccc;
+}
+.list .comment {
+    padding: 5px 10px 10px;
+}
+.list .report {
+    border-top: 1px dashed;
+    padding: 5px 10px 0;
+    line-height: 1.3;
+}
+.list .report .doer {
+    text-align: right;
+}
+.list .report .executor {
+    display: inline-block;
+    float: right;
+    padding: 15px 0 10px;
+    color: #009900;
+}
+.list .object_name {
+    text-align: left;
+    padding: 3px 5px 0;
+    line-height: 1.5em;
+    font-weight: bold;
+}
+.list .address {
+    padding: 5px;
+    font-size: 12px;
+}
+.pop table {
+    max-width: 550px;
+}
+
+.pop td[name=complete_date] div.text {
+    padding: 10px 0;
+    display: inline-block;
+    float: left;
+}
+
+.pop .client_object {
+    padding: 0;
+    width: 100%;
+    float: left;
+    color: #000;
+    text-decoration: none;
+    border-bottom: 1px solid #ccc;
+}
+.pop .client_object:hover {
+    background-color: #e1ebf7;
+}
+.pop .client_object .service_type {
+    font-weight: normal;
+    float: left;
+    padding: 10px 7px;
+    margin: -10px 7px 0 -5px;
+}
+
+.pop .client_object p {
+    padding: 10px 5px 3px;
+    line-height: 1.6em;
+    font-weight: bold;
+}
+.pop .address {
+    padding: 5px 10px;
+    float: left
+}
+.pop .client_name {
+    padding: 5px 10px;
+    text-align: right;
+    border-bottom: 1px solid #ccc;
+    font-size: 12px;
+}
+.pop .item {
+    cursor: pointer;
+    font-size: 13px;
+    /*border: 1px solid #7CB2C8;
+    border-bottom: none;*/
+}
+.pop #log_list .hover .title,
+.pop #log_list .hover,
+.pop .item:hover .title,
+.pop .item:hover {
+    background-color: #e1ebf7;
+}
+.pop .item:last-child {
+    border-bottom: 1px solid #7CB2C8;
+}
+.pop .item .title {
+    padding: 5px;
+    border: 0;
+}
+.pop .item .move {
+    text-align: right;
+    padding-top: 3px;
+}
+.pop .item .comment {
+    border-top: 1px dashed;
+    padding: 5px;
+    text-align: right;
+}
+#task__pop_report [name=doer] td.middle {
+    vertical-align: top;
+    padding-top: 5px;
+}
+#task__pop_report div[name=security_squad] {
+    padding-top: 5px;
+}
+#task__pop_report div[name=security_squad] select{
+    margin-left: 5px;
+}
+#task__pop_report div[name=comment],
+#task__pop_log div[name=comment] {
+    border-top: 1px dashed;
+    padding: 5px 0;
+    margin: 5px 0;
+    text-align: right;
+}
+#task__pop_log tr[name=new_date] div.text {
+    float: left;
+    padding: 10px 10px 10px 0;
+}
+#task__pop_log tr[name=new_date] div.move {
+    float: right;
+    padding: 5px 0;
+}
+
+.renter_board {
+
+}
+.renter_board .head {
+    background-color: #e1eaf4;
+}
+.renter_board .head b {
+    display: inline-block;
+    padding: 7px 10px 4px;
+    font-size: 18px;
+    color: #3379A5;
+}
+.renter_board .ui_button {
+    margin: 2px;
+    border: none;
+}
+.renter_board .item {
+    border-top: 1px solid #7CB2C8;
+}
+.renter_board .render_item {
+    display: inline-block;
+    vertical-align: top;
+    border: 1px solid #7CB2C8;
+    margin-bottom: 3px;
+}
+.renter_board .item .title {
+    background: #e1ebf7;
+    float: left;
+    width: 100%;
+}
+.renter_board .slot {
+    padding-bottom: 3px;
+}
+.renter_board .item .block {
+    font-weight: normal;
+    float: left;
+    width: 100%;
+    border-bottom: 1px solid #e1ebf7;
+    margin-bottom: 3px;
+}
+.renter_board .item .right {
+    float: right;
+    padding: 4px 5px 3px;
+}
+.renter_board .item .contract {
+    float: left;
+    padding: 4px 5px 3px;
+}
+.renter_board .item .name {
+    padding: 5px 5px 3px;
+    font-weight: bold;
+}
+.renter_board .item .client {
+    font-weight: normal;
+    padding: 4px 5px 3px;
+}
+.renter_board .item .locality {
+    font-weight: normal;
+    padding: 4px 5px 3px;
+    text-align: right;
+}
+.renter_board .renter_date {
+    padding: 0 5px;
+    border-top: 1px solid #7CB2C8;
+    margin-top: 3px;
+}
+.renter_board .renter_date b {
+    font-weight: normal;
+    float: left;
+    display: inline-block;
+    padding: 9px 10px 0;
+}
+
+#task_list {
+    max-width: 1800px;
+}

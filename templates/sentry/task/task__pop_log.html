@@ -1,0 +1,25 @@
+<script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/task/task__pop_log.js"></script>
+<div class="pop" id="task__pop_log">
+    <div class="header"><b></b><div class="close"></div></div>
+    <form>
+        <table class="tableInfo wide margin_null"><tbody class="show">
+        <tr class="row2" name="new_date">
+            <td class="cell info" colspan="2"></td>
+            <td class="cell edit" colspan="2"><div class="text">Новая дата</div><input class="datepicker" name="new_date" type="text"></td></tr>
+        <tr>
+            <td class="cell info" colspan="2">Причина переноса<div name="comment"></div></td>
+            <td class="cell edit" colspan="2">Причина переноса<br/><textarea cols="50" name="comment" rows="4"></textarea></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div style="float:right; padding: 0 10px 5px;">
+                    <button class="btn_ui bg" type="submit" icon="save"><div class="txt">Сохранить</div><div class="icon"></div></button>
+                    <span class="btn_ui bg" action="delete" icon="delete"><div class="txt">Удалить</div><div class="icon"></div></span>
+                </div>
+            </td></tr>
+        </tbody></table>
+
+    </form>
+
+</div>
+

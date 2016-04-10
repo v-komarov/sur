@@ -1,0 +1,32 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/directory/dir_address_1_region.js"></script>
+
+    {% include "sentry/system/directory/__left_block.html" %}
+
+    <div class="middleBlock"><h2 class="cabinet_title">{{ title }}</h2>
+
+        <div class="result_count"></div>
+
+        <table class="tableInfo" id="region_list">
+            <thead>
+            <tr class="row title">
+                <td class="cell">
+                    <input class="wide" type="text"  placeholder="Регион" value="" name="region_name">
+                </td>
+                <td>
+                    {% if perms.system.directory_region_add %}
+                        <div class="btn_ui" action="region_add" icon="object_add" title="Добавить регион"><div class="icon"></div></div>
+                    {% else %}<div class="empty_28"></div>
+                    {% endif %}
+                    <div class="btn_ui bg" action="reset" icon="reset"><div class="icon"></div></div>
+                </td>
+            </tr>
+            </thead>
+            <tbody class="show"></tbody>
+        </table>
+
+    </div>
+
+{% endblock %}

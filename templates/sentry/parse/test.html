@@ -1,0 +1,17 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+
+<div class="middleBlock">
+
+    <h2 class="cabinet_title">{{ title }}</h2>
+
+    <p>{{ tt }}</p>
+
+
+    {% for item in timetable_security_set %}
+        <p>{{ item.day_of_week }}</p>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

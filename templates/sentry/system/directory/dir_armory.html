@@ -1,0 +1,85 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+
+<script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/directory/dir_armory.js"></script>
+
+{% include "sentry/system/directory/__left_block.html" %}
+
+<div class="middleBlock"><h2 class="cabinet_title">{{ title }}</h2>
+
+    <div class="resultCount"></div>
+
+    <table class="tableInfo" id="armory_list">
+        <thead>
+        <tr class="row title">
+            <td class="cell">
+                <select style="width: 160px" name="company"><option value="all">Организация (все)</option>
+                    {% for item in company_set %}
+                        <option value="{{ item.id }}">{{ item.name }}</option>
+                    {% endfor %}
+                </select></td>
+            <td class="cell">
+                <input size="5" type="text" placeholder="Серия" value="" name="series"></td>
+            <td class="cell">
+                <input size="5" type="text" placeholder="Номер" value="" name="number"></td>
+            <td class="cell">
+                <select class="wide" name="weapon"><option value="all">все</option>
+                    {% for item in weapon_set %}
+                        <option value="{{ item.id }}">{{ item.name }}</option>
+                    {% endfor %}
+                </select></td>
+            <td class="cell">
+                <input size="13" type="text" placeholder="Комментарий" value="" name="comment"></td>
+            <td style="width: 10px;">
+                <div class="ui_button ui_add" title="Добавить"></div></td>
+        </tr>
+        </thead>
+        <tbody class="show"></tbody>
+    </table>
+
+    <div class="loading">Загрузка</div>
+
+
+    <!-- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- .hide -->
+
+    <div class="pop" id="pop_armory">
+        <div class="header"><b>Оружие</b><div class="close"></div></div>
+
+        <table class="tableInfo wide margin_null">
+            <tr class="row">
+                <td class="cell middle">Серия</td>
+                <td class="cell secondary"><input size="55" type="text" value="" name="series"></td></tr>
+            <tr class="row">
+                <td class="cell middle">Номер</td>
+                <td class="cell secondary"><input class="wide" type="text" value="" name="number"></td></tr>
+            <tr class="row">
+                <td class="cell middle">Название</td>
+                <td class="cell secondary">
+                    <select class="wide" name="weapon">
+                        {% for item in weapon_set %}
+                            <option value="{{ item.id }}">{{ item.name }}</option>
+                        {% endfor %}
+                    </select></td></tr>
+            <tr class="row">
+                <td class="cell middle">Организация</td>
+                <td class="cell secondary">
+                    <select class="wide" name="company">
+                        {% for item in company_set %}
+                            <option value="{{ item.id }}">{{ item.name }}</option>
+                        {% endfor %}
+                    </select></td></tr>
+            <tr class="row">
+                <td class="cell middle">Комментарий</td>
+                <td class="cell secondary"><input class="wide" type="text" value="" name="comment"></td></tr>
+            <tr class="row">
+                <td class="cell" colspan="2">
+                    <div class="ui_button ui_save" title="Сохранить"></div>
+                    <div class="ui_button ui_remove" title="Удалить"></div>
+                </td></tr>
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

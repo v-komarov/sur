@@ -1,0 +1,59 @@
+{% extends "index.html" %}
+{% block content %}
+
+<link href="{{ STATIC_URL }}jquery/ui/css/cupertino/jquery-ui-1.10.3.custom.css" rel="stylesheet">
+<script type="text/javascript" src="{{ STATIC_URL }}jquery/ui/js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}jquery/ui/js/jquery-ui-1.10.3.custom.js"></script>
+
+<script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery-validate.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}index/js/inside/cabinet/get_access.js"></script>
+
+<div class="page">
+    <h1 class="page_title">Получение доступа в Личный кабинет</h1>
+
+
+    <div class="get_access_type">
+        <div class="type_1">Физическое лицо</div>
+        <div class="type_2 on">Юридическое лицо</div>
+    </div>
+
+    <form class="request_form" action="/cabinet/get_access/" method="post">{% csrf_token %}
+        {% if error %}<div class="txt_error">{{ error }}</div>{% endif %}
+        <table><tbody>
+            <tr class="type_cust"><td class="txt">Название юр.лица</td>
+                <td>{{ form.client_name }}</td>
+                </tr>
+            <tr><td class="txt">№ договора</td>
+                <td>{{ form.order_num }}</td>
+                </tr>
+            <tr class="tr_client_objects"><td class="txt">Доступные объекты:</td>
+                <td class="tr_client_objects"></td>
+                </tr>
+            <tr><td class="txt">Ф.И.О.</td>
+                <td>{{ form.full_name }}</td>
+                </tr>
+            <tr><td class="txt">Телефон</td>
+                <td>{{ form.phone }}</td>
+                </tr>
+            <tr><td class="txt">Контактный e-mail</td>
+                <td>{{ form.email }}</td>
+                </tr>
+            <!--tr><td class="txt">Номера объектов<br />(через запятую)</td>
+                <td>{{ form.objects }}</td>
+                </tr-->
+        </tbody></table>
+
+        {% if Captcha_error %}<div class="txt_error">Вы неверно ввели символы. Попробуйте еще раз</div>{% endif %}
+        <div class="txt_captcha">
+            <span class="txt">Введите символы:</span>
+            <span>{{ form.captcha }}</span>
+        </div>
+
+        <input type="submit" value="Отправить заявку">
+
+    </form>
+
+
+</div>
+
+{% endblock %}

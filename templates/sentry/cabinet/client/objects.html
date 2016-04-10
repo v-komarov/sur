@@ -1,0 +1,33 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+
+<script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/cabinet/client/objects.js"></script>
+<div class="middleBlock">
+
+
+{% for item in objects_set %}
+    {% if forloop.first %}
+        <h2 class="cabinet_title">Список объектов</h2>
+        <table class="tableInfo show">
+        <thead><tr class="row title"><td class="cell">Договор</td><td class="cell">Объект</td><td class="cell">Статус</td></tr></thead>
+        <tbody class="show">
+    {% endif %}
+        <tr class="row tr_client_object" id="{{ item.id }}"><td class="cell">{{ item.order_num }} : {{ item.security_type__name }}-{{ item.security_subtype__name }}</td>
+            <td class="cell"><b>{{ item.name }}</b>
+                <span class="locality">({{ item.locality__name }}, {{ item.street__name }}, {{ item.building }})</span>
+                <div class="client">Плательщик: {{ item.client__name }}</div>
+            </td>
+            <td class="cell">{{ item.status }}</td>
+            </tr>
+    {% if forloop.last %}
+        </tbody>
+        </table>
+    {% endif %}
+
+    {% empty %}
+        <div class="error">Нет объектов.</div>
+
+{% endfor %}
+
+</div>
+{% endblock %}

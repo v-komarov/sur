@@ -1,0 +1,35 @@
+<div class="pop" id="payment_pop">
+    <div class="header"><b>Пополнение баланса</b><div class="close"></div></div>
+    <form>
+        <table class="tableInfo wide margin_null">
+            <tr class="row"><td class="cell middle">Сумма платежа</td>
+                <td><input name="mount" class="datepicker" type="text" value=""><div class="txt9">руб.</div></td></tr>
+            <tr class="row">
+                <td class="cell middle">Дата пополнения</td>
+                <td><input name="payment_date" class="datepicker" type="text" value=""></td></tr>
+            <tr class="row">
+                <td class="cell middle">Тип платежа</td>
+                <td class="cell secondary">
+                    <select class="wide" name="payment_type">
+                        {% for item in payment_type %}
+                            <option value="{{ item }}">{{ item }}</option>
+                        {% endfor %}
+                    </select>
+                </td></tr>
+            <tr class="row">
+                <td class="cell middle">Комментарий</td>
+                <td class="cell secondary">
+                    <textarea cols="32" id="id_passport" name="comment" rows="3"></textarea>
+                </td></tr>
+
+            <tr class="row">
+                <td class="cell" colspan="2">
+                    <button type="submit" class="btn_ui bg" icon="save"><div class="txt">Сохранить</div><div class="icon"></div></button>
+                    <div class="btn_ui bg" action="payment_reset" icon="reset"><div class="txt">Сбросить</div><div class="icon"></div></div>
+                    <div class="btn_ui bg" action="payment_delete" icon="delete"><div class="txt">Удалить</div><div class="icon"></div></div>
+                </td></tr>
+        </table>
+    </form>
+
+</div>
+

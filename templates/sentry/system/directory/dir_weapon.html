@@ -1,0 +1,90 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+
+<script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/directory/dir_weapon.js"></script>
+
+{% include "sentry/system/directory/__left_block.html" %}
+
+<div class="middleBlock"><h2 class="cabinet_title">{{ title }}</h2>
+
+    <div class="resultCount"></div>
+
+    <table class="tableInfo" id="weapon_list">
+        <thead>
+        <tr class="row title">
+            <td class="cell">
+                <select style="width: 160px" name="company"><option value="all">Организация (все)</option>
+                    {% for item in company_set %}
+                        <option value="{{ item.id }}">{{ item.name }}</option>
+                    {% endfor %}
+                </select></td>
+            <td class="cell">
+                <input size="5" type="text" placeholder="Серия" value="" name="series"></td>
+            <td class="cell">
+                <input size="5" type="text" placeholder="Номер" value="" name="number"></td>
+            <td class="cell">
+                <select class="wide" name="weapon_type"><option value="all">все</option>
+                    {% for item in weapon_type_set %}
+                        <option value="{{ item.id }}">{{ item.name }}</option>
+                    {% endfor %}
+                </select></td>
+            <td class="cell">
+                <input size="13" type="text" placeholder="Комментарий" value="" name="comment"></td>
+            <td>
+                {% if perms.system.directory_weapon_add %}
+                    <div class="btn_ui" action="add" icon="object_add" title="Добавить"><div class="icon"></div></div>
+                {% else %}<div class="empty_28"></div>
+                {% endif %}
+            </td>
+        </tr>
+        </thead>
+        <tbody class="show"></tbody>
+    </table>
+
+    <div class="clear"></div>
+    <div class="loading">Загрузка</div>
+
+
+    <!-- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- .hide -->
+
+    <div class="pop" id="pop_weapon">
+        <div class="header"><b>Оружие</b><div class="close"></div></div>
+
+        <table class="tableInfo wide margin_null">
+            <tr class="row">
+                <td class="cell middle">Серия</td>
+                <td class="cell secondary"><input size="55" type="text" value="" name="series"></td></tr>
+            <tr class="row">
+                <td class="cell middle">Номер</td>
+                <td class="cell secondary"><input class="wide" type="text" value="" name="number"></td></tr>
+            <tr class="row">
+                <td class="cell middle">Тип оружия</td>
+                <td class="cell secondary">
+                    <select class="wide" name="weapon_type">
+                        {% for item in weapon_type_set %}
+                            <option value="{{ item.id }}">{{ item.name }}</option>
+                        {% endfor %}
+                    </select></td></tr>
+            <tr class="row">
+                <td class="cell middle">Организация</td>
+                <td class="cell secondary">
+                    <select class="wide" name="company">
+                        {% for item in company_set %}
+                            <option value="{{ item.id }}">{{ item.name }}</option>
+                        {% endfor %}
+                    </select></td></tr>
+            <tr class="row">
+                <td class="cell middle">Комментарий</td>
+                <td class="cell secondary"><input class="wide" type="text" value="" name="comment"></td></tr>
+            <tr class="row">
+                <td class="cell" colspan="2">
+                    <div class="btn_ui bg" action="save" icon="save" title="Сохранить"><div class="icon"></div><div class="txt">Сохранить</div></div>
+                    <div class="btn_ui bg" action="delete" icon="delete" title="Удалить"><div class="icon"></div><div class="txt">Удалить</div></div>
+                </td></tr>
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

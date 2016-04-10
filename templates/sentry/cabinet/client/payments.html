@@ -1,0 +1,62 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+
+<script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/cabinet/client/payments.js"></script>
+<div class="middleBlock">
+
+<h2 class="cabinet_title">Отчет о платежах</h2>
+
+
+{% for item in payments_set %}
+    {% if forloop.first %}
+        <table class="tableInfo show">
+        <thead>
+        <tr class="white">
+            <td colspan="4">
+                {% if years_list %}
+                <div class="select_year">
+                    {% if year|add:-1 in years_list %}
+                    <a class="arrow" href="/cabinet/payments/{{ year|add:-1 }}/"><</a>
+                    {% endif %}
+
+                    <select class="year">
+                        {% for item in years_list %}
+                        <option class="item" value="{{ item }}" {% if item|floatformat == year|floatformat %}selected{% endif %}>{{ item }}</option>
+                        {% endfor %}
+                    </select>
+
+                    {% if year|add:1 in years_list %}
+                    <a class="arrow" href="/cabinet/payments/{{ year|add:1 }}/">></a>
+                    {% endif %}
+
+                </div>
+                {% endif %}
+            </td>
+        </tr>
+        <tr class="row title">
+            <td class="cell">Дата платежа</td>
+            <td class="cell">Способ оплаты</td>
+            <td class="cell">Сумма (руб.)</td>
+            <td class="cell">Примечание</td>
+        </tr></thead>
+    {% endif %}
+    <tbody class="show">
+    <tr class="row">
+        <td class="cell date_transaction">{{ item.pay_date|date:"d.m.Y" }} <span class="time">{{ item.pay_date|date:"H:i:s" }}</span></td>
+        <td class="cell">{{ item.pay_type }}</td>
+        <td class="cell">{{ item.mount }}</td>
+        <td class="cell"><i>{{ item.comment }}</i></td>
+        </tr>
+
+    {% if forloop.last %}
+        </tbody>
+        </table>
+    {% endif %}
+
+    {% empty %}
+        <div class="error">Платежей небыло.</div>
+
+{% endfor %}
+
+</div>
+{% endblock %}

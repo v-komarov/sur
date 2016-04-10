@@ -1,0 +1,81 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+
+<script type="text/javascript" src="{{ STATIC_URL }}jquery/ui/js/jquery-ui-1.10.3.custom.js"></script>
+
+<link href="{{ STATIC_URL }}jquery/ui/development-bundle/themes/base/jquery.ui.autocomplete.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="{{ STATIC_URL }}jquery/ui/development-bundle/ui/minified/jquery.ui.autocomplete.min.js"></script>
+
+
+<link rel="stylesheet" href="{{ STATIC_URL }}jquery/ui/css/smoothness/jquery-ui.css">
+
+<link href="{{ STATIC_URL }}index/css/monitor.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/monitor/operator/test.js"></script>
+
+
+<div class="leftShore">
+    <div class="blockButtons">
+        <div class="ui_button ui_fullscreen"></div>
+
+        <div class="server_time">00:00:00</div>
+
+        <select class="event_filter">
+            {% for item in event_filter %}
+            <option class="item" value="{{ item.name }}" {% if forloop.first %}selected{% endif %}>{{ item.description }}</option>
+            {% endfor %}
+        </select>
+
+    </div>
+
+
+
+    <table class="objectsTitle title">
+        <thead><tr>
+            <td class="cell">Номер</td>
+            <td class="cell">Наименование</td>
+        </tr></thead>
+    </table>
+    <div id="objects">
+        <table class="tableInfo wide">
+            <tbody id="objectsBody" log_id="63">
+        <tr class="row lock" id="18925"><td class="cell" key="order_num">335</td><td class="cell" key="object_name">Магазин "ГОЛАНА"</td></tr><tr class="row alarm_completed" id="21851"><td class="cell" key="order_num">420133</td><td class="cell" key="object_name">квартира</td></tr><tr class="row alarm_completed" id="23790"><td class="cell" key="order_num">335</td><td class="cell" key="object_name">ювелирный салон "Линии Любви" (S=35,2)</td></tr><tr class="row lock" id="23718"><td class="cell" key="order_num">1477</td><td class="cell" key="object_name">парикмахерская "SATZA" (S=107,5)</td></tr><tr class="row lock" id="23678"><td class="cell" key="order_num">915</td><td class="cell" key="object_name">офисное помещение (S=5,4)</td></tr><tr class="row alarm" id="23677"><td class="cell" key="order_num">904</td><td class="cell" key="object_name">офисное помещение (S=13,5)</td></tr><tr class="row lock" id="23676"><td class="cell" key="order_num">875</td><td class="cell" key="object_name">салон мебели (S=101,6)</td></tr><tr class="row lock" id="23675"><td class="cell" key="order_num">211</td><td class="cell" key="object_name">"дисконт бар ЛОСЬ И ЛОСОСЬ" (S=211)</td></tr><tr class="row lock" id="23673"><td class="cell" key="order_num">1450</td><td class="cell" key="object_name">магазин "Удачный" (S=100)</td></tr><tr class="row alarm_completed" id="23671"><td class="cell" key="order_num">1240104</td><td class="cell" key="object_name">магазин ООО "Новый формат - Красноярск"</td></tr><tr class="row lock" id="23670"><td class="cell" key="order_num">458</td><td class="cell" key="object_name">гараж (S-71)</td></tr>
+            </tbody>
+        </table>
+    </div>
+
+    <table class="eventsTitle title">
+        <thead><tr>
+            <td class="cell">Время</td>
+            <td class="cell">Номер</td>
+            <td class="cell">Объект</td>
+            <td class="cell">Событие</td>
+        </tr></thead>
+    </table>
+    <div id="events" class="ui-widget-content">
+        <table class="tableInfo wide">
+            <tbody id="eventsBody" log_id="63">
+            <tr class="row lock" id="129"><td class="cell" key="event_time" ><div class="date">22.07</div>10:50:44</td><td class="cell" key="object_num" >335</td><td class="cell" key="object_name">Магазин "ГОЛАНА"<div class="address">г. Красноярск, Карла Маркса, 34</div></td><td class="cell" key="description" >Постановка на охрану</td></tr>
+            <tr class="row alarm_completed" id="128"><td class="cell" key="event_time"><div class="date">22.07</div>10:27:08</td><td class="cell" key="object_num">335</td><td class="cell" key="object_name">Магазин "ГОЛАНА"<div class="address">г. Красноярск, Карла Маркса, 34</div></td><td class="cell" key="description">Отменено оператором</td></tr>
+            <tr class="row lock" id="129"><td class="cell" key="event_time" ><div class="date">22.07</div>10:50:44</td><td class="cell" key="object_num" >335</td><td class="cell" key="object_name">Магазин "ГОЛАНА"<div class="address">г. Красноярск, Карла Маркса, 34</div></td><td class="cell" key="description" >Постановка на охрану</td></tr>
+            <tr class="row alarm_completed" id="128"><td class="cell" key="event_time"><div class="date">22.07</div>10:27:08</td><td class="cell" key="object_num">335</td><td class="cell" key="object_name">Магазин "ГОЛАНА"<div class="address">г. Красноярск, Карла Маркса, 34</div></td><td class="cell" key="description">Отменено оператором</td></tr>
+            <tr class="row lock" id="129"><td class="cell" key="event_time" ><div class="date">22.07</div>10:50:44</td><td class="cell" key="object_num" >335</td><td class="cell" key="object_name">Магазин "ГОЛАНА"<div class="address">г. Красноярск, Карла Маркса, 34</div></td><td class="cell" key="description" >Постановка на охрану</td></tr>
+            <tr class="row alarm_completed" id="128"><td class="cell" key="event_time"><div class="date">22.07</div>10:27:08</td><td class="cell" key="object_num">335</td><td class="cell" key="object_name">Магазин "ГОЛАНА"<div class="address">г. Красноярск, Карла Маркса, 34</div></td><td class="cell" key="description">Отменено оператором</td></tr>
+            <tr class="row lock" id="129"><td class="cell" key="event_time" ><div class="date">22.07</div>10:50:44</td><td class="cell" key="object_num" >335</td><td class="cell" key="object_name">Магазин "ГОЛАНА"<div class="address">г. Красноярск, Карла Маркса, 34</div></td><td class="cell" key="description" >Постановка на охрану</td></tr>
+            <tr class="row alarm_completed" id="128"><td class="cell" key="event_time"><div class="date">22.07</div>10:27:08</td><td class="cell" key="object_num">335</td><td class="cell" key="object_name">Магазин "ГОЛАНА"<div class="address">г. Красноярск, Карла Маркса, 34</div></td><td class="cell" key="description">Отменено оператором</td></tr>
+            <tr class="row lock" id="129"><td class="cell" key="event_time" ><div class="date">22.07</div>10:50:44</td><td class="cell" key="object_num" >335</td><td class="cell" key="object_name">Магазин "ГОЛАНА"<div class="address">г. Красноярск, Карла Маркса, 34</div></td><td class="cell" key="description" >Постановка на охрану</td></tr>
+            <tr class="row alarm_completed" id="128"><td class="cell" key="event_time"><div class="date">22.07</div>10:27:08</td><td class="cell" key="object_num">335</td><td class="cell" key="object_name">Магазин "ГОЛАНА"<div class="address">г. Красноярск, Карла Маркса, 34</div></td><td class="cell" key="description">Отменено оператором</td></tr>
+            <tr class="row lock" id="129"><td class="cell" key="event_time" ><div class="date">22.07</div>10:50:44</td><td class="cell" key="object_num" >335</td><td class="cell" key="object_name">Магазин "ГОЛАНА"<div class="address">г. Красноярск, Карла Маркса, 34</div></td><td class="cell" key="description" >Постановка на охрану</td></tr>
+            <tr class="row alarm_completed" id="128"><td class="cell" key="event_time"><div class="date">22.07</div>10:27:08</td><td class="cell" key="object_num">335</td><td class="cell" key="object_name">Магазин "ГОЛАНА"<div class="address">г. Красноярск, Карла Маркса, 34</div></td><td class="cell" key="description">Отменено оператором</td></tr>
+            <tr class="row lock" id="129"><td class="cell" key="event_time" ><div class="date">22.07</div>10:50:44</td><td class="cell" key="object_num" >335</td><td class="cell" key="object_name">Магазин "ГОЛАНА"<div class="address">г. Красноярск, Карла Маркса, 34</div></td><td class="cell" key="description" >Постановка на охрану</td></tr>
+            <tr class="row alarm_completed" id="128"><td class="cell" key="event_time"><div class="date">22.07</div>10:27:08</td><td class="cell" key="object_num">335</td><td class="cell" key="object_name">Магазин "ГОЛАНА"<div class="address">г. Красноярск, Карла Маркса, 34</div></td><td class="cell" key="description">Отменено оператором</td></tr>
+            <tr class="row lock" id="129"><td class="cell" key="event_time" ><div class="date">22.07</div>10:50:44</td><td class="cell" key="object_num" >335</td><td class="cell" key="object_name">Магазин "ГОЛАНА"<div class="address">г. Красноярск, Карла Маркса, 34</div></td><td class="cell" key="description" >Постановка на охрану</td></tr>
+            <tr class="row alarm_completed" id="128"><td class="cell" key="event_time"><div class="date">22.07</div>10:27:08</td><td class="cell" key="object_num">335</td><td class="cell" key="object_name">Магазин "ГОЛАНА"<div class="address">г. Красноярск, Карла Маркса, 34</div></td><td class="cell" key="description">Отменено оператором</td></tr>
+            <tr class="row lock" id="129"><td class="cell" key="event_time" ><div class="date">22.07</div>10:50:44</td><td class="cell" key="object_num" >335</td><td class="cell" key="object_name">Магазин "ГОЛАНА"<div class="address">г. Красноярск, Карла Маркса, 34</div></td><td class="cell" key="description" >Постановка на охрану</td></tr>
+            <tr class="row alarm_completed" id="128"><td class="cell" key="event_time"><div class="date">22.07</div>10:27:08</td><td class="cell" key="object_num">335</td><td class="cell" key="object_name">Магазин "ГОЛАНА"<div class="address">г. Красноярск, Карла Маркса, 34</div></td><td class="cell" key="description">Отменено оператором</td></tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="clear"></div>
+</div>
+
+{% endblock %}

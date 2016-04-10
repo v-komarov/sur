@@ -1,0 +1,51 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+    {% include "sentry/system/client/__left_block.html" %}
+
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/pop_menu.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/client/client_charge.js"></script>
+
+    <div class="middleBlock" client_id="{{ client_id }}">
+        <h2 class="cabinet_title">Клиент: {{ client_set.name }}</h2>
+
+        <table class="tableInfo" id="charge_list">
+            <thead>
+            <tr>
+                <td colspan="3">
+                    <select id="object_select"></select>
+                    <div class="btn_ui bg right" action="recharge" icon="calculator" style="margin:-2px 0 0 5px"><div class="icon"></div><div class="txt">Пересчитать</div></div>
+                    <div class="btn_ui bg" action="charge_refresh" icon="reset" style="margin:-2px 0 0 5px"><div class="icon"></div></div>
+                </td>
+            <tr>
+                <td colspan="3">
+                    <div class="balance"></div>
+                    {% if years_list %}
+                        <div class="select_year">
+                            <a class="arrow prev"><</a>
+                            <select class="year">
+                                {% for item in years_list %}
+                                    <option class="item" value="{{ item }}" {% if forloop.last %}selected{% endif %}>{{ item }}</option>
+                                {% endfor %}
+                            </select>
+                            <a class="arrow next">></a>
+                        </div>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr class="row title">
+                <td class="cell">Месяц</td><td class="cell">Начислено</td><td class="cell">Оплачено</td>
+            </tr>
+            </thead>
+            <tbody></tbody>
+        </table>
+
+        <div class="clear"></div>
+        <div class="loading">Загрузка</div>
+
+        <div class="error hide">Начислений небыло</div>
+
+        {% include "sentry/system/client/client_charge__pop.html" %}
+
+    </div>
+
+{% endblock %}

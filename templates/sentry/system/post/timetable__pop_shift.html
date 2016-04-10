@@ -1,0 +1,57 @@
+<div class="pop" id="pop_shift">
+    <div class="header"><b></b><div class="close"></div></div>
+    <table class="tableInfo wide margin_null">
+        <tr class="row" name="title">
+            <td class="cell" name="today"></td>
+            <td class="cell middle" name="full_name"></td></tr>
+        <tr class="row" name="shift" shift="plan">
+            <td class="cell middle">Смена</td>
+            <td><div class="button" action="set_shift">По графику</div>
+            </td></tr>
+        <tr class="row" name="shift" shift="none">
+            <td class="cell middle">Смена</td>
+            <td><select class="timelist" name="begin_time"></select>
+                <span>-</span>
+                <select class="timelist" name="end_time"></select>
+                <div class="hours"></div>
+                <div class="button" action="set_shift">Выбрать</div>
+            </td></tr>
+
+
+        <tr class="row" shift="completed">
+            <td class="cell middle">Заступление</td>
+            <td><select class="timelist" name="begin_time"></select>
+                <div class="hours"></div>
+                <select class="reason" name="reason_begin">
+                    {% for reason in post_reason_set %}
+                        <option class="item" value="{{ reason.id }}">{{ reason.name }}</option>
+                    {% endfor %}
+                </select></td></tr>
+        <tr class="row" shift="completed">
+            <td class="cell middle">Окончание</td>
+            <td><select class="timelist" name="end_time"></select>
+                <select class="reason" name="reason_end">
+                    {% for reason in post_reason_set %}
+                        <option class="item" value="{{ reason.id }}">{{ reason.name }}</option>
+                    {% endfor %}
+                </select></td></tr>
+        <tr class="row" name="weapon">
+            <td class="cell middle">Оружие</td>
+            <td class="cell secondary">
+                <select><option class="item" value="none">Без оружия</option>
+                    {% for weapon in weapon_set %}
+                        <option class="item" value="{{ weapon.id }}">{{ weapon.weapon_type.name }}, {{ weapon.series }} - {{ weapon.number }}</option>
+                    {% endfor %}
+                </select></td></tr>
+
+        <tr class="row" name="comment">
+            <td class="cell">Комментарий</td>
+            <td class="cell secondary"><textarea rows="2" cols="35"></textarea></td></tr>
+        <tr class="row" name="buttons">
+            <td class="cell" colspan="2">
+                <span class="btn_ui bg" action="shift_save" icon="save"><div class="txt">Сохранить</div><div class="icon"></div></span>
+                <span class="btn_ui bg" action="shift_end" icon="time"><div class="txt">Завершить смену</div><div class="icon"></div></span>
+                <span class="btn_ui bg" action="shift_delete" icon="delete"><div class="txt">Удалить</div><div class="icon"></div></span>
+            </td></tr>
+    </table>
+</div>

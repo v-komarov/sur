@@ -1,0 +1,10 @@
+<div class="leftBlock">
+
+    <a class="item {% if request.path|slice:':18' == '/monitor/operator/' %}selected{% endif %}"
+       href="/monitor/operator/">Оператор</a>
+    <a class="item {% if request.path|slice:'7:' == '/finance/bonus/' %}selected{% endif %}"
+       href="/system/finance/bonus/">----</a>
+    <a class="item {% if request.path|slice:'7:' == '/finance/export/' %}selected{% endif %}"
+       href="/system/finance/export/">----</a>
+
+</div>

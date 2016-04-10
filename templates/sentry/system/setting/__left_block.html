@@ -1,0 +1,24 @@
+<div class="leftBlock">
+
+    {% if perms.system.client %}
+        <a class="item {% if request.path|slice:'15:' == '/general/' %}selected{% endif %}"
+           href="/system/setting/general/">Общие</a>
+    {% endif %}
+
+    {% if perms.system.client %}
+        <a class="item {% if request.path|slice:'15:' == '/contract_string/' %}selected{% endif %}"
+           href="/system/setting/contract_string/">Нумерация договоров</a>
+    {% endif %}
+
+    {% if perms.system.client %}
+        <a class="item {% if request.path|slice:'15:' == '/event_groups/' %}selected{% endif %}"
+           href="/system/setting/event_groups/">Списки пользователей</a>
+    {% endif %}
+
+    {% if perms.system.client %}
+        <a class="item {% if request.path|slice:'15:' == '/search/' %}selected{% endif %}"
+           href="/system/setting/search/">Поиск</a>
+    {% endif %}
+
+
+</div>

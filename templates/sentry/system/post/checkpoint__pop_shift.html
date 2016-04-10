@@ -1,0 +1,72 @@
+<div class="pop" id="pop_shift">
+    <div class="header"><b></b><div class="close"></div></div>
+    <table class="tableInfo wide margin_null">
+        <tr class="row" name="service">
+            <td class="cell middle">Пост</td>
+            <td class="cell secondary" name="service_name"><b></b></td></tr>
+
+        <tr class="row" name="sentry_user">
+            <td class="cell middle">Сотрудник</td>
+            <td class="secondary">
+                <span name="fullname"></span>
+                <div class="btn_ui" icon="user_shift" action="shift_user_change" title="Сменить сотрудника на посту"></div>
+            </td></tr>
+
+        <tr class="row" name="user_change">
+            <td class="cell">
+                <div class="down_box">
+                    <span class="btn_ui" action="filter" icon="filter" title="Фильтр"><div class="txt">Фильтр</div><div class="icon"></div></span>
+                    <ul class="drop_list" id="users_filter">
+                        <li filter="work" checked="checked"><div class="chechbox"></div>статус "работает"</li>
+                        <li filter="armory"><div class="chechbox"></div>РСЛа</li>
+                        <li filter="identity"><div class="chechbox"></div>удостоверение</li>
+                        <li filter="certificate"><div class="chechbox"></div>свидетельство</li>
+                    </ul>
+                </div>
+            </td>
+            <td class="cell">
+                <select name="security_company">
+                    {% for item in security_company_set %}
+                        <option class="item" value="{{ item.id }}">{{ item.name }}</option>
+                    {% endfor %}
+                </select>
+                <div class="scrolling"></div>
+            </td></tr>
+
+        <tr class="row" name="begin">
+            <td class="cell middle">Заступление</td>
+            <td><select class="timelist" name="time"></select>
+                <select class="reason" name="reason">
+                    {% for reason in post_reason_set %}
+                        <option class="item" value="{{ reason.id }}">{{ reason.name }}</option>
+                    {% endfor %}
+                </select></td></tr>
+        <tr class="row" name="end">
+            <td class="cell middle">Закрытие смены</td>
+            <td><select class="timelist" name="time"></select>
+                <select class="reason" name="reason">
+                    {% for reason in post_reason_set %}
+                        <option class="item" value="{{ reason.id }}">{{ reason.name }}</option>
+                    {% endfor %}
+                </select></td></tr>
+
+        <tr class="row" name="armory">
+            <td class="cell middle">Оружие</td>
+            <td class="cell secondary">
+                <select><option class="item" value="none">Без оружия</option>
+                    {% for armory in armory_set %}
+                        <option class="item" value="{{ armory.id }}">{{ armory.weapon.name }}, {{ armory.series }} - {{ armory.number }}</option>
+                    {% endfor %}
+                </select></td></tr>
+
+        <tr class="row" name="comment">
+            <td class="cell">Комментарий</td>
+            <td class="cell secondary"><textarea rows="2" cols="35"></textarea></td></tr>
+        <tr class="row" name="buttons">
+            <td colspan="2">
+                <span class="btn_ui bg" icon="user_shift" action="shift_user_change_save"><div class="txt">Сменить</div><div class="icon"></div></span>
+                <span class="btn_ui bg" action="timer" icon="timer"><div class="txt"></div><div class="icon"></div></span>
+                <span class="btn_ui bg" action="save" icon="save"><div class="txt">Сохранить</div><div class="icon"></div></span>
+            </td></tr>
+    </table>
+</div>

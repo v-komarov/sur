@@ -1,0 +1,109 @@
+<div class="leftBlock">
+
+    {% if perms.system.client %}
+        <a class="item {% if request.path|slice:'17:' == '/region/' %}selected{% endif %}"
+           href="/system/directory/region/">Регионы</a>
+    {% endif %}
+    {% if perms.system.client %}
+        <a class="item {% if request.path|slice:'17:' == '/locality/' %}selected{% endif %}"
+           href="/system/directory/locality/">Населенные пункты</a>
+    {% endif %}
+
+    {% if perms.system.client %}
+        <a class="item {% if request.path|slice:'17:' == '/street/' %}selected{% endif %}"
+           href="/system/directory/street/">Улицы</a>
+    {% endif %}
+
+    <hr>
+
+
+    {% if perms.system.client %}
+        <a class="item {% if request.path|slice:'17:' == '/bank/' %}selected{% endif %}"
+           href="/system/directory/bank/">Банки</a>
+    {% endif %}
+
+    {% if perms.system.client %}
+        <a class="item {% if request.path|slice:'17:' == '/holding/' %}selected{% endif %}"
+           href="/system/directory/holding/">Холдинги</a>
+    {% endif %}
+
+    {% if perms.system.client %}
+        <a class="item {% if request.path|slice:'17:' == '/user_post/' %}selected{% endif %}"
+           href="/system/directory/user_post/">Должности</a>
+    {% endif %}
+
+    {% if perms.system.client %}
+        <a class="item {% if request.path|slice:'17:' == '/service_type/' %}selected{% endif %}"
+           href="/system/directory/service_type/">Виды услуг</a>
+    {% endif %}
+
+    {% if perms.system.client %}
+        <a class="item {% if request.path|slice:'17:' == '/security_squad/' %}selected{% endif %}"
+           href="/system/directory/security_squad/">ГБР</a>
+    {% endif %}
+
+    <hr>
+
+    {% if perms.system.client %}
+        <a class="item {% if request.path|slice:'17:' == '/device_console/' %}selected{% endif %}"
+           href="/system/directory/device_console/">Пульты</a>
+    {% endif %}
+
+    {% if perms.system.client %}
+        <a class="item {% if request.path|slice:'17:' == '/device_communication/' %}selected{% endif %}"
+           href="/system/directory/device_communication/">Каналы связи</a>
+    {% endif %}
+
+    {% if perms.system.client %}
+        <a class="item {% if request.path|slice:'17:' == '/device_type/' %}selected{% endif %}"
+           href="/system/directory/device_type/">Типы объектовых уст-ств</a>
+    {% endif %}
+
+    {% if perms.system.client %}
+        <a class="item {% if request.path|slice:'17:' == '/sim_card/' %}selected{% endif %}"
+           href="/system/directory/sim_card/">SIM карты</a>
+    {% endif %}
+
+    {% if perms.system.client %}
+        <a class="item {% if request.path|slice:'17:' == '/device/' %}selected{% endif %}"
+           href="/system/directory/device/">Объектовые устройства</a>
+    {% endif %}
+
+    <hr>
+
+    {% if perms.system.client %}
+        <a class="item {% if request.path|slice:'17:' == '/bonus/' %}selected{% endif %}"
+           href="/system/directory/bonus/">Бонусы</a>
+    {% endif %}
+
+    {% if perms.system.client %}
+        <a class="item {% if request.path|slice:'17:' == '/weapon_type/' %}selected{% endif %}"
+           href="/system/directory/weapon_type/">Оружие</a>
+    {% endif %}
+
+    {% if perms.system.client %}
+        <a class="item {% if request.path|slice:'17:' == '/weapon/' %}selected{% endif %}"
+           href="/system/directory/weapon/">Оружейная</a>
+    {% endif %}
+
+    {% if perms.system.client %}
+        <a class="item {% if request.path|slice:'17:' == '/service_organization/' %}selected{% endif %}"
+           href="/system/directory/service_organization/">Список организаций</a>
+    {% endif %}
+
+    {% if perms.system.client %}
+        <a class="item {% if request.path|slice:'17:' == '/contract_interval/' %}selected{% endif %}"
+           href="/system/directory/contract_interval/">Интервалы договоров</a>
+    {% endif %}
+
+    {% if perms.system.client %}
+        <a class="item {% if request.path|slice:'17:' == '/console_interval/' %}selected{% endif %}"
+           href="/system/directory/console_interval/">Интервалы пультовых номеров</a>
+    {% endif %}
+
+    {% if perms.system.client %}
+        <a class="item {% if request.path|slice:'17:' == '/incident_type/' %}selected{% endif %}"
+           href="/system/directory/incident_type/">Типы происшествий</a>
+    {% endif %}
+
+</div>

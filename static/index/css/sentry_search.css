@@ -1,0 +1,13 @@
+.search__view .tableInfo {
+    border-top: 1px solid #7CB2C8;
+}
+
+.search__view .tableInfo .row {
+    border: none;
+    border-bottom: 1px solid #7CB2C8;
+    border-left: 1px solid #7CB2C8;
+    border-right: 1px solid #7CB2C8;
+}
+.search__view .tableInfo .white {
+    border: none;
+}

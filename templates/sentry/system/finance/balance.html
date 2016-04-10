@@ -1,0 +1,101 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+
+    {% include "sentry/system/finance/__left_block.html" %}
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/finance/balance.js"></script>
+
+    <div class="middleBlock"><h2 class="cabinet_title">{{ title }}</h2>
+
+        <table class="tableInfo searchObject">
+            <tbody>
+            <tr class="row">
+                <td class="padding_9 right">Плательщик</td>
+                <td class="cell secondary" colspan="2">
+                    <select class="wide width_320" name="client"><option value="">все</option>
+                        {% for item in client_set %}
+                            <option value="{{ item.id }}">{{ item.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td></tr>
+            <tr class="row">
+                <td class="padding_9 right">Отв. менеджер</td>
+                <td class="cell secondary" colspan="2">
+                    <select class="wide width_320" name="manager"><option value="">все</option>
+                        <optgroup label="Менеджер"></optgroup>
+                        <optgroup label="Руководитель"></optgroup>
+                        <optgroup label="Начальник охраны"></optgroup>
+                    </select>
+                </td></tr>
+            <tr class="row">
+                <td class="padding_9 right">Населенный пункт</td>
+                <td class="cell secondary" colspan="2">
+                    <select class="wide width_320" name="locality"><option value="">все</option>
+                        {% for item in dir_locality_set %}
+                            <option value="{{ item.id }}">{{ item.region.name }}, {{ item.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td></tr>
+            <tr class="row"><td class="padding_9 right">Тип охраны</td>
+                <td colspan="2">
+                    <div class="down_box left" name="service_filter">
+                        <div class="btn_ui" icon="filter" action="service_filter" title="Фильтр"><div class="icon"></div></div>
+                        <ul class="drop_list" id="filter_service_type">
+                            <li service_type_id="2" title="Личная безопасность">
+                                <div class="chechbox"></div><div class="txt">ЛБ</div></li>
+                            <li service_type_id="3" title="Мониторинг подвижных объектов">
+                                <div class="chechbox"></div><div class="txt">МП</div></li>
+                            <li service_type_id="7" title="Первоначальное подключение">
+                                <div class="chechbox"></div><div class="txt">Подключение</div></li>
+                            <li service_type_id="4" title="Постовая, физическая охрана">
+                                <div class="chechbox"></div><div class="txt">Пост</div></li>
+                            <li service_type_id="1" title="Пульт Централизованного Наблюдения">
+                                <div class="chechbox"></div><div class="txt">ПЦН</div></li>
+                            <li checked="checked" service_type_id="5" title="Тревожный вызов">
+                                <div class="chechbox"></div><div class="txt">ТВ</div></li>
+                            <li service_type_id="6" title="Техническое обслуживание">
+                                <div class="chechbox"></div><div class="txt">ТО</div></li>
+                        </ul>
+                    </div>
+                    <div class="left" name="service_list" style="padding: 10px 10px 0 0"></div>
+                </td></tr>
+            <tr class="row"><td class="padding_9 right">Период</td>
+                <td colspan="2">
+                    <input class="datepicker" type="text" value="{{ month_day }}" name="from" id="from"><span style="float:left; padding:8px 10px 0 2px;">-</span>
+                    <input class="datepicker" type="text" value="{{ today }}" name="to" id="to">
+                </td></tr>
+            <tr class="row"><td class="padding_9 right">Показать список объектов</td>
+                <td class="cell secondary" colspan="2">
+                    <select class="wide width_320" name="view_list">
+                        <option value="debt">долг</option>
+                        <option value="payment">переплата</option>
+                        <option value="null">долг и переплата</option>
+                        <option value="other">с начислениями "другое"</option>
+                    </select>
+                </td></tr>
+
+            <tr class="row status">
+                <td class="switch" name="expired" colspan="3"><div class="chechbox"></div><div class="txt">С учетом начислений "другое"</div></td>
+            </tr>
+
+            <tr class="row status white">
+                <td colspan="3"><div class="btn_ui bg" action="finance_search" icon="calculator" title="Обновить"><div class="icon"></div><div class="txt">Посчитать</div></div></td>
+            </tr>
+
+            </tbody>
+        </table>
+
+        <div class="clear"></div><div class="loading">Загрузка</div>
+        <div class="clear"></div><div class="result_count"></div>
+
+        <table class="tableInfo" id="finance_list">
+            <thead><tr class="row title">
+                <td class="cell">Объект</td>
+                <td class="cell">Начислено</td>
+                <td class="cell">Оплачено</td>
+                <td class="cell">Итог</td>
+            </tr></thead>
+            <tbody class="list show"></tbody>
+        </table>
+
+    </div>
+{% endblock %}

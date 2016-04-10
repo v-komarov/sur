@@ -1,0 +1,44 @@
+<script type="text/javascript" src="{{ STATIC_URL }}jquery/ui/js/timepicker/jquery-ui-timepicker-addon.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}jquery/ui/js/timepicker/jquery-ui-sliderAccess.js"></script>
+<link type="text/css" href="{{ STATIC_URL }}jquery/ui/css/jquery-ui-timepicker-addon.css" rel="Stylesheet" >
+
+<div class="pop" id="pop_incident">
+    <div class="header"><b>Событие</b><div class="close"></div></div>
+
+    <form>
+        <table class="tableInfo wide margin_null">
+            <tr class="row2"><td class="padding_9 right">Дата события</td>
+                <td><input name="incident_date" class="datepicker datetime" type="text" value="">
+                </td></tr>
+            <tr class="row2"><td class="padding_9 right">Дата прибытия</td>
+                <td><input name="arrival_date" class="datepicker datetime" type="text" value="">
+                    <div class="txt9" name="arrival_minute"></div>
+                </td></tr>
+            <tr class="row2">
+                <td class="padding_9 right">Тип события</td>
+                <td class="cell secondary">
+                    <select class="wide" name="incident_type">
+                        {% for item in incident_type_set %}
+                            <option value="{{ item.id }}">{{ item.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td></tr>
+            <tr class="row2">
+                <td class="padding_9 right">Описание</td>
+                <td class="cell secondary">
+                    <textarea cols="52" id="id_passport" name="comment" rows="4"></textarea>
+                </td></tr>
+            <tr class="row2"><td colspan="2" name="log"></td></tr>
+            <tr>
+                <td class="padding" colspan="2">
+                    <button class="btn_ui bg right" icon="save"><div class="txt">Сохранить</div><div class="icon"></div></button>
+                    <div class="btn_ui bg right" action="incident_reset" icon="reset"><div class="txt">Сбросить</div><div class="icon"></div></div>
+                    {% if perms.system.client_object_incident_delete %}
+                        <div class="btn_ui bg right" action="incident_delete" icon="delete"><div class="txt">Удалить</div><div class="icon"></div></div>
+                    {% endif %}
+                </td></tr>
+        </table>
+    </form>
+
+</div>
+

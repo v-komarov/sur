@@ -1,0 +1,909 @@
+/* --- Cabinet */
+
+body {
+    background-color: #F8F8FF;
+}
+a {
+    text-decoration: none;
+}
+.left_menu {
+    float: left;
+}
+h3.title {
+    margin: 10px 20px;
+    font-size: 1.5em;
+    font-weight: normal;
+    letter-spacing: .035em;
+}
+
+form.login {
+    margin: 180px auto 0;
+    width: 280px;
+    background-color: #fff;
+    border: 1px solid #5598E0;
+    box-shadow: 0 0 10px #bebebe;
+}
+form.login .title {
+    padding: 10px;
+    text-align: center;
+    background-color: #e1eaf4;
+    margin-bottom: 10px;
+}
+form.login label {
+    display: inline-block;
+    width: 100%;
+}
+form.login div.txt {
+    padding: 10px 10px 0;
+    float: left;
+}
+form.login input {
+    float: right;
+    margin: 5px 10px;
+}
+form.login .error {
+    margin: 10px 25px;
+    color: #d66262;
+    font-size: 1.2em;
+}
+form.login div.buttons {
+    display: inline-block;
+    width: 100%;
+}
+form.login button[type=button] {
+    float: right;
+    cursor: pointer;
+    padding: 10px 20px;
+    margin: 10px 10px 10px 0;
+    border: 1px solid #7CB2C8;
+    border-radius: 3px;
+    font-size: .9em;
+    color: #000;
+    background-color: #f9f9f9;
+    text-shadow: none;
+}
+form.login button[type=button]:hover {
+    color: #fff;
+    background-color: #5598E0;
+    text-shadow: 1px 1px 0 #000;
+}
+
+
+.cabinet_title {
+    margin: 10px 0;
+    font-size: 1.7em;
+    color: #4c7099;
+    letter-spacing: 0.025em;
+}
+.summ {
+    margin: 20px 10px 0;
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.inside_navigation {
+    background: url('../img/bg_pattern_gray.jpg') #ececec;
+    padding: 8px 15px 10px 20px;
+}
+.inside_navigation .margin_left {
+    margin-left: 260px;
+}
+.inside_navigation .cage__init,
+.inside_navigation .link {
+    display: inline-block;
+    margin: 3px 3px 0 0;
+    padding: 8px 13px;
+    border: 1px solid #7CB2C8;
+    border-radius: 3px;
+    text-decoration: none;
+    color: #2D5E96;
+    background-color: #f9f9f9;
+    vertical-align: top;
+}
+.inside_navigation .selected,
+.inside_navigation .link:hover {
+    color: #fff;
+    background-color: #75a7dd;
+    text-shadow: 1px 1px 0 #000;
+    /*
+    box-shadow: 0 0 10px 1px #fff inset;
+    */
+}
+
+.client_objects_title {
+    margin: 20px 10px 10px;
+    font-size: 1.3em;
+}
+
+.cage {
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: top;
+}
+.cage .cage__float {
+    z-index: 100;
+    position: absolute;
+    display: none;
+}
+.cage:hover .cage__float {
+    display: block;
+}
+.cage__float .link {
+    margin: 0;
+    display: block;
+}
+
+/*    ------------------------------------------------------------    blocks
+*/
+.leftBlock {
+    width: 225px;
+    float: left;
+    margin: 0;
+    border: 1px solid #ccc;
+    padding: 13px;
+    border-bottom-right-radius: 8px;
+    border-left: none;
+    border-top-right-radius: 8px;
+    position: fixed;
+}
+.border-left {
+    border-left: 1px solid #ccc;
+}
+.leftBlock .item {
+    display: block;
+    padding: 3px 10px;
+    margin: 0 0 1px 0;
+    color: #3379A5;
+    font-size: 1.1em;
+    border-radius: 4px;
+    text-decoration: none;
+}
+.leftBlock .selected,
+.leftBlock .item:hover {
+    cursor: pointer;
+    background-color: #e1eaf4;
+    /*
+    text-shadow: 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff, 0 0 3px #fff;
+    */
+}
+.leftBlock hr {
+    -webkit-margin-before: 0;
+    -webkit-margin-after: 0;
+    border-width: 0;
+    border-top: 1px solid #ccc;
+    margin: 7px 0;
+}
+
+.middleBlock {
+    margin: 20px 30px 20px 280px;
+}
+.wideBlock {
+    margin: 0 20px 0 30px;
+}
+
+/*    ------------------------------------------------------------    *
+*/
+select.selectObject {
+    margin: 0;
+    padding: 5px;
+}
+select.selectObject option[level=object] {
+    color:#00F;
+}
+select.selectObject option[level=service] {
+
+}
+select.selectObject:disabled {
+    background-color: #F5F5F5;
+}
+
+select.timelist {
+    padding: 2px;
+    margin: 0;
+}
+
+.daterange {
+    border-top: 1px solid #ccc;
+    padding-top: 2px;
+    margin-top: 2px;
+}
+.daterange .item {
+    margin-bottom: 7px;
+}
+.rangeSelectBlock {
+    display: none;
+}
+.rangeSelectBlock label {
+    float: left;
+    display: block;
+    width: 28px;
+    margin: 8px 0 0 10px;
+}
+.rangeSelectBlock [type=text] {
+    float: left;
+    margin: 5px 0;
+    width: 80px;
+}
+.ui-datepicker-trigger {
+    cursor: pointer;
+    background: url("../../admin/img/icon_calendar.gif") center center no-repeat;
+    float: left;
+    padding: 0;
+    border: none;
+    display: inline-block;
+    width: 34px;
+    height: 33px;
+}
+.ui-datepicker-trigger:hover {
+    background-color: #d7e8f2;
+    box-shadow: 0 0 9px 3px #fff inset;
+}
+
+.loading {
+    display: none;
+    background: url("../img/ui/spinner.gif") repeat-x bottom;
+    margin: 13px 0 10px 20px;
+    padding-bottom: 5px;
+    font-size: 1.3em;
+    float: left;
+}
+
+/*    ------------------------------------------------------------    table.searchObject
+*/
+.search__view {
+    overflow: hidden;
+}
+
+table.search {
+    background: #f5f5f5;
+}
+
+input.wide {
+    width: 100%;
+    box-sizing: border-box;
+}
+input.half {
+    width: 44%;
+}
+table.events tr {
+    cursor: pointer;
+}
+
+.blockButtons {
+    display: inline-block;
+    width: 100%;
+}
+.blockButtons .button {
+    cursor: pointer;
+    width: 200px;
+    padding: 10px 0;
+    float: left;
+    text-align: center;
+    text-decoration: none;
+    color: #000;
+    margin: 18px 0 0 20px;
+    border-radius: 3px;
+}
+.blockButtons .denied {
+    background-color: #ffe2e2;
+}
+.blockButtons .denied:hover {
+    background-color: #f48989;
+}
+.blockButtons .allowed {
+    display: none;
+    background-color: #e0ffe0;
+}
+.blockButtons .allowed:hover {
+    background-color: #8aed84;
+}
+
+
+.object_info {
+    margin: 28px 10px 18px;
+    font-size: 1.1em;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #5598E0;
+}
+.error {
+    margin: 20px 25px;
+    font-size: 1.2em;
+}
+.client_objects {
+    margin: 0 0 0 30px;
+}
+.client_objects li {
+    margin: 0 0 8px;
+    list-style: decimal;
+}
+
+.client_objects_list {
+    display: inline-block;
+}
+.client_objects_list .selected,
+.client_objects_list .item {
+    cursor: pointer;
+    background-color: #f7f7f7;
+    margin: 0 0 5px 20px;
+    padding: 8px 10px;
+    border: 1px solid #7CB2C8;
+}
+.client_objects_list .item:hover:not(.selected) {
+    background-color: #d7e8f2;
+}
+.client_objects_list .selected {
+    color: #fff;
+    background-color: #5598e0;
+    text-shadow: 1px 1px 1px #000;
+}
+
+
+/*    ------------------------------------------------------------    .list
+*/
+
+.objectsList {
+    margin: 0 0 10px 0;
+    max-width: 1080px;
+}
+.objectsList .count {
+    padding: 8px;
+}
+.objectsList .item {
+    color: #000;
+    border: 1px solid #7CB2C8;
+    display: inline-block;
+    text-decoration: none;
+    margin-bottom: 5px;
+    width: 100%;
+}
+.objectsList .hover,
+.objectsList .item:hover {
+    background-color: #e1ebf7;
+}
+.objectsList .item .title {
+    background: #e1ebf7;
+    float: left;
+    width: 100%;
+}
+.objectsList .hover .title,
+.objectsList .item:hover .title {
+    cursor: pointer;
+    color: #fff;
+    background-color: #75a7dd;
+}
+.objectsList .item .id {
+    font-size: 0.8em;
+    float: left;
+    padding: 5px 13px 5px 5px;
+}
+.objectsList .item .name,
+.objectsList .item .comment {
+    float: left;
+    padding: 4px 5px 3px;
+}
+.objectsList .item .right {
+    float: right;
+    padding: 4px 5px 3px;
+}
+.objectsList .item .title_name {
+    margin-left: 10px;
+    font-weight: bold;
+    float: left;
+    padding: 4px 8px 0;
+}
+.objectsList .item .name {
+    font-weight: bold;
+}
+.objectsList .item .datetime {
+    float: right;
+    padding: 4px 10px 0;
+}
+.objectsList .item .time {
+    font-size: .8em;
+    float: right;
+    padding: 7px 8px 0 5px;
+}
+.objectsList .item .block {
+    font-weight: normal;
+    float: left;
+    width: 100%;
+    border-bottom: 1px solid #e1ebf7;
+}
+.objectsList .item .locality {
+    font-weight: normal;
+    padding: 4px 5px 3px;
+    float: right;
+}
+.objectsList .item .client {
+    font-weight: normal;
+    padding: 4px 5px 3px;
+    float: left;
+}
+.objectsList .item .click:hover {
+    cursor: pointer;
+    background-color: #afd6e0;
+}
+.objectsList .contact {
+    padding: 2px 0;
+}
+.objectsList .bg_red {
+    background: #f29696;
+}
+.objectsList .bg_green {
+    background: #8aed84;
+}
+
+
+.result_count {
+    font-size: 15px;
+    margin: 0 0 10px;
+}
+
+.list {
+    margin: 0;
+    max-width: 1080px;
+}
+.list .item {
+    background: linear-gradient(to bottom, #eeeeee, #fff);
+    color: #000;
+    border: 1px solid #7CB2C8;
+    display: inline-block;
+    text-decoration: none;
+    margin-bottom: 5px;
+    width: 100%;
+}
+.list .item table {
+    width: 100%;
+}
+
+.list .btn_ui:hover,
+.list .hover,
+.list .hover .title,
+.list .item:hover,
+.list .item:hover .title {
+    cursor: pointer;
+    background: #e1ebf7;
+}
+.list .item .id {
+    font-size: 0.8em;
+    float: left;
+    padding: 5px 13px 5px 5px;
+}
+
+
+
+.service_list {
+    max-width: 900px;
+    float: left;
+}
+
+.service_string {
+    margin-right: 5px;
+    float: left;
+}
+.service_string span {
+    padding: 7px 1px 6px;
+    display: inline-block;
+}
+.service_string span:first-child {
+    padding-left: 5px;
+}
+.service_string span:last-child {
+    padding-right: 5px;
+}
+.service_string span[sign=begin_date] {
+    margin: 0 0 0 5px;
+    padding: 7px 5px 6px;
+}
+
+*:hover .service_string[status=new], .service_string[status=new],
+*:hover .service_string[status=registered], .service_string[status=registered] {
+    color: #000;
+    background-color: #ffff00;
+}
+*:hover .service_string[status=connecting], .service_string[status=connecting] {
+    color: #000;
+    background-color: #ffcc33;
+}
+*:hover .service_string[status=connected], .service_string[status=connected] {
+    color: #000;
+    background-color: #abf4ab;
+}
+*:hover .service_string[status=paused], .service_string[status=paused] {
+    color: #000;
+    background-color: #cc99ff;
+}
+*:hover .service_string[status=disconnecting], .service_string[status=disconnecting] {
+    color: #fff;
+    background-color: #e70000;
+}
+*:hover .service_string[status=disconnected], .service_string[status=disconnected] {
+    background-color: #cc6666;
+    color: #fff;
+}
+*:hover .service_string[status=archive], .service_string[status=archive] {
+    background-color: #d5d5d5;
+    color: #fff;
+}
+
+*:hover .service_string span[sign=begin_date][status=new],
+.service_string span[sign=begin_date][status=new] {
+    color: #000;
+    background: none;
+}
+*:hover .service_string span[sign=begin_date][status=connected],
+.service_string span[sign=begin_date][status=connected] {
+    color: #000;
+    background-color: #abf4ab;
+}
+*:hover .service_string span[sign=begin_date][status=disconnected],
+.service_string span[sign=begin_date][status=disconnected] {
+    color: #fff;
+    background-color: #e70000;
+}
+*:hover .service_string span[sign=begin_date][status=paused],
+.service_string span[sign=begin_date][status=paused] {
+    background-color: #cc99ff;
+}
+*:hover .service_string span[sign=begin_date][status=archive],
+.service_string span[sign=begin_date][status=archive] {
+    background-color: #d5d5d5;
+    color: #fff;
+}
+
+#task_list .service_string,
+#service_list .service_string {
+    margin-right: 0;
+}
+/*
+#service_list tr:hover .service_string,
+#service_list tr.hover .service_string,
+#service_list .service_string:hover {
+    box-shadow: -5px 0 8px #005E99 inset;
+}
+#service_list tr:hover span[sign=begin_date],
+#service_list tr.hover span[sign=begin_date] {
+    box-shadow: -2px 0 8px #005E99 inset;
+}
+*/
+
+/*    ------------------------------------------------------------    .roadside
+*/
+.roadside a.response_deny,
+.roadside a.response_allow {
+    padding: 15px 13px;
+    float: left;
+    width: 70px;
+    border-left: 1px solid;
+    background-color: #e0ffe0;
+    text-align: center;
+    text-decoration: none;
+}
+.roadside a.response_allow:hover {
+    background-color: #8aed84;
+}
+.roadside a.response_deny {
+    background-color: #ffe2e2;
+}
+.roadside a.response_deny:hover {
+    background-color: #f48989;
+}
+
+.yandex_map {
+    height: 16px;
+    vertical-align: top;
+    width: 26px;
+    background: url("../../index/img/ui/yandex_map.gif") right center no-repeat;
+    display: inline-block;
+}
+
+div.pop {
+    background-color: #fff;
+    box-shadow: 0 0 13px 0px #b5b5b5;
+    position: absolute;
+    z-index: 9;
+    border: 1px solid #5598e0;
+    min-width: 300px;
+    display: none;
+    top: 0;
+    left: 0;
+}
+div.pop .header .close {
+    background: url("../img/ui/ui_minimal.gif") no-repeat -609px -2px;
+    cursor: pointer;
+    float: right;
+    height: 28px;
+    width: 28px;
+    padding: 0;
+    margin: 0;
+}
+div.pop .header .close:hover {
+    background-color: #AED6F5;
+}
+div.pop .header {
+    cursor: move;
+    background: linear-gradient(to bottom, #BAE0FD 0px, #5b90c1 100%) no-repeat scroll 0 0 transparent;
+    color: #FFFFFF;
+    height: 28px;
+    margin: 0;
+    text-shadow: 2px 1px 1px #35556B;
+}
+div.pop .header b {
+    display: inline-block;
+    padding: 6px 5px 0 10px;
+    float: left;
+}
+div.pop .field {
+    padding: 4px 10px 2px;
+}
+div.pop hr {
+    display: inline-block;
+    width: 100%;
+    border: none;
+    border-top: 1px solid #c4b285;
+    border-bottom: 1px solid #DEEFF9;
+    -webkit-margin-before: 1px;
+    -webkit-margin-after: 1px;
+    -webkit-margin-start: 0;
+    margin: 4px 0 1px;
+}
+div.pop fieldset.in_pop {
+    margin: 5px 10px 10px;
+    padding: 5px 5px 0;
+    border: 1px solid #78BAED;
+}
+div.pop fieldset.in_pop legend {
+    padding: 4px 8px;
+    border: 1px solid #78BAED;
+    font-size: .9em;
+}
+
+.in_pop_sublist .item {
+    border: 1px solid #78BAED;
+    margin: 2px 7px 2px 0;
+    display: inline-block;
+}
+.in_pop_sublist .txt {
+    padding: 4px 3px 0 7px;
+    display: inline-block;
+}
+.in_pop_sublist .close {
+    background: url("../img/ui/ui_minimal.gif") no-repeat -611px -5px;
+    cursor: pointer;
+    float: right;
+    height: 23px;
+    width: 24px;
+    padding: 0;
+    margin: 0;
+    display: inline-block;
+}
+.in_pop_sublist .close:hover {
+    background: url("../img/ui/ui_minimal.gif") no-repeat -611px -5px #b0d5f2;
+}
+div.pop .in_pop #client_contract_tags,
+div.pop .in_pop #client_object_tags,
+div.pop .in_pop #subtypes {
+    border: 1px solid #78BAED;
+    padding: 3px 5px;
+    margin: 5px 5px 0 0;
+    float: left;
+}
+
+div#pop_message {
+    width: auto;
+    box-shadow: 0 0 20px -2px #b5b5b5;
+    position: absolute;
+    z-index: 100;
+    padding: 20px 40px;
+    display: none;
+    background: #ccffcc;
+    font-size: 1.5em;
+}
+
+.server_time {
+    padding: 10px 0;
+    float: left;
+}
+
+
+.empty_28 {
+    float: right;
+    height: 28px;
+    width: 28px;
+    padding: 0;
+}
+
+/*    ------------------------------------------------------------    autocomplete
+*/
+#autocomplete_object {
+    float: left;
+    margin: 7px 5px 0 0;
+    width: 160px;
+    padding: 4px 4px 3px;
+    border-radius: 3px;
+    border: 1px solid #5598E0;
+}
+.ui-helper-hidden-accessible {
+    display: none;
+}
+.ui-autocomplete {
+    list-style: none;
+    padding: 0;
+    background-color: #fff;
+    border: 1px solid #5598E0;
+    border-radius: 3px;
+}
+.ui-menu-item a {
+    cursor: pointer;
+    display: block;
+    padding: 3px 5px;
+    border-bottom: 1px solid #ccc;
+}
+.ui-state-focus {
+    color: #f00000;
+    background-color: #e1ebf7;
+}
+
+/*    ------------------------------------------------------------    .blockInfo
+*/
+
+#objectsHead #buttons_objects_status {
+    float: right;
+}
+.tableInfo .white .button2 {
+    cursor: pointer;
+    float: left;
+    margin: 4px 0 4px 3px;
+    padding: 6px 10px;
+    border: 1px solid #5598E0;
+    border-radius: 3px;
+    text-decoration: none;
+}
+select.object_filter,
+select.event_filter {
+    float: right;
+    margin: 5px 0;
+}
+table.thick {
+    float: left;
+    margin: 0;
+}
+tbody.thick,
+table.thick tr {
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+
+.blockInfo [key=wires] {
+    border-collapse: collapse;
+    width: 100%;
+}
+.blockInfo [key=wires] td {
+    padding: 5px 0 0;
+}
+.blockInfo [key=wires] td:not(:first-child) {
+
+}
+.blockInfo [key=wires] select {
+    margin: 0 0 0 10px;
+}
+.blockInfo [key=wires] input {
+    padding: 3px;
+    width: 95%;
+}
+
+.forButtons {
+    float: left;
+}
+.button {
+    float: left;
+    cursor: pointer;
+    padding: 5px 10px;
+    margin: 0 10px 15px 0;
+    border: 1px solid #7CB2C8;
+    border-radius: 3px;
+    font-size: .9em;
+    color: #000;
+    background-color: #f9f9f9;
+    text-shadow: none;
+}
+.button:hover {
+    color: #fff;
+    background-color: #5598E0;
+    text-shadow: 1px 1px 0 #000;
+}
+
+.blockInfo .button {
+    cursor: pointer;
+    float: right;
+    padding: 4px 8px 3px;
+    margin: 7px 10px 8px 0;
+    border: 1px solid #5598E0;
+    border-radius: 3px;
+    font-size: .9em;
+    color: #fff;
+    background-color: #5598E0;
+    text-shadow: none;
+}
+.blockInfo .button_03 {
+    margin: 0 5px;
+}
+
+.blockInfo .disabled {
+    cursor: default;
+    color: #000;
+    background: none;
+}
+.blockInfo .left {
+    float: left;
+    margin: 5px 0 7px 10px;
+}
+.blockInfo .wide {
+    float: left;
+    margin: 3px 0 0;
+    padding: 0;
+}
+.blockInfo .button:hover:not(.disabled) {
+    color: #fff;
+    background-color: #006de2;
+}
+
+
+.list_01 {
+    margin: 5px 0 0;
+}
+.list_01 li {
+    margin: 3px 0 0 20px;
+    list-style-type: decimal;
+}
+
+.content_events {
+    float: left;
+    margin: 0 0 0 20px;
+}
+.content_objects {
+    float: left;
+    margin: 0 0 0 20px;
+}
+.content_scroll {
+    margin: 0;
+    max-height: 550px;
+    padding: 0;
+    overflow: auto;
+    float: left;
+}
+
+.required, .star {
+    color: #d66262;
+    font-size: 30px;
+    display: inline-block;
+    line-height: 0;
+    vertical-align: top;
+    padding: 10px 3px 0;
+}
+.loading_animation {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    background-color: #005E99;
+    opacity: .35;
+    background: url("../img/ui/loading_animation.gif") no-repeat center center;
+}
+
+table.wide, tbody.wide,
+table.wide tr, tbody.wide tr {
+    width: 100%;
+    max-width: 100%;
+}
+
+.nowrap {
+    white-space: nowrap;
+}
+
+.text_right { text-align: right }
+.green { color: #009900; }
+.red { color: #d30000; }
+.bg_green { background-color: #abf4ab; }
+.bg_red { background-color: #ffafaf; }

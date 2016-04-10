@@ -1,0 +1,36 @@
+<div class="pop" id="pop_users">
+    <div class="header"><b>Добавление сотрудника к графику</b><div class="close"></div></div>
+
+    <table class="tableInfo wide margin_null">
+        <tr class="row" id="object">
+            <td class="cell"></td>
+            <td class="cell secondary"></td></tr>
+        <tr class="row">
+            <td class="cell">Охранная организация</td>
+            <td class="cell secondary" id="security_company"><div class="scrolling"></div></td></tr>
+        <tr class="row">
+            <td class="cell">Список сотрудников
+                <div class="clear"></div>
+                <div class="down_box">
+                    <div class="btn_ui" action="filter" icon="filter" title="Фильтр"><div class="txt">Фильтр</div><div class="icon"></div></div>
+                    <ul class="drop_list" id="users_filter">
+                        <li filter="work" checked="checked"><div class="chechbox"></div>статус "работает"</li>
+                        <li filter="armory"><div class="chechbox"></div>РСЛа</li>
+                        <li filter="identity"><div class="chechbox"></div>удостоверение</li>
+                        <li filter="certificate"><div class="chechbox"></div>свидетельство</li>
+                    </ul>
+                </div>
+            </td>
+            <td class="cell secondary" id="users"><div class="scrolling"></div></td></tr>
+        <tr class="row">
+            <td class="cell"></td>
+            <td class="cell secondary"></td></tr>
+    </table>
+
+</div>
+
+<div class="pop" id="pop_user_time">
+    <div class="header"><b></b><div class="close"></div></div>
+    <div class="button" action="delete_user">Удалить сотрудника из графика</div>
+    <div class="button" action="delete_unworked">Удалить неотработанные смены</div>
+</div>

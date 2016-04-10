@@ -1,0 +1,57 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+    {% include "sentry/system/client/__left_block.html" %}
+
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/client/object_service_timetable.js"></script>
+
+    <div class="middleBlock" client_id="{{ client_id }}" object_id="{{ object_id }}">
+        <h2 class="cabinet_title">{{ client_object_set.name }}: {{ title|lower }}</h2>
+
+        <div>
+            <select class="selectObject"><option value="all" selected>все</option>
+                {% for object in object_set %}
+                    <option value="{{ object.id }}" level="object" {% if object.id|floatformat == object_id|floatformat %}selected{% endif %}>
+                        объект: {{ object.get_contract_type }} {{ object.name }}
+                    </option>
+                    {% for service in service_set %}
+                        {% if service.object.id == object.id %}
+                            <option value="{{ service.id }}" level="service">&nbsp;&nbsp;&nbsp;&nbsp;{{ service.get_contract_type }} {{ service.name }}</option>
+                        {% endif  %}
+                    {% endfor %}
+                {% endfor %}
+            </select>
+        </div>
+
+
+        <br />
+        <fieldset class="inline_block"><legend class="title">Режим работы охраны</legend>
+            <div class="buttons">
+                <span class="btn_txt" action="workday">рабочие дни</span>
+                <span class="btn_txt" action="weekend">выходные и праздники</span>
+                <span class="btn_txt" action="everyday">ежедневно</span>
+                <span class="btn_txt" action="clear">очистить</span>
+            </div>
+
+            <div class="clear"><div class="loading">Загрузка</div></div>
+
+            <table class="tableInfo compact" id="time_table">
+                <tbody class="show">
+                    <tr class="row"><td></td></tr>
+                    {% for weekday in weekday_set %}
+                        <tr class="row" weekday="{{ weekday.weekday }}"><td class="weekday">{{ weekday.name }}</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            <div class="ui" style="border-top:1px solid #7CB2C8; padding: 10px 15px; height: 40px;">
+                <span class="btn_ui" action="save" icon="save"><div class="txt">Сохранить</div><div class="icon"></div></span>
+                <span class="btn_ui" action="reset" icon="reset"><div class="txt">Сбросить</div><div class="icon"></div></span>
+            </div>
+
+        </fieldset>
+
+
+
+    </div>
+
+{% endblock %}

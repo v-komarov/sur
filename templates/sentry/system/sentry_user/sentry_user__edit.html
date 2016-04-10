@@ -1,0 +1,73 @@
+<form id="sentry_user">
+    <div class="btn_ui left bg" action="back" icon="back"><div class="txt">Назад к списку</div><div class="icon"></div></div>
+    {% if perms.system.sentry_user_delete %}
+        <div class="btn_ui left bg" action="delete" icon="delete"><div class="txt">Удалить</div><div class="icon"></div></div>
+    {% endif %}
+    <div class="btn_ui left bg" action="reset" icon="reset"><div class="txt">Сбросить</div><div class="icon"></div></div>
+    <button class="btn_ui left bg" icon="save" type="submit"><div class="txt">Сохранить</div><div class="icon"></div></button>
+
+    <div class="clear"></div>
+
+    <h2 class="cabinet_title">Редактирование</h2>
+    <table class="tableInfo margin_null" id="user_form">
+        <tr class="row">
+            <td class="padding_9 right"><div class="required">*</div>Ф.И.О.</td>
+            <td class="cell secondary"><input class="wide" type="text" value="" name="full_name"></td></tr>
+        <tr class="row">
+            <td class="padding_9 right">Должность</td>
+            <td class="cell secondary">
+                <select class="wide" name="user_post">
+                    <option value=""></option>
+                    {% for item in user_post_set %}
+                        <option value="{{ item.id }}">{{ item.name }}</option>
+                    {% endfor %}
+                </select></td></tr>
+        <tr class="row">
+            <td class="padding_9 right">Телефон</td>
+            <td class="cell secondary"><input class="wide" type="text" value="" name="mobile_phone"></td></tr>
+        <tr class="row">
+            <td class="padding_9 right">Email</td>
+            <td class="cell secondary"><input class="wide" type="text" value="" name="email"></td></tr>
+        <tr class="row">
+            <td class="padding_9 right">Адрес</td>
+            <td class="cell secondary"><textarea cols="32" name="address" rows="3"></textarea></td></tr>
+
+        <tr class="row" stage="user_access">
+            <td class="padding_9 right">Доступ разрешен</td>
+            <td class="cell secondary switch" name="access"><div class="chechbox"></div></td></tr>
+        <tr class="row" stage="user_access">
+            <td class="padding_9 right"><div class="required">*</div>Логин</td>
+            <td class="cell secondary"><input class="wide" type="text" value="" name="username"></td></tr>
+        <tr class="row" stage="user_access">
+            <td class="padding_9 right">Пароль</td>
+            <td class="cell secondary"><input class="wide" type="text" value="" name="password"></td></tr>
+    </table>
+    <div class="clear"></div>
+
+    <fieldset class="inline_block ui field_sub" id="group_list"><legend>Группы доступа</legend>
+        <div class="in_pop_sublist in_pop_subtypes" id="group_include"></div>
+        <select class="select" id="group"></select>
+        <div class="btn_ui bg" action="object_add" icon="object_add" name="subtypes"><div class="txt">Добавить</div><div class="icon"></div></div>
+    </fieldset>
+
+    <div class="clear"></div>
+
+
+    <table class="tableInfo" id="permission_list">
+        <thead><tr class="row">
+            <td colspan="2" class="cell">Персональные права доступа</td>
+        </tr></thead>
+        <tbody class="show"></tbody>
+    </table>
+
+    <div class="clear"></div>
+
+
+    <div class="btn_ui left bg" action="back" icon="back"><div class="txt">Назад к списку</div><div class="icon"></div></div>
+    {% if perms.system.sentry_user_delete %}
+        <div class="btn_ui left bg" action="delete" icon="delete"><div class="txt">Удалить</div><div class="icon"></div></div>
+    {% endif %}
+    <div class="btn_ui left bg" action="reset" icon="reset"><div class="txt">Сбросить</div><div class="icon"></div></div>
+    <button class="btn_ui left bg" action="save" icon="save" type="submit"><div class="txt">Сохранить</div><div class="icon"></div></button>
+
+</form>

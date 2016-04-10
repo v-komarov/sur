@@ -1,0 +1,34 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/directory/dir_security_squad.js"></script>
+
+    {% include "sentry/system/directory/__left_block.html" %}
+
+    <div class="middleBlock"><h2 class="cabinet_title">{{ title }}</h2>
+
+        <div class="resultCount"></div>
+
+        <table class="tableInfo">
+            <thead>
+            <tr class="row title">
+                <td class="cell">
+                    <input class="wide" type="text"  placeholder="Наименование" value="" name="security_squad_name">
+                </td>
+                <td>
+                    {% if perms.system.directory_security_squad_add %}
+                        <div class="btn_ui " action="add" icon="object_add" title="Добавить"><div class="icon"></div></div>
+                    {% else %}<div class="empty_28"></div>
+                    {% endif %}
+                </td>
+            </tr>
+            </thead>
+            <tbody class="show"></tbody>
+        </table>
+
+        <div class="clear"></div>
+        <div class="loading">Загрузка</div>
+
+    </div>
+
+{% endblock %}

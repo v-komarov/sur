@@ -1,0 +1,27 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+
+<div class="middleBlock">
+
+    <h2 class="cabinet_title">{{ title }}</h2>
+
+    <p>Добавлено: {{ count }}</p>
+    <br />
+    <p>Добавлено: {{ step }}</p>
+
+    {% for item in tt %}
+        <p>{{ item.serial }} | {{ item.num }} | {{ item.gun_id }} | {{ item.visible }}</p>
+    {% endfor %}
+
+    {% for item in object_security %}
+        <p>{{ item.name }} | {{ item.region.name }} | {{ item.locality.name }} | {{ item.street.name }} | {{ item.building }}</p>
+    {% endfor %}
+
+
+    {% for item in news_set %}
+        <p>{{ item.title }}</p>
+    {% endfor %}
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,78 @@
+<div class="pop" id="task__pop">
+    <div class="header"><b></b><div class="close"></div></div>
+    <form>
+        <table class="tableInfo wide margin_null"><tbody class="show">
+        <tr class="row2">
+            <td class="padding right">Заявку создал</td><td class="secondary" name="create_user"></td></tr>
+        <tr class="row2">
+            <td class="padding_9 right">Дата исполнения</td>
+            <td name="complete_date">
+                <div class="text"></div>
+                <div class="btn_ui" action="change_complete_date" icon="timer"><div class="txt">Перенести</div><div class="icon"></div></div>
+            </td></tr>
+        <tr class="row2"><td colspan="2">
+            <a class="client_object"><div class="txt4"></div></a>
+            <div class="address"></div>
+        </td></tr>
+        <tr class="row2">
+            <td class="padding_9 right">Тип заявки</td>
+            <td class="secondary"><select name="task_type"><option value="all">все</option>
+                {% for item in dir_task_type_set %}
+                    <option value="{{ item.id }}">{{ item.name }}</option>
+                {% endfor %}
+            </select></td></tr>
+
+        <tr class="row2">
+            <td class="padding_9 right">Инициатор</td>
+            <td class="secondary">
+                <select function="select_client_object_user" name="initiator"><option value=""></option></select>
+                <!--input class="wide" type="text" value="" name="initiator"--></td></tr>
+        <tr class="row2">
+            <td class="padding_9 right">Ответственный</td>
+            <td class="secondary">
+                <select function="select_sentry_user" name="warden">
+                    <option value=""></option>
+                    <optgroup post_id="12" label="Менеджер"></optgroup>
+                    <optgroup post_id="8" label="Инженер"></optgroup>
+                    <optgroup post_id="18" label="Офис-менеджер"></optgroup>
+                    <optgroup post_id="13" label="Менеджер-бухгалтер"></optgroup>
+                    <optgroup post_id="2" label="Администратор ГПБ"></optgroup>
+                </select>
+                <!--input class="wide" type="text" value="" name="warden"--></td></tr>
+        <tr class="row2">
+            <td class="padding_9 right">Исполнитель</td>
+            <td class="secondary">
+                <select function="select_sentry_user" name="doer">
+                    <option value=""></option>
+                    <optgroup post_id="12" label="Менеджер"></optgroup>
+                    <optgroup post_id="8" label="Инженер"></optgroup>
+                    <optgroup post_id="25" label="Техник"></optgroup>
+                    <optgroup post_id="18" label="Офис-менеджер"></optgroup>
+                    <optgroup post_id="13" label="Менеджер-бухгалтер"></optgroup>
+                </select>
+                <!--input class="wide" type="text" value="" name="doer"--></td></tr>
+
+        <tr><td class="cell" colspan="2">Причина вызова:<br />
+            <textarea cols="70" name="comment" rows="4"></textarea></td></tr>
+
+        <tr><td colspan="2">
+            <div style="float:right; padding: 0 18px">
+                <button class="btn_ui bg" type="submit" icon="save"><div class="txt">Сохранить</div><div class="icon"></div></button>
+                <span class="btn_ui bg" action="reset" icon="reset"><div class="txt">Обновить</div><div class="icon"></div></span>
+                <span class="btn_ui bg" action="delete" icon="delete"><div class="txt">Удалить</div><div class="icon"></div></span>
+            </div>
+        </td></tr>
+
+        <tr><td colspan="2">
+            <fieldset class="in_pop"><legend>История заявки</legend>
+                <span class="btn_ui legend" action="report_add" icon="object_add" title="Добавить отчет"><div class="icon"></div></span>
+                <div id="log_list"></div>
+            </fieldset>
+        </td></tr>
+
+        </tbody></table>
+
+    </form>
+
+</div>
+

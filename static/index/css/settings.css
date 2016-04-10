@@ -1,0 +1,12 @@
+.search__item {
+    min-height: 25px;
+    margin: 1px 0;
+}
+
+.search__item .txt {
+    float: left;
+    padding: 5px 5px 0 5px;
+}
+.search__item .position {
+    display: inline;
+}

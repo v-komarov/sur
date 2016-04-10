@@ -1,0 +1,13 @@
+<div class="leftBlock">
+
+    <a class="item {% if request.path|slice:'7:' == '/analytics/' %}selected{% endif %}"
+       href="/system/analytics/">события</a>
+    <a class="item {% if request.path|slice:'7:' == '/analytics/statistics/' %}selected{% endif %}"
+       href="/system/analytics/statistics/">распределение</a>
+    <!--a class="item {% if request.path|slice:'7:' == '/analytics/checkpoint/' %}selected{% endif %}"
+       href="/system/analytics/checkpoint/">фильтр по контр.датам</a>
+    <a class="item {% if request.path|slice:'7:' == '/analytics/card/' %}selected{% endif %}"
+       href="/system/analytics/card/">заполнение карточек</a-->
+
+
+</div>

@@ -1,0 +1,30 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/sentry_user/permission.js"></script>
+
+    {% include "sentry/system/sentry_user/__left_block.html" %}
+
+    <div class="middleBlock">
+
+        <table class="tableInfo" id="permission_list">
+            <thead><tr class="row title">
+                <td class="cell"><input class="wide" type="text"  placeholder="Ф.И.О." value="" name="full_name"></td>
+                <td class="cell"><input class="wide" type="text"  placeholder="Логин" value="" name="username"></td>
+                <td class="cell">
+                    {% comment %}
+                        <select class="wide" name="user_post"><option value="all" selected>Должность (все)</option>
+                            {% for item in user_post_set %}
+                                <option value="{{ item.id }}">{{ item.name }}</option>
+                            {% endfor %}
+                        </select>
+                    {% endcomment %}
+                </td>
+                <td><div class="btn_ui" action="add" icon="object_add" title="Добавить"><div class="icon"></div></div></td>
+            </tr></thead>
+            <tbody class="show"></tbody>
+        </table>
+
+    </div>
+
+{% endblock %}

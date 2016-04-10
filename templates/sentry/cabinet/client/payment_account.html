@@ -1,0 +1,24 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+
+<div class="middleBlock">
+<h2 class="cabinet_title">Расчетный счет</h2>
+
+{% for item in accounts_set %}
+    <table class="tableInfo">
+        <tbody class="show">
+        <tr class="row"><td class="cell">Охр. организация:<b class="spacer">:</b></td><td class="cell secondary"><b>{{ item.name }}</b></td></tr>
+        <tr class="row"><td class="cell">Юридический адрес<b class="spacer">:</b></td><td class="cell secondary">{{ item.address }}</td></tr>
+        <tr class="row"><td class="cell">Почтовый индекс<b class="spacer">:</b></td><td class="cell secondary">{{ item.country }}, {{ item.region.name  }}, {{ item.index }}</td></tr>
+        <tr class="row"><td class="cell">Банк<b class="spacer">:</b></td><td class="cell secondary">{{ item.bank_name }}</td></tr>
+        <tr class="row"><td class="cell">ИНН<b class="spacer">:</b></td><td class="cell secondary">{{ item.inn }}</td></tr>
+        <tr class="row"><td class="cell">КПП<b class="spacer">:</b></td><td class="cell secondary">{{ item.kpp }}</td></tr>
+        <tr class="row"><td class="cell">БИК<b class="spacer">:</b></td><td class="cell secondary">{{ item.bik }}</td></tr>
+        <tr class="row"><td class="cell">Расчетный счет <b class="spacer">:</b></td><td class="cell secondary">{{ item.rs4et }}</td></tr>
+        <tr class="row"><td class="cell">Корреспондентский счет<b class="spacer">:</b></td><td class="cell secondary">{{ item.ks4et }}</td></tr>
+        </tbody>
+    </table>
+{% endfor %}
+
+</div>
+{% endblock %}

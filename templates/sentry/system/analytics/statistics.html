@@ -1,0 +1,59 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+
+    {% include "sentry/system/analytics/__left_block.html" %}
+    <link href="{{ STATIC_URL }}index/css/sentry_analytics.css" type="text/css" rel="stylesheet">
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/analytics/statistics.js"></script>
+
+    <div class="middleBlock"><h2 class="cabinet_title">{{ title }}</h2>
+
+        <table class="tableInfo searchObject">
+            <tbody>
+            <tr class="row">
+                <td class="padding_9 right">Распределение</td>
+                <td class="cell secondary" colspan="2">
+                    <select class="wide width_320" name="statistics_type">
+                        {% for key,item in statistics_list_set.items %}
+                            <option value="{{ key }}">{{ item }}</option>
+                        {% endfor %}
+                    </select>
+                </td></tr>
+
+            <tr class="row"><td class="padding_9 right">Интервал</td>
+                <td colspan="2">
+                    <input class="datepicker" type="text" value="{{ begin_date }}" name="from" id="from"><span style="float:left; padding:8px 10px 0 2px;">-</span>
+                    <input class="datepicker" type="text" value="{{ end_date }}" name="to" id="to">
+                </td></tr>
+
+            <tr class="row status white"><td colspan="3">
+                <div class="btn_ui bg" action="statistics_search" icon="search" title="Обновить"><div class="icon"></div><div class="txt">Найти</div></div>
+            </td></tr>
+
+            </tbody>
+        </table>
+
+        <div class="clear"></div>
+        <table class="tableInfo" id="statistics_list">
+            <thead>
+            <tr class="row title">
+                <td class="padding border_right middle" rowspan="2" name="head_title"></td>
+                <td class="cell" colspan="2">Всего</td>
+                <td class="cell" colspan="2">Подключено</td>
+                <td class="cell" colspan="2">Отключено</td>
+                <td class="cell" colspan="2">Приостановлено</td>
+            </tr>
+            <tr class="row title">
+                <td class="cell">с АП</td><td class="cell">без АП</td>
+                <td class="cell">с АП</td><td class="cell">без АП</td>
+                <td class="cell">с АП</td><td class="cell">без АП</td>
+                <td class="cell">с АП</td><td class="cell">без АП</td>
+            </tr>
+            </thead>
+            <tbody class="show"></tbody>
+        </table>
+
+        <div class="clear"></div><div class="result_count"></div>
+        <div class="list" id="object_list"></div>
+
+    </div>
+{% endblock %}

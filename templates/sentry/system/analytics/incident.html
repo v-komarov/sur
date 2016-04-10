@@ -1,0 +1,67 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+
+    {% include "sentry/system/analytics/__left_block.html" %}
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/analytics/incident.js"></script>
+
+    <div class="middleBlock"><h2 class="cabinet_title">{{ title }}</h2>
+
+        <table class="tableInfo searchObject">
+            <tbody>
+            <tr class="row">
+                <td class="padding_9 right">Плательщик</td>
+                <td class="cell secondary" colspan="2">
+                    <select class="wide width_320" name="client"><option value="">все</option>
+                        {% for item in client_set %}
+                            <option value="{{ item.id }}">{{ item.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td></tr>
+            <tr class="row">
+                <td class="padding_9 right">Тип события</td>
+                <td class="cell secondary" colspan="2">
+                    <select class="wide width_320" name="incident_type"><option value="">все</option>
+                        {% for item in incident_type_set %}
+                            <option value="{{ item.id }}">{{ item.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td></tr>
+
+            <tr class="row"><td class="padding_9 right">Период</td>
+                <td colspan="2">
+                    <input class="datepicker" type="text" value="{{ begin_date }}" name="from" id="from"><span style="float:left; padding:8px 10px 0 2px;">-</span>
+                    <input class="datepicker" type="text" value="{{ end_date }}" name="to" id="to">
+                </td></tr>
+
+            <tr class="row"><td class="padding_9 right">Время прибытия</td>
+                <td colspan="2">
+                    <input class="margin_5 left" style="width: 70px;" type="number" value="" name="arrival_min"><span style="float:left; padding:8px 5px 0;">до</span>
+                    <input class="margin_5 left" style="width: 70px;" type="number" value="" name="arrival_max">
+                </td></tr>
+
+            <tr class="row status">
+                <td class="switch" name="expired" colspan="3">
+                    <div class="chechbox"></div>
+                    <div class="txt">События, которые повторяются более</div>
+                </td></tr>
+
+            <tr class="row status white"><td colspan="3">
+                <div class="btn_ui bg" action="incident_search" icon="search" title="Обновить"><div class="icon"></div><div class="txt">Найти</div></div>
+            </td></tr>
+
+            </tbody>
+        </table>
+
+        <div class="clear"></div><div class="loading">Загрузка</div>
+        <div class="clear"></div><div class="result_count"></div>
+
+        <table class="tableInfo" id="incident_list">
+            <thead>
+            <tr class="row title"><td class="cell" rowspan="2">№</td><td class="cell" colspan="3">Объект</td><td class="cell" rowspan="2">Описание</td></tr>
+            <tr class="row title"><td class="cell">Дата</td><td class="cell">Тип</td><td class="cell">Зарегистрировал</td></tr>
+            </thead>
+            <tbody class="show"></tbody>
+        </table>
+
+    </div>
+{% endblock %}

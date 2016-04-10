@@ -1,0 +1,17 @@
+<div class="leftBlock">
+
+    <a class="item {% if request.path|slice:'-6:' == '/task/' %}selected{% endif %}"
+       href="/task/">Заявки</a>
+    <!--a class="item {% if request.path|slice:'-13:' == '/task/search/' %}selected{% endif %}"
+       href="/task/search/">Фильтр заявок</a-->
+
+    {% if perms.system.client %}
+        <hr />
+        <a class="item {% if request.path == '/task/renter/' %}selected{% endif %}"
+           href="/task/renter/">Смена арендатора</a>
+
+        <a class="item {% if request.path == '/task/add/' %}selected{% endif %}"
+           href="/task/add/">Добавить заявку</a>
+    {% endif %}
+
+</div>

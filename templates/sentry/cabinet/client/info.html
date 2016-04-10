@@ -1,0 +1,52 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+
+<div class="middleBlock">
+
+<h2 class="cabinet_title">Общая информация</h2>
+{% if client %}
+<table class="tableInfo">
+    <tbody class="show">
+    <tr class="row"><td class="cell">{{ client.0.legal_type }}<b class="spacer">:</b></td><td class="cell secondary">{{ client.0.name }}</td></tr>
+    <tr class="row"><td class="cell">Юридический адрес<b class="spacer">:</b></td><td class="cell secondary">{{ client.0.legal_address }}</td></tr>
+    <tr class="row"><td class="cell">Фактический адрес<b class="spacer">:</b></td><td class="cell secondary">{{ client.0.fact_address }}</td></tr>
+    <tr class="row"><td class="cell">Почтовый адрес<b class="spacer">:</b></td><td class="cell secondary">{{ client.0.mail_address }}</td></tr>
+    <tr class="row"><td class="cell">Способ оплаты<b class="spacer">:</b></td><td class="cell secondary">{{ client.0.pay_type }}</td></tr>
+    <tr class="row"><td class="cell">Банк<b class="spacer">:</b></td><td class="cell secondary">{{ client.0.bank_name }}</td></tr>
+    <tr class="row"><td class="cell">ИНН<b class="spacer">:</b></td><td class="cell secondary">{{ client.0.inn }}</td></tr>
+    <tr class="row"><td class="cell">КПП<b class="spacer">:</b></td><td class="cell secondary">{{ client.0.kpp }}</td></tr>
+    <tr class="row"><td class="cell">БИК<b class="spacer">:</b></td><td class="cell secondary">{{ client.0.bik }}</td></tr>
+    <tr class="row"><td class="cell">ОГРН<b class="spacer">:</b></td><td class="cell secondary">{{ client.0.ogrn }}</td></tr>
+    <tr class="row"><td class="cell">Расчетный счет <b class="spacer">:</b></td><td class="cell secondary">{{ client.0.rs4et }}</td></tr>
+    <tr class="row"><td class="cell">Корреспондентский счет<b class="spacer">:</b></td><td class="cell secondary">{{ client.0.ks4et }}</td></tr>
+    </tbody>
+</table>
+{% else %}
+    <div class="error">Нет информации.</div>
+{% endif %}
+
+
+<h2 class="cabinet_title">Контактные лица</h2>
+{% if client_person %}
+<table class="tableInfo">
+    <tbody class="show">
+    {% for item in client_person %}
+        <tr class="row"><td class="cell">{{ item.full_name }}
+            {% if item.position %}<p>({{ item.position.name }})</p>{% endif %}
+            </td>
+            <td class="cell">
+            {% if item.phone_mobile %}<p>сотовый: {{ item.phone_mobile }}</p>{% endif %}
+            {% if item.phone_city %}<p>городской: {{ item.phone_city }}</p>{% endif %}
+            {% if item.phone_other %}<p>другой: {{ item.phone_other }}</p>{% endif %}
+            </td>
+            <td class="cell">{{ item.email }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% else %}
+    <div class="error">Нет контактных лиц.</div>
+{% endif %}
+
+</div>
+{% endblock %}

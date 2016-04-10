@@ -1,0 +1,88 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/sentry_user/sentry_user_group.js"></script>
+
+    {% include "sentry/system/sentry_user/__left_block.html" %}
+
+    <div class="middleBlock">
+
+        <div id="wellcome">
+            <h2 class="cabinet_title">Выберите группу для редактирования прав доступа</h2>
+            <br />
+            <a class="link_edit_group">Создание / редактирование групп</a>
+            <div class="clear"></div>
+            <table class="tableInfo group_list"><tbody class="show">
+            {% for group in groups_set %}
+                <tr class="row" group_id="{{ group.id }}"><td class="cell">{{ group.name }}</td></tr>
+            {% endfor %}
+            </tbody></table>
+        </div>
+
+        <div class="hide" id="group_edit">
+            <h2 class="cabinet_title">Редактирование групп</h2>
+            <br />
+            <a class="link_edit_group">К списку</a>
+            <div class="clear"></div>
+            <table class="tableInfo group_list">
+                <thead>
+                <tr class="row title">
+                    <td class="cell"><input class="wide" type="text"  placeholder="Наименование" value="" name="weapon_name"></td>
+                    <td><div class="btn_ui bg" action="group_item_add" icon="object_add"><div class="icon"></div></div></td>
+                </tr>
+                </thead>
+                <tbody class="show"></tbody>
+            </table>
+        </div>
+
+        <div class="hide" id="group_permissions">
+            <div>Группа:
+                <select id="group_select">
+                    {% for group in groups_set %}
+                        <option value="{{ group.id }}">{{ group.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+
+            <table class="tableInfo controls"><tr>
+                <td><div class="btn_ui bg" action="save" icon="save"><div class="txt">Сохранить</div><div class="icon"></div></div>
+                    <div class="btn_ui bg" action="reset" icon="reset"><div class="txt">Сбросить</div><div class="icon"></div></div>
+                    {% if perms.system.sentry_user_group_delete %}
+                        <div class="btn_ui bg" action="delete" icon="delete"><div class="txt">Удалить</div><div class="icon"></div></div>
+                    {% endif %}
+                    <div class="btn_ui bg" action="back" icon="back"><div class="txt">Назад к списку</div><div class="icon"></div></div>
+                </td></tr>
+            </table>
+            <div class="clear"></div>
+
+            <table class="tableInfo table_select" id="permission_list">
+                <thead><tr class="row"><td colspan="2" class="cell">Групповые права доступа</td></tr></thead>
+                <tbody class="show"></tbody>
+            </table>
+
+            <div class="clear"></div>
+
+            {% comment %}
+                <table class="tableInfo table_select" id="notice_list">
+                    <thead><tr class="row header" model_title="notice" show="no">
+                        <td class="choice" choice="yes"><div class="chechbox"></div></td>
+                        <td class="cell">Напоминания</td></tr></thead>
+                    <tbody class="show"></tbody>
+                </table>
+            {% endcomment %}
+
+            <div class="clear"></div>
+            <table class="tableInfo controls"><tr>
+                <td><div class="btn_ui bg" action="save" icon="save"><div class="txt">Сохранить</div><div class="icon"></div></div>
+                    <div class="btn_ui bg" action="reset" icon="reset"><div class="txt">Сбросить</div><div class="icon"></div></div>
+                    {% if perms.system.sentry_user_group_delete %}
+                        <div class="btn_ui bg" action="delete" icon="delete"><div class="txt">Удалить</div><div class="icon"></div></div>
+                    {% endif %}
+                    <div class="btn_ui bg" action="back" icon="back"><div class="txt">Назад к списку</div><div class="icon"></div></div>
+                </td></tr>
+            </table>
+        </div>
+
+    </div>
+
+{% endblock %}

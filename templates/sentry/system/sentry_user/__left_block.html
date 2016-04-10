@@ -1,0 +1,14 @@
+<div class="leftBlock">
+
+    <a class="item {% if request.path|slice:'7:' == '/sentry_user/' %}selected{% endif %}"
+       href="/system/sentry_user/">Пользователи</a>
+
+
+    <a class="item {% if request.path|slice:'19:' == '/group/' %}selected{% endif %}"
+       href="/system/sentry_user/group/">Группы</a>
+
+    <a class="item {% if request.path|slice:'19:' == '/permission/' %}selected{% endif %}"
+       href="/system/sentry_user/permission/">Права доступа</a>
+
+
+</div>

@@ -1,0 +1,233 @@
+html, body {
+    background: none;
+}
+
+/*   ---   ---   ---   ---   ---   ---   ---   ---   ---   Articles, Portfolio   */
+
+#admin_change {
+    margin: 20px 25px 20px 20px;
+}
+#admin_change .visible {
+    border: 1px solid #CCCCCC;
+    border-radius: 4px;
+    cursor: pointer;
+    float: left;
+    height: 30px;
+    margin: 0 0 5px;
+    width: 30px;
+}
+#admin_change .visible:hover {
+    border-color: #3399FF;
+}
+#admin_change .visible .yes,
+#admin_change .visible .no {
+    background: url("../../index/img/eye.png") no-repeat;
+    height: 30px;
+    margin: 0;
+    width: 30px;
+}
+#admin_change .visible .no {
+    background-position: -30px 0;
+}
+#admin_change input {
+    border: 1px solid #649BBE;
+    border-radius: 3px;
+    padding: 2px 3px 3px 5px;
+    box-shadow: 0 0 3px 0 #FFFFFF inset;
+}
+#admin_change input[type="button"] {
+    border: none;
+    cursor: pointer;
+    float: right;
+    margin: 0 -2px 30px 15px;
+    padding: 5px 10px;
+}
+#admin_change [action="open_explorer"] {
+    cursor: pointer;
+    background: none repeat scroll 0 0 #EFF9FF;
+    border: 1px solid #649BBE;
+    border-radius: 3px;
+    display: inline-block;
+    font-size: 0.9em;
+    margin: 0 0 0 5px;
+    padding: 3px 7px;
+}
+#admin_change [action="open_explorer"]:hover {
+    background: none repeat scroll 0 0 #5AA5CF;
+    color: #fff;
+}
+
+#admin_change .title {
+    font-size: 1.3em;
+    margin: 0 0 15px;
+    padding: 3px 5px;
+    width: 100%;
+}
+#admin_change form {
+    width: 100%;
+}
+#admin_change .cke_1.cke_chrome {
+    margin-bottom: 10px;
+}
+#admin_change [name=description] {
+    width: 100%;
+    height: 80px;
+    border: 1px solid #78BAED;
+}
+#admin_change .item {
+    padding: 10px 0 0;
+}
+#admin_change .item b {
+    display: inline-block;
+    font-weight: normal;
+    padding: 2px 13px 2px 0;
+    text-align: right;
+    width: 63px;
+}
+#admin_change .item input {
+    width: 280px;
+}
+#admin_change #table_title {
+    margin: 5px 0 10px;
+    width: 100%;
+}
+#admin_change #td_title {
+    margin: 0 170px 0 0;
+}
+#admin_change #title {
+    font-size: 1.45em;
+    width: 100%;
+}
+#admin_change #td_time {
+    float: right;
+    font-size: 1em;
+    margin: -30px 0 0;
+    padding: 5px 0 0 20px;
+    width: 150px;
+}
+#admin_change #td_time img {
+    margin: 0;
+}
+#admin_change #date_create {
+    border: 0 none;
+    color: #649BBE;
+    font-size: 1.1em;
+    margin: 0;
+    padding: 0 0 1px;
+    width: 128px;
+}
+#admin_change .ui-datepicker-trigger {
+    background: url("../../index/img/calendar.gif") no-repeat scroll 1px 1px rgba(0, 0, 0, 0);
+    cursor: pointer;
+    float: right;
+    height: 17px;
+    margin: 2px;
+    width: 18px;
+}
+#admin_change .item a {
+    padding: 5px;
+    text-decoration: underline;
+}
+#admin_change #tags {
+    float: left;
+    margin: 13px 0;
+    width: 100%;
+}
+#admin_change #tags h2 {
+    color: #649BBE;
+    float: left;
+    font-size: 1.3em;
+    margin: 3px 12px 0 0;
+    display: inline-block;
+}
+
+#admin_change #tags b {
+    color: #666666;
+    float: left;
+    margin: 5px 10px 5px 0;
+}
+#admin_change #tags #tags_list {
+    color: #333333;
+    display: inline-block;
+    float: left;
+    font-size: 1em;
+    margin: 2px 10px 0 0;
+    min-height: 24px;
+    padding: 0;
+    width: auto;
+}
+#tags_list .tag {
+    border: 1px solid #8EB1C6;
+    border-radius: 3px;
+    display: inline-block;
+    margin: 0;
+}
+#tags_list .tag:hover {
+    background: rgba(95, 152, 178, 0.2);
+}
+#tags_list .tag .edit {
+    cursor: pointer;
+    float: left;
+    padding: 4px 4px 3px 7px;
+}
+#tags_list .tag .delete {
+    cursor: pointer;
+    float: right;
+    font-size: 1.1em;
+    padding: 2px 6px 3px 7px;
+}
+#tags_list .tag .delete:hover {
+    background: #649BBE;
+    color: #ffffff;
+}
+#tags #tags_list .selected {
+    box-shadow: 0 0 3px 0 #5F98B2;
+    background: #CFEDFF;
+}
+
+#tags #tags_change {
+    display: inline-block;
+    margin: 13px 0 0;
+    width: 100%;
+}
+#admin_change #tags_change b:first-child {
+    padding-right: 2px;
+    text-align: right;
+    width: 63px;
+}
+#admin_change #tags_change input {
+    border-radius: 3px;
+    float: left;
+    margin-right: 10px;
+    width: 160px;
+}
+#tags_change .button {
+    color: #000000;
+    border-radius: 3px;
+    cursor: pointer;
+    float: left;
+    margin: 1px 5px;
+    padding: 4px 10px 3px;
+}
+#tags_change .button:hover {
+    background: rgba(142, 177, 198, 0.9);
+}
+
+
+#pages_list {
+    display: inline-block;
+    font-size: 0.9em;
+    margin: 10px;
+}
+#pages_list a {
+    padding: 3px 7px;
+}
+#pages_list a:hover {
+    background: none repeat scroll 0 0 #53B1DF;
+    color: #FFFFFF;
+}
+#pages_list b {
+    background: none repeat scroll 0 0 #77A7BF;
+    color: #FFFFFF;
+    padding: 3px 7px;
+}

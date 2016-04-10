@@ -1,0 +1,83 @@
+<html>
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <link href="{{ STATIC_URL }}right/img/favicon.gif" rel="shortcut icon">
+    <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery-1.10.2.min.js"></script>
+
+    <script type="text/javascript" src="{{ STATIC_URL }}explorer/js/index.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}explorer/js/functions.js"></script>
+    <!-- <script type="text/javascript" src="{{ STATIC_URL }}explorer/js/upload.js"></script> -->
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/csrf.js"></script>
+
+    <link href="{{ STATIC_URL }}explorer/css/style.css" type="text/css" rel="stylesheet">
+
+    <title>explorer</title>
+</head>
+<body>
+
+<div id="wrapper">
+    <div id="header">
+        <div class="left">
+
+        </div>
+        <div class="info"></div>
+        <div class="toolbar">
+
+            <form id="upload_form" method="post" action="/explorer/upload/" enctype="multipart/form-data" target="upload_hidden" >
+                {% csrf_token %}
+                <input type="hidden" name="path" />
+                <input type="file" name="file" multiple onchange="Upload()" />
+            </form>
+
+            <div class="button"><div class="icon upload"></div><div class="name">Загрузить</div></div>
+            <div class="button"><div class="icon download"></div><div class="name">Скачать</div></div>
+            <div class="button"><div class="icon remove"></div><div class="name">Удалить</div></div>
+            <div class="button"><div class="icon mkdir"></div><div class="name">Создать папку</div></div>
+            <div class="button"><div class="icon more"></div><div class="name">Ещё</div></div>
+        </div>
+
+    </div>
+
+    <div id="tree"></div>
+
+    <div class="content">
+        <div class="breadcrumbs"></div>
+        <div class="scope"></div>
+
+        <div id="status"></div>
+
+        <br /><br />
+
+<!--
+        <form method="post" action="/explorer/upload/" enctype="multipart/form-data" target="upload_1">
+            {% csrf_token %}
+            <input type="file" name="file_1" multiple />
+            <input type="submit" />
+        </form>
+        <iframe class="hide_" name="upload_1"></iframe>
+-->
+
+
+        <!--
+
+        <form id="upload2" method="post" action="/explorer/upload/" enctype="multipart/form-data" target="upload_hidden" >{% csrf_token %}
+
+        <input type="file" multiple />
+        <script>
+            $("input[type=file]").fileupload({
+                url:"/explorer/upload/",
+                success:function(dat){
+                    if(dat.status == 'ok') { alert(dat.file); }
+                },
+                dataType:'json'
+            });
+        </script>
+        -->
+
+
+    </div>
+
+</div>
+
+</body>
+</html>

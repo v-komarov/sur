@@ -1,0 +1,30 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+
+<script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/directory/dir_object_console.js"></script>
+
+{% include "sentry/system/directory/__left_block.html" %}
+
+<div class="middleBlock"><h2 class="cabinet_title">{{ title }}</h2>
+
+    <div class="resultCount"></div>
+
+    <table class="tableInfo">
+        <thead>
+        <tr class="row title">
+            <td class="cell">
+                <input class="wide" type="text"  placeholder="Наименование" value="" name="console_name">
+            <td class="cell">
+                <input class="wide" type="text" placeholder="Описание" value="" name="description"></td>
+            <td style="width: 10px;">
+                <div class="ui_button ui_add" title="Добавить"></div></td>
+        </tr>
+        </thead>
+        <tbody class="show"></tbody>
+    </table>
+
+    <div class="loading">Загрузка</div>
+
+</div>
+
+{% endblock %}

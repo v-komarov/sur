@@ -1,0 +1,30 @@
+<div class="pop" id="charge_pop" today="{{ today }}">
+    <div class="header"><b></b><div class="close"></div></div>
+    <form>
+        <table class="tableInfo wide margin_null">
+            <tr class="row2" name="service"><td class="padding_9" colspan="2"></td></tr>
+
+            <tr class="row2"><td class="padding_9 right"><div class="required">*</div><span name="begin_date_">За какой день</span></td>
+                <td><input class="datepicker" name="begin_date" id="from" type="text">
+                </td></tr>
+            <tr class="row2"><td class="padding_9 right"><div class="required">*</div><span name="end_date_">Когда оплачено</span></td>
+                <td><input class="datepicker" name="end_date" id="to" type="text">
+                </td></tr>
+
+            <tr class="row2"><td class="padding_9 right"><div class="required">*</div>Сумма</td>
+                <td class="cell secondary"><input name="value" type="text" value=""><div class="txt3">руб.</div></td></tr>
+            <tr><td class="padding_9 right">Комментарий</td>
+                <td class="cell secondary"><textarea cols="32" name="comment" rows="2"></textarea></td></tr>
+            <tr><td colspan="2">
+
+                <div style="float:right; padding: 5px 10px">
+                    <button type="submit" class="btn_ui bg" icon="save"><div class="txt">Сохранить</div><div class="icon"></div></button>
+                    <div class="btn_ui bg" action="reset" icon="reset"><div class="txt">Сбросить</div><div class="icon"></div></div>
+                    <div class="btn_ui bg" action="delete" icon="delete"><div class="txt">Удалить</div><div class="icon"></div></div>
+                </div>
+
+            </td></tr>
+            </tbody>
+        </table>
+    </form>
+</div>

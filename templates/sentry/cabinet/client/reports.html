@@ -1,0 +1,89 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+
+<script type="text/javascript" src="{{ STATIC_URL }}jquery/ui/js/jquery-ui-1.10.3.custom.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}jquery/ui/development-bundle/ui/i18n/jquery-ui-i18n.js" ></script>
+<link href="{{ STATIC_URL }}jquery/ui/css/jquery-ui-timepicker-addon.css" type="text/css" rel="stylesheet">
+<link href="{{ STATIC_URL }}jquery/ui/css/cupertino/jquery-ui-1.10.3.custom.css" type="text/css" rel="stylesheet">
+
+<script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/cabinet/client/reports.js"></script>
+
+<div class="middleBlock">
+<h2 class="cabinet_title">Отчет о снятиях и постановках на охрану</h2>
+
+
+{% if object_info.0.id %}
+<div class="leftBlock border-left">
+    <h3 class="title">Период</h3>
+    <p style="font-size: .9em; margin: 10px">( {{ date_start|date:"d.m.Y" }} - {{ date_stop|date:"d.m.Y" }} )</p>
+    <a class="item {% if period == 1 %}selected{% endif %}"
+       href="{{request.path|slice:':17'}}{{object_info.0.id}}/1/">За эту неделю</a>
+    <a class="item {% if period == 2 %}selected{% endif %}"
+       href="{{request.path|slice:':17'}}{{object_info.0.id}}/2/">За прошедшую неделю</a>
+    <a class="item {% if period == 3 %}selected{% endif %}"
+       href="{{request.path|slice:':17'}}{{object_info.0.id}}/3/">{{ today|date:"F" }}</a>
+    <a class="item {% if period == 4 %}selected{% endif %}"
+       href="{{request.path|slice:':17'}}{{object_info.0.id}}/4/">{{ month_prev|date:"F" }}</a>
+
+    <div class="daterange">
+        <div class="item title">Выбрать период</div>
+        <form class="rangeSelectBlock" novalidate="novalidate">
+            <label for="startValue">С:</label>
+            <input type="text" id="startValue" name="start" value="{{ date_start|date:'d.m.Y' }}">
+            <div class="clear"></div>
+            <label for="stopValue">По:</label>
+            <input type="text" id="stopValue" name="stop" value="{{ date_stop|date:'d.m.Y' }}">
+        </form>
+    </div>
+</div>
+{% endif %}
+
+
+<div class="middleBlock">
+
+{% for item in objects_set %}
+    {% if forloop.first %}
+    <select class="selectObject" object_id="{{ object_id }}">
+        {% endif %}
+
+        <option value="{{ item.id }}"{% if item.id|floatformat == object_id|floatformat %} selected {% endif %}>
+        {{ item.order_num }}-{{ item.security_type__name }}-{{ item.security_subtype__name }} {{ item.name }} / {{ item.security_company__name }}
+        </option>
+
+        {% if forloop.last %}
+    </select>
+    {% endif %}
+
+    {% empty %}
+    <div class="error">Нет объектов.</div>
+{% endfor %}
+
+{% if object_report %}
+    <table class="tableInfo">
+    <thead><tr class="row title">
+        <td class="cell">Дата события</td>
+        <td class="cell">Ключ</td>
+        <td class="cell">Событие</td>
+    </tr></thead>
+    <tbody class="show">
+    {% for item in object_report %}
+        <tr class="row">
+            <td class="cell date_transaction">{{ item.date_event|date:"d.m.Y" }} <span class="time">{{ item.date_event|date:"H:i:s" }}</span></td>
+            <td class="cell bg_key">{{ item.key }}</td>
+            {% if item.event == 'lock' %}
+                <td class="cell bg_lock">Постановка на охрану
+            {% else %}
+                <td class="cell bg_unlock">Снятие с охраны
+            {% endif %}
+                </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+    </table>
+    {% else %}
+        <div class="error">Нет данных об объекте.</div>
+{% endif %}
+</div>
+
+</div>
+{% endblock %}

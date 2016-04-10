@@ -1,0 +1,66 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+
+<link href="{{ STATIC_URL }}index/css/sentry.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="{{ STATIC_URL }}jquery/ui/js/jquery-ui-1.10.3.custom.js"></script>
+
+<link href="{{ STATIC_URL }}jquery/ui/development-bundle/themes/base/jquery.ui.autocomplete.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="{{ STATIC_URL }}jquery/ui/development-bundle/ui/minified/jquery.ui.autocomplete.min.js"></script>
+
+
+<script type="text/javascript" src="{{ STATIC_URL }}monitor/js/config/objects.js"></script>
+
+
+<div class="hidden">
+    <select class="gbr_select">
+        {% for item in gbr_set %}
+            <option class="item" value="{{ item.id }}">{{ item.name }}</option>
+        {% endfor %}
+    </select>
+
+    <select class="wires_select">
+        {% for item in dir_event_set %}
+            <option value="{{ item.id }}">{{ item.description }}</option>
+        {% endfor %}
+    </select>
+</div>
+
+
+<div class="content">
+    <table class="tableInfo thick">
+        <thead id="eventsHead">
+        <tr class="row title">
+            <td class="cell event_time">Договор</td>
+            <td class="cell object_name">Объект</td>
+        </tr>
+        </thead>
+        <tbody class="show" id="objectsBody">
+            {% for item in objects_list %}
+                <tr class="row" id="{{ item.id }}">
+                    <td class="cell event_time">{{ item.order_num }}</td>
+                    <td class="cell object_name">{{ item.name }}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+
+<!-- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- .hide -->
+
+<div class="pop blockInfo" id="object_menu">
+    <div class="header"><b>Объект</b><div class="ui_button gui_close" action="objectCloseInfo"></div></div>
+    <div class="field">Договор: <span key="order_num"></span></div>
+    <div class="field">Объект: <span key="object_name"></span></div>
+    <hr>
+    <div class="field">Адрес: <span key="address"></span></div>
+    <div class="field">ГБР: <span key="gbr"></span></div>
+    <div class="blockInfo" key="contacts"></div>
+    <hr>
+    <div class="field">Описание шлейфов:</div>
+    <table key="wires"><tbody></tbody></table>
+    <div class="button" onclick="addWire()">Добавить шлейф</div>
+    <div class="button" onclick="saveWire()">Сохранить</div>
+</div>
+
+{% endblock %}

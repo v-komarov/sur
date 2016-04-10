@@ -1,0 +1,75 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/directory/dir_device_type.js"></script>
+
+    {% include "sentry/system/directory/__left_block.html" %}
+
+    <div class="middleBlock"><h2 class="cabinet_title">{{ title }}</h2>
+
+        <div class="result_count"></div>
+
+        <table class="tableInfo" id="device_type_list">
+            <thead>
+            <tr class="row title">
+                <td class="cell">
+                    <input class="wide" type="text"  placeholder="Наименование" value="" name="name">
+                <td class="cell">
+                    <input class="wide" type="text" placeholder="Описание" value="" name="description"></td>
+                <td class="cell">Каналы связи</td>
+                <td>
+                    {% if perms.system.directory_device_type_add %}
+                        <div class="btn_ui" action="add" icon="object_add" title="Добавить"><div class="icon"></div></div>
+                    {% else %}
+                        <div class="empty_28"></div>
+                    {% endif %}
+                    <div class="btn_ui bg" action="reset" icon="reset"><div class="icon"></div></div>
+                </td>
+
+            </tr>
+            </thead>
+            <tbody class="show"></tbody>
+        </table>
+
+        <div class="clear"></div>
+
+        <!-- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- .hide -->
+
+        <div class="pop" id="device_pop">
+            <div class="header"><b>Тип устройства</b><div class="close"></div></div>
+
+            <form id="device_form">
+                <table class="tableInfo wide margin_null">
+                    <tr><td class="padding_9" colspan="2"><div class="in_pop_sublist"></div></td></tr>
+                    <tr class="row2">
+                        <td class="text_right" style="padding: 15px 10px 0 0;">Канал связи</td>
+                        <td class="cell secondary">
+                            <select class="left" style="width: 100px; margin: 7px 5px 0 0;" name="device_communication">
+                                {% for item in device_communication_set %}
+                                    <option value="{{ item.id }}">{{ item.name }}</option>
+                                {% endfor %}
+                            </select>
+                            <div class="btn_ui bg left" action="communication_add" icon="object_add" name="subtypes"><div class="txt">Добавить</div><div class="icon"></div></div>
+                        </td></tr>
+                    <tr class="row2">
+                        <td class="padding_9 text_right"><div class="star">*</div>Наименование</td>
+                        <td class="cell secondary"><input name="name" type="text" value=""></td></tr>
+                    <tr>
+                        <td class="cell" colspan="2">Описание<br />
+                            <textarea cols="45" rows="3" name="description"></textarea>
+                        </td></tr>
+
+                    <tr><td colspan="2">
+                        <button class="btn_ui bg" type="submit" icon="save"><div class="txt">Сохранить</div><div class="icon"></div></button>
+                        <!--div class="btn_ui bg" action="device_reset" icon="reset"><div class="txt">Сбросить</div><div class="icon"></div></div-->
+                        <div class="btn_ui bg left" action="delete" icon="delete"><div class="txt">Удалить</div><div class="icon"></div></div>
+                    </td></tr>
+                </table>
+            </form>
+        </div>
+
+    </div>
+
+    </div>
+
+{% endblock %}

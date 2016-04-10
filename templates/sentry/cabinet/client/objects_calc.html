@@ -1,0 +1,102 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+
+<script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/cabinet/client/objects_calc.js"></script>
+<div class="middleBlock">
+
+
+<select class="selectObject" object_id="{{ object_id }}">
+{% for item in objects_set %}
+    <option value="{{ item.id }}" {% if item.id|floatformat == object_id|floatformat %}selected{% endif %}>
+    {{ item.order_num }}-{{ item.security_type__name }}-{{ item.security_subtype__name }} {{ item.name }} / {{ item.security_company__name }}
+    </option>
+{% endfor %}
+</select>
+
+
+
+{% for item in month_list %}
+
+    {% if forloop.first %}
+        <table class="tableInfo">
+        <thead>
+            <tr class="white">
+                <td colspan="3">
+                {% if years_list %}
+                <div class="select_year">
+                    {% if year|add:-1 in years_list %}
+                        <a class="arrow" href="/cabinet/objects/{{ object_id }}/{{ year|add:-1 }}/"><</a>
+                    {% endif %}
+
+                    <select class="year">
+                        {% for item in years_list %}
+                        <option class="cell" value="{{ item }}" {% if item|floatformat == year|floatformat %}selected{% endif %}>{{ item }}</option>
+                        {% endfor %}
+                    </select>
+
+                    {% if year|add:1 in years_list %}
+                        <a class="arrow" href="/cabinet/objects/{{ object_id }}/{{ year|add:1 }}/">></a>
+                    {% endif %}
+
+                </div>
+                {% endif %}
+            </td>
+        </tr>
+        <tr class="row title"><td class="cell">Месяц</td><td class="cell">Начислено</td><td class="cell">Оплачено</td></tr>
+        </thead>
+    {% endif %}
+        <tbody class="show">
+        <tr class="row month">
+            <td class="cell">{{ item.start_time|date:"F" }}</td>
+            <td class="cell">
+                {% for calc in item.calc %}
+                    {% if calc.calc_type == 'подключение' %}
+                    <p>подключение: [<span class="time">{{ calc.start_time|date:"d.m.Y" }}</span> ] = {{ calc.object_calc }} руб.</p>
+                    {% else %}
+                    <p>{{ calc.bill_coast }}: [<span class="time">{{ calc.start_time|date:"d.m.Y" }} - {{ calc.end_time|date:"d.m.Y" }}</span> ] = {{ calc.object_calc }} руб.</p>
+                    {% endif %}
+                {% endfor %}
+            </td>
+            <td class="cell">
+                {% for pay in item.pay %}
+                    <p><span class="time">{{ pay.pay_d|date:"d.m.Y" }}</span> : {{ pay.mount }} руб.</p>
+                {% endfor %}
+            </td>
+            </tr>
+        <tr class="row result"><td class="cell"></td>
+            <td class="cell">
+                {% if item.calc_mount %}
+                    Всего: {{ item.calc_mount }} руб.
+                {% endif %}</td>
+            <td class="cell">
+                {% if item.pay_mount %}
+                    Всего: {{ item.pay_mount }} руб.
+                {% endif %}</td>
+            </tr>
+
+    {% if forloop.last %}
+        <tr class="row total">
+            <td class="cell"></td>
+            <td class="cell">Итого: {{ calc_total }} руб.</td>
+            <td class="cell saldo"><b>/</b>{{ pay_total }}  руб.
+                {% if saldo < 0 %}
+                    <p class="saldo">Долг: <b class="red">{{ saldo }} руб.</b></p>
+                {% elif saldo > 0 %}
+                    <p class="saldo">Переплата: <b class="green">{{ saldo }} руб.</b></p>
+                {% endif %}
+
+
+                </td>
+            </tr>
+
+        </tbody>
+        </table>
+    {% endif %}
+
+    {% empty %}
+        <div class="error">Начислений небыло.</div>
+
+{% endfor %}
+
+</div>
+{% endblock %}

@@ -1,0 +1,57 @@
+<div class="pop" id="object_cost__pop">
+    <div class="header"><b>Стоимость услуги</b><div class="close"></div></div>
+    <form>
+        <table class="tableInfo wide margin_null">
+            <tr class="row2">
+                <td class="padding_9 right">Тип оплаты</td>
+                <td class="secondary"><select name="cost_type" class="wide"><option></option>
+                    {% for item in dir_cost_type_set %}
+                        <option value="{{ item.id }}" cost_type_label="{{ item.label }}">{{ item.name }}</option>
+                    {% endfor %}
+                </select></td></tr>
+            <tr class="row2">
+                <td class="padding_9 text_right nowrap"><div class="required">*</div>Цена</td>
+                <td class="secondary"><input name="cost_value" size="7" type="text"></td></tr>
+            <tr class="row2">
+                <td class="padding_9 text_right">День месяца</td>
+                <td class="secondary">
+                    <input name="charge_month_day" size="2" type="text">
+                    <select name="charge_month">
+                        {% for item in dir_charge_month_set %}
+                            <option value="{{ item.id }}">{{ item.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td></tr>
+            <tr class="row2">
+                <td class="padding_9 text_right nowrap"><div class="required">*</div>Дата</td>
+                <td><input class="datepicker" name="begin_date" type="text">
+                    <div name="div_end_date"><div class="padding_85 left">&mdash;</div><input class="datepicker" name="end_date" type="text"></div>
+                </td></tr>
+            <tr class="row2">
+                <td class="padding_9 right">Комментарий</td>
+                <td class="secondary">
+                    <textarea cols="50" name="comment" rows="2"></textarea></td></tr>
+
+            <tr class="row2 hide" id="cost_log">
+                <td colspan="2" class="cell">
+                    <table class="tableinfo wide">
+                        <thead>
+                        <tr class="row"><td colspan="3">
+                            <div class="padding_6 left">История начислений:</div>
+                            <div class="btn_ui btn_28 bg" action="object_cost_add" icon="object_add" title="Добавить начисление">
+                                <div class="icon"></div><div class="txt">Добавить начисление</div></div>
+                        </td></tr>
+                        </thead>
+                        <tbody class="show"></tbody>
+                    </table>
+                </td></tr>
+
+            <tr><td colspan="2">
+                <button class="btn_ui bg" type="submit" icon="save"><div class="txt">Сохранить</div><div class="icon"></div></button>
+                <!--span class="btn_ui bg" action="reset" icon="reset"><div class="txt">Сбросить</div><div class="icon"></div></span-->
+                <span class="btn_ui bg left" action="remove" icon="delete"><div class="txt">Удалить</div><div class="icon"></div></span>
+            </td></tr>
+            </tbody>
+        </table>
+    </form>
+</div>

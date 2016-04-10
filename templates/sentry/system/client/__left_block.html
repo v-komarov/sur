@@ -1,0 +1,113 @@
+<div class="leftBlock">
+
+    {% if perms.system.client %}
+        <a class="item {% if request.path|slice:'14:' == '/search/' %}selected{% endif %}"
+           href="/system/client/search/">Поиск</a>
+    {% endif %}
+
+    {% comment %}
+        {% if perms.system.client %}
+            <a class="item {% if request.path|slice:'14:' == '/search/filter/' %}selected{% endif %}"
+               href="/system/client/search/filter/">Фильтр</a>
+        {% endif %}
+    {% endcomment %}
+
+    {% if client_id %}
+        {% if perms.system.client %}
+            <hr />
+            <a class="item {% if  position == 'client' %}selected{% endif %}"
+               href="/system/client/{{ client_id }}/">Карточка клиента</a>
+        {% endif %}
+
+        {% comment %}
+            {% if perms.system.client %}
+                <a class="item {% if not object_id and request.path|slice:'-11:' == '/requisite/' %}selected{% endif %}"
+                   href="/system/client/{{ client_id }}/requisite/">Реквизиты</a>
+            {% endif %}
+        {% endcomment %}
+
+        {% if perms.system.client %}
+            <a class="item {% if not object_id and request.path|slice:'-7:' == '/users/' and not contract_id %}selected{% endif %}"
+               href="/system/client/{{ client_id }}/users/">Ответственные лица</a>
+        {% endif %}
+
+        {% if perms.system.client %}
+            <a class="item {% if not object_id and request.path|slice:'-9:' == '/payment/' %}selected{% endif %}"
+               href="/system/client/{{ client_id }}/payment/">Платежи</a>
+        {% endif %}
+
+        {% if perms.system.client %}
+            <a class="item {% if request.path|slice:'-8:' == '/charge/' %}selected{% endif %}"
+               href="/system/client/{{ client_id }}/charge/">Начисления</a>
+        {% endif %}
+
+        {% if perms.system.client %}
+            <a class="item {% if not object_id and request.path|slice:'-10:' == '/contract/' %}selected{% endif %}"
+               href="/system/client/{{ client_id }}/contract/">Список договоров</a>
+        {% endif %}
+
+    {% endif %}
+
+    {% if contract_id %}
+
+        {% if perms.system.client %}
+            <hr />
+            <a class="item {% if position == 'client_contract' %}selected{% endif %}"
+               href="/system/client/{{ client_id }}/contract/{{ contract_id }}/">Карточка договора</a>
+        {% endif %}
+
+        {% comment %}
+            {% if perms.system.client %}
+                <hr />
+                <a class="item {% if position == 'contract' %}selected{% endif %}"
+                   href="/system/client/{{ client_id }}/contract/{{ contract_id }}/">Карточка договора</a>
+            {% endif %}
+            {% if perms.system.client %}
+                <a class="item {% if request.path|slice:'-9:' == '/service/' %}selected{% endif %}"
+                   href="/system/client/{{ client_id }}/contract/{{ contract_id }}/service/">Услуги</a>
+            {% endif %}
+
+            {% if perms.system.client %}
+                <a class="item {% if request.path|slice:'-8:' == '/device/' %}selected{% endif %}"
+                   href="/system/client/{{ client_id }}/contract/{{ contract_id }}/device/">Объектовые устройства</a>
+            {% endif %}
+        {% endcomment %}
+
+        {% if perms.system.client %}
+            <a class="item {% if request.path|slice:'-7:' == '/users/' and contract_id %}selected{% endif %}"
+               href="/system/client/{{ client_id }}/contract/{{ contract_id }}/users/">Ответственные лица</a>
+        {% endif %}
+
+        <!-- a class="item {% if request.path|slice:'-10:' == '/security/' %}selected{% endif %}"
+           href="/system/client/object/{{ object_id }}/security/">Охрана</a -->
+
+        {% if perms.system.client %}
+            <a class="item {% if request.path|slice:'-10:' == '/incident/' %}selected{% endif %}"
+               href="/system/client/{{ client_id }}/contract/{{ contract_id }}/incident/">События</a>
+        {% endif %}
+
+        {% if perms.system.client %}
+            <a class="item {% if request.path|slice:'-11:' == '/timetable/' %}selected{% endif %}"
+               href="/system/client/{{ client_id }}/contract/{{ contract_id }}/timetable/">Режим работы</a>
+        {% endif %}
+
+        {% if perms.system.client %}
+            <a class="item {% if request.path|slice:'-8:' == '/salary/' %}selected{% endif %}"
+               href="/system/client/{{ client_id }}/contract/{{ contract_id }}/salary/">Плата сотрудникам</a>
+        {% endif %}
+
+        {% if perms.system.client %}
+            <a class="item {% if request.path|slice:'-8:' == '/weapon/' %}selected{% endif %}"
+               href="/system/client/{{ client_id }}/contract/{{ contract_id }}/weapon/">Оружие</a>
+        {% endif %}
+    {% endif %}
+
+
+    {% if perms.system.client %}
+        <hr />
+        <a class="item {% if request.path == '/system/client/add/' %}selected{% endif %}"
+           href="/system/client/add/">Добавить клиента</a>
+    {% endif %}
+
+
+</div>

@@ -1,0 +1,21 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+
+<script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/sentry_user/sentry_user.js"></script>
+
+{% include "sentry/system/sentry_user/__left_block.html" %}
+
+<div class="middleBlock">
+
+    <div id="wellcome">
+        {% include "sentry/system/sentry_user/sentry_user__list.html" %}
+    </div>
+
+    <div class="hide" id="user_edit">
+        {% include "sentry/system/sentry_user/sentry_user__edit.html" %}
+    </div>
+
+
+</div>
+
+{% endblock %}

@@ -1,0 +1,65 @@
+<link href="{{ STATIC_URL }}index/css/sentry_task.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/task/task_add__pop.js"></script>
+
+<div class="pop" id="task_add__pop">
+    <div class="header"><b>Новая заявка</b><div class="close"></div></div>
+    <form>
+        <table class="tableInfo wide margin_null"><tbody class="show">
+        <tr class="row2"><td colspan="2">
+            <a class="client_object"><p></p></a><div class="address"></div>
+        </td></tr>
+
+        <tr class="row2">
+            <td class="cell middle">Тип заявки</td>
+            <td class="cell secondary"><select name="task_type">
+                {% for item in dir_task_type_set %}
+                    <option value="{{ item.id }}">{{ item.name }}</option>
+                {% endfor %}
+            </select></td></tr>
+
+        <tr class="row2">
+            <td class="cell middle">Дата исполнения</td>
+            <td name="complete_date"><input class="datepicker" name="complete_date" type="text"></td></tr>
+
+        <tr class="row2">
+            <td class="cell middle">Инициатор</td>
+            <td class="cell secondary">
+                <select function="select_client_object_user" name="initiator"><option value=""></option></select>
+                <!--input class="wide" type="text" value="" name="initiator"--></td></tr>
+        <tr class="row2">
+            <td class="cell middle">Ответственный</td>
+            <td class="cell secondary">
+                <select function="select_sentry_user" name="warden">
+                    <option value=""></option>
+                    <optgroup post_id="12" label="Менеджер"></optgroup>
+                    <optgroup post_id="8" label="Инженер"></optgroup>
+                    <optgroup post_id="18" label="Офис-менеджер"></optgroup>
+                    <optgroup post_id="13" label="Менеджер-бухгалтер"></optgroup>
+                    <optgroup post_id="2" label="Администратор ГПБ"></optgroup>
+                </select>
+                <!--input class="wide" type="text" value="" name=""--></td></tr>
+        <tr class="row2">
+            <td class="cell middle">Исполнитель</td>
+            <td class="cell secondary">
+                <select function="select_sentry_user" name="doer">
+                    <option value=""></option>
+                    <optgroup post_id="12" label="Менеджер"></optgroup>
+                    <optgroup post_id="8" label="Инженер"></optgroup>
+                    <optgroup post_id="25" label="Техник"></optgroup>
+                    <optgroup post_id="18" label="Офис-менеджер"></optgroup>
+                    <optgroup post_id="13" label="Менеджер-бухгалтер"></optgroup>
+                </select>
+                <!--input class="wide" type="text" value="" name="doer"--></td></tr>
+        <tr>
+            <td class="cell" colspan="2">Описание:<br />
+                <textarea cols="70" name="comment" rows="4"></textarea></td></tr>
+
+        <tr><td colspan="2">
+                <button class="btn_ui bg" type="submit" icon="save"><div class="txt">Сохранить</div><div class="icon"></div></button>
+        </td></tr>
+
+        </tbody></table>
+    </form>
+
+</div>
+

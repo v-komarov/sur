@@ -1,0 +1,194 @@
+html, body {
+    background: none;
+}
+
+/*   ---   ---   ---   ---   ---   ---   ---   ---   ---   Articles, Portfolio   */
+
+#admin_change {
+    margin: 20px 25px 20px 20px;
+}
+#admin_change input {
+    border: 1px solid #649BBE;
+    border-radius: 3px;
+    padding: 2px 3px 3px 5px;
+    box-shadow: 0 0 3px 0 #FFFFFF inset;
+}
+#admin_change input[type="button"] {
+    border: none;
+    cursor: pointer;
+    float: right;
+    margin: 0 -2px 30px 15px;
+    padding: 5px 10px;
+}
+#admin_change [action="open_explorer"] {
+    cursor: pointer;
+    background: none repeat scroll 0 0 #EFF9FF;
+    border: 1px solid #649BBE;
+    border-radius: 3px;
+    display: inline-block;
+    font-size: 0.9em;
+    margin: 0 0 0 5px;
+    padding: 3px 7px;
+}
+#admin_change [action="open_explorer"]:hover {
+    background: none repeat scroll 0 0 #5AA5CF;
+    color: #fff;
+}
+#admin_change .title {
+    font-size: 1.3em;
+    margin: 0 0 15px;
+    padding: 3px 5px;
+    width: 100%;
+}
+#admin_change form {
+    width: 100%;
+}
+#admin_change .cke_1.cke_chrome {
+    margin-bottom: 10px;
+}
+#admin_change [name=description] {
+    width: 100%;
+    height: 80px;
+    border: 1px solid #78BAED;
+}
+#admin_change .item {
+    padding: 10px 0 0;
+}
+#admin_change .item b {
+    display: inline-block;
+    font-weight: normal;
+    padding: 2px 13px 2px 0;
+    text-align: right;
+    width: 63px;
+}
+#admin_change .item input {
+    width: 280px;
+}
+#admin_change #table_title {
+    margin: 5px 0 10px;
+    width: 100%;
+}
+#admin_change #td_title {
+    border: none;
+    padding: 0;
+}
+#admin_change #title {
+    font-size: 1.45em;
+    width: 100%;
+}
+#admin_change #td_time {
+    border: medium none;
+    font-size: 1em;
+    max-width: 300px;
+    padding: 5px 0 0 20px;
+    width: 170px;
+}
+#admin_change #date_create {
+    border: 0 none;
+    color: #649BBE;
+    font-size: 0.9em;
+    margin: 0;
+    padding: 0 0 1px;
+    width: 138px;
+}
+#admin_change .ui-datepicker-trigger {
+    background: url("../../right/img/calendar.gif") no-repeat scroll 1px 1px rgba(0, 0, 0, 0);
+    cursor: pointer;
+    float: right;
+    height: 17px;
+    margin: 2px;
+    width: 18px;
+}
+#admin_change .item a {
+    padding: 5px;
+    text-decoration: underline;
+}
+#admin_change #tags {
+    float: left;
+    margin: 13px 0;
+    width: 100%;
+}
+#admin_change #tags h2 {
+    color: #649BBE;
+    float: left;
+    font-size: 1.3em;
+    margin: 3px 12px 0 0;
+}
+#admin_change #entry_thumb b,
+#admin_change #tags b {
+    color: #666666;
+    float: left;
+    margin: 5px 10px 5px 0;
+}
+#admin_change #tags .tag {
+    border: 1px solid #8EB1C6;
+    border-radius: 3px;
+    display: inline-block;
+    margin: 0;
+}
+#admin_change .tag .edit {
+    cursor: pointer;
+    padding: 4px 3px 4px 6px;
+    float: left;
+}
+#admin_change .tag:hover {
+    background: rgba(95, 152, 178, 0.2);
+}
+#admin_change .tag .delete {
+    background: url("../../right/img/right_ui.gif") no-repeat scroll 1px -18px;
+    cursor: pointer;
+    float: right;
+    height: 23px;
+    width: 23px;
+}
+#admin_change .tag .delete:hover {
+    background: url("../../right/img/right_ui.gif") no-repeat scroll -19px -18px rgb(255, 255, 255);
+    box-shadow: 0 0 5px 0 rgba(255, 0, 0, 1) inset;
+}
+#admin_change .pick {
+    box-shadow: 0 0 5px 0 rgba(95, 152, 178, 1) inset;
+}
+#admin_change #tag_change {
+    display: inline-block;
+    margin: 10px 0 0;
+    width: 100%;
+}
+#admin_change #tag_change b:first-child {
+    padding-right: 2px;
+    text-align: right;
+    width: 63px;
+}
+#admin_change #tag_change input {
+    border-radius: 3px;
+    float: left;
+    margin-right: 10px;
+    width: 160px;
+}
+#tag_change .button {
+    color: #000000;
+    border-radius: 3px;
+    cursor: pointer;
+    float: left;
+    margin: 1px 5px;
+    padding: 4px 10px 3px;
+}
+#tag_change .button:hover {
+    background: rgba(142, 177, 198, 0.9);
+}
+#pages_list {
+    display: inline-block;
+    font-size: 0.9em;
+    margin: 10px;
+}
+#pages_list a {
+    padding: 3px 7px;
+}
+#pages_list a:hover {
+    background: none repeat scroll 0 0 #53B1DF;
+    color: #FFFFFF;
+}
+#pages_list b {
+    background: none repeat scroll 0 0 #77A7BF;
+    color: #FFFFFF;
+    padding: 3px 7px;
+}

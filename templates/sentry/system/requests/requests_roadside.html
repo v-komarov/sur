@@ -1,0 +1,54 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+
+{% include "sentry/system/requests/__left_block.html" %}
+<script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/requests/requests_roadside.js"></script>
+<div class="middleBlock">
+
+<h2 class="cabinet_title">Заявки на регистрацию в «Помощь на дороге»</h2>
+<select class="selectObject">
+    <option value="wait" {% if status == 'wait' %}selected{% endif %}>на рассмотрении</option>
+    <option value="denied" {% if status == 'denied' %}selected{% endif %}>отклоненные</option>
+    <option value="registered" {% if status == 'registered' %}selected{% endif %}>зарегистрированные</option>
+</select>
+
+{% for item in request_roadside %}
+    {% if forloop.first %}
+        <table class="tableInfo roadside">
+        <thead><tr class="row title">
+            <td class="cell">Время заявки</td>
+            <td class="cell">Номер</td>
+            <td class="cell">Адрес</td>
+            <td class="cell">Модель</td>
+            <td class="cell">Гос. номер</td>
+            <td class="cell">Ф.И.О.</td>
+            <td class="cell">e-mail</td>
+            </tr></thead>
+    {% endif %}
+
+        <tr class="row tr_client_object">
+            <td class="cell">{{ item.date_request|date:"d.m.Y" }} <span class="time">{{ item.date_request|date:"H:i:s" }}</td>
+            <td class="cell">{{ item.object_number }}</td>
+            <td class="cell">{{ item.object_adress }}</td>
+            <td class="cell">{{ item.object_model }}</td>
+            <td class="cell">{{ item.object_gnumber }}</td>
+            <td class="cell"><b>{{ item.full_name }}</b></td>
+            <td class="cell">{{ item.email }}</td>
+            {% if item.status == 'wait' %}
+            <td>
+                <a class="response_deny" href="/system/roadside_confirm/deny/{{ item.id }}/">Отклонить</a>
+                <a class="response_allow" href="/system/roadside_confirm/allow/{{ item.id }}/">Принять</a>
+            </td>
+        {% endif %}
+        </tr>
+
+    {% if forloop.last %}
+        </table>
+    {% endif %}
+
+    {% empty %}<div class="error">Нет заявок.</div>
+
+{% endfor %}
+
+</div>
+{% endblock %}

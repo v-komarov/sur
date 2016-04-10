@@ -1,0 +1,62 @@
+<div class="pop" id="service_pop">
+    <div class="header"><b>Услуга</b><div class="close"></div></div>
+    <form>
+
+        <table class="tableInfo wide margin_null">
+            <tr class="row2"><td class="padding_9 nowrap right"><div class="required">*</div>Название / Номер на пульте</td>
+                <td class="secondary">{{ service_form.name }}</td></tr>
+            <tr class="row2"><td class="padding_9 nowrap right">Пароль</td>
+                <td class="secondary">{{ service_form.password }}</td></tr>
+
+            <tr class="row2"><td class="padding_9 right">Тип услуг</td>
+                <td class="secondary"><select name="service_type">
+                    {% for item in dir_service_type_set %}
+                        <option value="{{ item.id }}" name="{{ item.name }}">{{ item.name }} ({{ item.description }})</option>
+                    {% endfor %}
+                </select></td></tr>
+            <tr class="row2"><td class="padding_9 nowrap right">Обслуживающая организация</td>
+                <td class="secondary"><select name="service_organization">
+                    {% for item in dir_service_organization_set %}
+                        <option value="{{ item.id }}">{{ item.name }}</option>
+                    {% endfor %}
+                </select></td></tr>
+            <tr class="row2"><td class="padding_9 right"><div class="required">*</div>Номер договора</td>
+                <td class="secondary"><select name="contract_number"></select></td></tr>
+            <tr class="row2"><td class="padding_9 nowrap right">ГБР</td>
+                <td class="secondary"><select name="security_squad">
+                    {% for item in dir_security_squad_set %}
+                        <option value="{{ item.id }}">{{ item.name }}</option>
+                    {% endfor %}
+                </select></td></tr>
+
+            <!--tr class="row2"><td class="padding_9 right">Статус</td>
+                <td class="secondary"><select name="status">
+                    {% for item in dir_object_status_set %}<option value="{{ item.id }}">{{ item.name }}</option>{% endfor %}
+                </select></td></tr-->
+
+            <tr class="row2"><td class="padding_9 right">Дата</td>
+                <td>{{ service_form.begin_date }}</td></tr>
+            <tr class="row2"><td class="padding_9 right">Дата завершения</td>
+                <td>{{ service_form.end_date }}</td></tr>
+            <tr class="row2"><td class="padding_9 right">Комментарий</td>
+                <td class="secondary">{{ service_form.comment }}</td></tr>
+            <tr><td colspan="2">
+                <fieldset class="in_pop" id="fieldset_subtypes"><legend>Подтипы охраны</legend>
+                    <div class="in_pop_sublist in_pop_subtypes"></div>
+                    <select id="subtypes">
+                        {% for item in dir_service_subtype_set %}
+                            <option value="{{ item.id }}" service_type_id="{{ item.service_type.id }}" short_name="{{ item.name }}">{{ item.name }}{% if item.description %} - {{ item.description }}{% endif %}</option>
+                        {% endfor %}
+                    </select>
+                    <span class="btn_ui bg left" action="subtype_add" icon="object_add"><div class="txt">Добавить</div><div class="icon"></div></span>
+                </fieldset>
+
+                <button class="btn_ui bg" type="submit" icon="save"><div class="txt">Сохранить</div><div class="icon"></div></button>
+                <span class="btn_ui bg" action="reset" icon="reset"><div class="txt">Сбросить</div><div class="icon"></div></span>
+                <span class="btn_ui bg" action="remove" icon="delete"><div class="txt">Удалить</div><div class="icon"></div></span>
+            </td></tr>
+            </tbody>
+        </table>
+    </form>
+
+</div>

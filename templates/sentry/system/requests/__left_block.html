@@ -1,0 +1,9 @@
+<div class="leftBlock">
+
+    <a class="item {% if request.path|slice:'7:25' == '/requests/cabinet/' %}selected{% endif %}"
+       href="/system/requests/cabinet/">Личный кабинет</a>
+    <a class="item {% if request.path|slice:'7:26' == '/requests/roadside/' %}selected{% endif %}"
+       href="/system/requests/roadside/">Помощь на дороге</a>
+
+
+</div>

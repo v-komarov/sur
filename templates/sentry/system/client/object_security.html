@@ -1,0 +1,42 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+{% include "sentry/system/client/__left_block.html" %}
+
+<script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/client/object_security.js"></script>
+
+<div class="middleBlock">
+    <h2 class="cabinet_title">{{ title }}</h2>
+
+    {% regroup service_set by object__name as service_list %}
+    <select class="selectObject">
+        {% for service in service_list %}
+            <optgroup label="{{ service.grouper }}">
+            {% for item in service.list %}
+                <option service_id="{{ item.id }}">
+                    {{ item.name }}
+                </option>
+            {% endfor %}
+            </optgroup>
+        {% endfor %}
+    </select>
+
+    <table class="tableInfo show" object_id="{{ object_id }}">
+        <thead><tr class="row title"><td colspan="2" class="cell"><b class="spacer"></b></td></tr></thead>
+        <tbody class="show">
+        <tr class="row" tag="name">
+            <td class="cell">Наименование<b class="spacer">:</b></td><td class="cell"></td></tr>
+        <tr class="row" tag="contract_number">
+            <td class="cell">№ договора<b class="spacer">:</b></td><td class="cell"></td></tr>
+        <tr class="row" tag="security_type">
+            <td class="cell">Вид / подвид охраны<b class="spacer">:</b></td><td class="cell"></td></tr>
+        <tr class="row" tag="security_company">
+            <td class="cell">Охр. организация<b class="spacer">:</b></td><td class="cell"></td></tr>
+
+        </tbody>
+    </table>
+
+    <div class="loading">Загрузка</div>
+
+</div>
+
+{% endblock %}

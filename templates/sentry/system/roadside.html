@@ -1,0 +1,43 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+
+<div class="wideBlock">
+<h2 class="cabinet_title">Автомобили зарегистрированные в системе</h2>
+
+{% for item in car_set %}
+    {% if forloop.first %}
+    <table class="tableInfo show">
+        <thead><tr class="row title">
+            <td class="cell">№</td>
+            <td class="cell">Зарегистрирован</td>
+            <td class="cell">Номер</td>
+            <td class="cell">Адрес</td>
+            <td class="cell">Модель</td>
+            <td class="cell">Гос. номер</td>
+            <td class="cell">Ф.И.О.</td>
+            <td class="cell">Email</td>
+        </tr></thead>
+    {% endif %}
+
+        <tr class="row">
+            <td class="cell">{{ item.id }}</td>
+            <td class="cell">{{ item.date_verify|date:"d.m.Y" }}</td>
+            <td class="cell">{{ item.object_number }}</td>
+            <td class="cell">{{ item.object_adress }}</td>
+            <td class="cell">{{ item.object_model }}</td>
+            <td class="cell">{{ item.object_gnumber }}</td>
+            <td class="cell">{{ item.full_name }}</td>
+            <td class="cell">{{ item.email }}</td>
+        </tr>
+
+    {% if forloop.last %}
+        </table>
+    {% endif %}
+
+    {% empty %}
+        <div class="error">Нет записей.</div>
+
+{% endfor %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,72 @@
+<div class="pop" id="pop_user">
+    <div class="header"><b>Ответственное лицо</b><div class="close"></div></div>
+
+
+    <form id="client_user_form">
+        <table class="tableInfo wide margin_null">
+            <tr class="row"><td class="cell middle">Ф.И.О.</td>
+                <td class="cell secondary">{{ form.full_name }}</td></tr>
+            <tr class="row"><td class="cell middle">Должность</td>
+                <td class="cell secondary"><select name="post_id">
+                    <option value="">--</option>
+                    {% for item in dir_user_post_set %}
+                        <option value="{{ item.id }}">{{ item.name }}</option>
+                    {% endfor %}
+                </select></td></tr>
+            {% comment %}
+            <tr class="row"><td class="cell middle">День рождения</td>
+                <td><input name="birthday" class="datepicker" type="text"></td></tr>
+            <tr class="row"><td class="cell middle">Паспорт</td>
+                <td class="cell secondary">{{ form.passport }}</td></tr>
+            {% endcomment %}
+            <tr class="row"><td class="cell middle">Адрес</td>
+                <td class="cell secondary">{{ form.address }}</td></tr>
+            <tr class="row"><td class="cell middle">Комментарий</td>
+                <td class="cell secondary">{{ form.comment }}</td></tr>
+
+            <tr class="row"><td colspan="2">
+
+                <fieldset class="in_pop"><legend>Телефоны</legend>
+                    <table id="client_user_phone_list">
+                        <tr><td>тип</td><td>код</td><td>номер</td><td>комментарий</td><td></td></tr>
+                        <tr class="hide">
+                            <td><select name="phone_type">
+                                {% for item in phone_type %}
+                                    <option value="{{ item }}">{{ item }}</option>
+                                {% endfor %}
+                            </select></td>
+                            <td><input size="2" type="text" value="" name="code"></td>
+                            <td><input size="7" type="text" value="" name="phone"></td>
+                            <td><input size="25" type="text" value="" name="comment"></td>
+                            <td><span class="ui_button ui_remove" action="remove" icon="delete" title="Удалить телефон"></span></td>
+                        </tr>
+                    </table>
+                    <span class="btn_ui bg" action="phone" icon="phone"><div class="txt">Добавить телефон</div><div class="icon"></div></span>
+                </fieldset>
+
+                <fieldset class="in_pop"><legend>E-mail</legend>
+                    <table id="client_user_emails">
+                        <tr class="hide">
+                            <td><input size="56" type="text" value="" name="email"></td>
+                            <td><span class="ui_button ui_remove" action="remove" icon="delete" title="Удалить email"></span></td>
+                        </tr>
+                    </table>
+                    <div class="btn_ui bg" action="email" icon="email"><div class="txt">Добавить email</div><div class="icon"></div></div>
+                </fieldset>
+
+                <div style="float:right; padding: 0 10px 5px">
+                    <button class="btn_ui bg" type="submit" icon="save"><div class="txt">Сохранить</div><div class="icon"></div></button>
+                    <span class="btn_ui bg" action="reset" icon="reset"><div class="txt">Сбросить</div><div class="icon"></div></span>
+                    {% if perms.system.client_user_delete %}
+                        <span class="btn_ui bg" action="remove" icon="delete"><div class="txt">Удалить</div><div class="icon"></div></span>
+                    {% endif %}
+                </div>
+
+            </td></tr>
+            </tbody>
+        </table>
+    </form>
+
+
+</div>
+

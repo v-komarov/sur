@@ -1,0 +1,139 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+    {% include "sentry/system/client/__left_block.html" %}
+    <link href="{{ STATIC_URL }}index/css/sentry_search.css" type="text/css" rel="stylesheet">
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/client/search.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/toolset/client_list_draw.js"></script>
+
+    <div class="middleBlock">
+
+        <div class="search__view">
+            <div class="search__expand">
+
+                <table class="tableInfo search expand" side="expand">
+                    <tbody>
+                    <!--tr class="row search__item" label="cost_type"><td class="padding_9 right">Абонентская плата</td>
+                        <td class="padding_right"><select class="wide margin_5" name="cost_type">
+                            <option></option>
+                            <option value="paying">Начисляется</option>
+                            <option value="free">Не начисляется</option>
+                            {% comment %}
+                                {% for item in cost_type_set %}<option value="{{ item.id }}">{{ item.name }}</option>{% endfor %}
+                            {% endcomment %}
+                        </select></td></tr-->
+                    <tr class="row search__item" label="service_type"><td class="padding_9 right">Вид / подвид услуги</td>
+                        <td class="padding_right">
+                            <select class="margin_5" name="service_type"><option></option>
+                                {% for item in service_type_set %}
+                                    <option value="{{ item.id }}">{{ item.name }}</option>
+                                {% endfor %}</select>
+                            <select class="margin_5" name="service_subtype"><option></option>
+                                {% for item in service_subtype_set %}
+                                    <option service_type_id="{{ item.service_type_id }}" value="{{ item.id }}">{{ item.name }}</option>
+                                {% endfor %}</select>
+                        </td></tr>
+                    <tr class="row search__item" label="service_organization"><td class="padding_9 right">Обслуживающая организация</td>
+                        <td class="padding_right"><select class="wide margin_5" name="service_organization"><option></option>
+                            {% for item in service_organization_set %}
+                                <option value="{{ item.id }}">{{ item.name }}</option>
+                            {% endfor %}
+                        </select></td></tr>
+                    <tr class="row search__item" label="security_squad"><td class="padding_9 right">ГБР</td>
+                        <td class="padding_right"><select class="wide margin_5" name="security_squad"><option></option>
+                            {% for item in security_squad_set %}
+                                <option value="{{ item.id }}">{{ item.name }}</option>
+                            {% endfor %}
+                        </select></td></tr>
+                    <tr class="row search__item" label="client__legal_type"><td class="padding_9 right">Тип клиента</td>
+                        <td class="padding_right"><select class="wide margin_5" name="client__legal_type"><option></option>
+                            {% for item in legal_type_set %}
+                                <option value="{{ item.id }}">{{ item.name }}</option>
+                            {% endfor %}
+                        </select></td></tr>
+                    <tr class="row search__item" label="holding"><td class="padding_9 right">Холдинг</td>
+                        <td class="padding_right"><select class="wide margin_5" name="holding"><option></option>
+                            {% for item in holding_set %}
+                                <option value="{{ item.id }}">{{ item.name }}</option>
+                            {% endfor %}
+                        </select></td></tr>
+                    <tr class="row search__item" label="warden"><td class="padding_9 right">Ответсвенный менеджер</td>
+                        <td class="padding_right"><input class="wide margin_5 sentry_user" type="text" value="" name="warden"></td></tr>
+                    </tbody>
+                </table>
+
+                <table class="tableInfo search" side="primary">
+                    <tbody>
+                    <tr class="row search__item" label="status"><td class="padding_9 right">Статус объекта</td>
+                        <td class="padding_right">
+                            <select class="wide margin_5" name="status"><option></option>
+                                {% for item in object_status_set %}
+                                    <option value="{{ item.id }}">{{ item.name }}</option>
+                                {% endfor %}
+                            </select></td></tr>
+                    <tr class="row search__item" label="device_console"><td class="padding_9 right">Пульт</td>
+                        <td class="padding_right">
+                            <select class="wide margin_5" name="device_console"><option></option>
+                                {% for item in device_console_set %}
+                                    <option value="{{ item.id }}">{{ item.name }}</option>
+                                {% endfor %}
+                            </select></td></tr>
+                    <tr class="row search__item" label="console_number"><td class="padding_9 right">Номер на пульте</td>
+                        <td class="padding_right"><input class="wide margin_5" type="text" value="" name="console_number"></td></tr>
+
+
+                    <tr class="row search__item" label="device_type"><td class="padding_9 right">Тип объектового устройства</td>
+                        <td class="padding_right">
+                            <select class="wide margin_5" name="device_type"><option></option>
+                                {% for item in device_type_set %}
+                                    <option value="{{ item.id }}">{{ item.name }}</option>
+                                {% endfor %}
+                            </select></td></tr>
+                    <tr class="row search__item" label="contract_number"><td class="padding_9 right">№ договора</td>
+                        <td class="padding_right"><input class="wide margin_5" type="text" value="" name="contract_number"></td></tr>
+                    <tr class="row search__item" label="client_name"><td class="padding_9 right">Клиент</td>
+                        <td class="padding_right"><input class="wide margin_5" type="text" value="" name="client_name"></td></tr>
+                    <tr class="row search__item" label="object_name"><td class="padding_9 right">Название объекта</td>
+                        <td class="padding_right"><input class="wide margin_5" type="text" value="" name="object_name"></td></tr>
+                    <tr class="row search__item" label="address">
+                        <td class="text_right">
+                            <div class="padding_6">Адрес</div><div class="clear"></div>
+                            <div class="padding_6">Улица</div><div class="clear"></div>
+                            <select style="width:110px; margin:1px 4px 4px 0" name="address_placement_type"><option></option>
+                                {% for placement in dir_address_placement_type_set %}
+                                    <option value="{{ placement.id }}">{{ placement.description }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td class="padding_right">
+                            <select style="width:142px; margin-top:3px" name="address_region"><option></option>
+                                {% for region in dir_address_1_region_set %}<option value="{{ region.id }}">{{ region.name }}</option>{% endfor %}
+                            </select>
+                            <select style="width:184px; margin-top: 3px" name="address_locality"></select>
+                            <div class="clear"></div>
+                            <input name="address_street" class="address_input" type="text">
+                            <div class="address_txt" style="width: 35px; margin: 7px 7px 0 0;">Дом</div><input name="address_placement" class="address_input" type="text">
+                            <div class="clear"></div>
+                            <input name="address_placement" class="address_input" type="text" />
+                        </td></tr>
+
+                    <!--tr class="row status">
+                        <td class="switch" checked="checked" name="only_service" colspan="2"><div class="chechbox"></div><div class="txt">только договор</div></td>
+                    </tr-->
+
+                    <tr class="row white"><td colspan="2">
+                        <div class="btn_ui bg" action="search" icon="search"><div class="txt">Найти</div><div class="icon"></div></div>
+                        <div class="btn_ui bg" action="reset" icon="reset"><div class="txt">Сбросить</div><div class="icon"></div></div>
+                        <div class="btn_ui bg black left" action="expand" icon="arrow_right"><div class="txt">Расширенный поиск</div><div class="icon"></div></div>
+                    </td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+        <div class="clear"></div>
+        <div class="result_count"></div>
+        <div class="list" id="object_list"></div>
+    </div>
+
+{% endblock %}

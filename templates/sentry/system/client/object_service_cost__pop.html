@@ -1,0 +1,56 @@
+<div class="pop" id="service_cost__pop">
+    <div class="header"><b>Стоимость услуги</b><div class="close"></div></div>
+    <form>
+        <table class="tableInfo wide margin_null">
+            <tr class="row2">
+                <td class="padding_9 right">Тип оплаты</td>
+                <td class="secondary"><select name="cost_type_id">
+                    {% for item in dir_cost_type_set %}
+                        <option value="{{ item.id }}">{{ item.name }}</option>
+                    {% endfor %}
+                </select></td></tr>
+            <tr class="row2">
+                <td class="padding_9 right"><div class="required">*</div>Цена</td>
+                <td class="secondary">{{ service_cost_form.cost }}</td></tr>
+            <tr class="row2">
+                <td class="padding_9 right"><div class="required">*</div>День месяца</td>
+                <td class="secondary">
+                    {{ service_cost_form.calculation_month_day }}
+                    <select name="calculation_month_id">
+                        {% for item in dir_calculation_month_set %}
+                            <option value="{{ item.id }}">{{ item.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td></tr>
+            <tr class="row2">
+                <td class="padding_9 right"><div class="required">*</div>Дата</td>
+                <td>{{ service_cost_form.cost_begin_date }}</td></tr>
+            <tr class="row2">
+                <td class="padding_9 right">Дата завершения</td>
+                <td>{{ service_cost_form.cost_end_date }}</td></tr>
+            <tr class="row2">
+                <td class="padding_9 right">Комментарий</td>
+                <td class="secondary">
+                    <textarea cols="50" name="comment" rows="3"></textarea></td></tr>
+
+            <tr class="hide" id="cost_log">
+                <td colspan="2" class="cell">
+                    <table class="tableinfo wide">
+                        <thead>
+                        <tr class="row"><td class="cell" colspan="2">История изменений:
+                            <span class="btn_ui btn_28 bg" action="service_cost_add" icon="object_add" title="Добавить стоимость"><div class="icon"></div></span>
+                        </td></tr>
+                        </thead>
+                        <tbody class="show"></tbody>
+                    </table>
+                </td></tr>
+
+            <tr><td colspan="2">
+                <button class="btn_ui bg" type="submit" icon="save"><div class="txt">Сохранить</div><div class="icon"></div></button>
+                <span class="btn_ui bg" action="reset" icon="reset"><div class="txt">Сбросить</div><div class="icon"></div></span>
+                <span class="btn_ui bg" action="remove" icon="delete"><div class="txt">Удалить</div><div class="icon"></div></span>
+            </td></tr>
+            </tbody>
+        </table>
+    </form>
+</div>

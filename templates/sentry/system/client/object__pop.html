@@ -1,0 +1,63 @@
+<script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/client/object__pop.js"></script>
+<div class="pop" id="client_object_pop">
+    <div class="header"><b>Объект</b><div class="close"></div></div>
+
+    <form>
+        <table class="tableInfo wide margin_null">
+            <tr class="row"><td class="padding_9 nowrap right"><div class="required">*</div>Наименование</td>
+                <td class="secondary">{{ info_form.name }}</td></tr>
+            <tr class="row" name="address">
+                <td class="padding_9 right"><div class="required">*</div>Адрес</td>
+                <td class="secondary">
+                    <select style="width:330px; margin-top: 3px" name="address_region">
+                        {% for region in dir_address_1_region %}
+                            <option value="{{ region.id }}">{{ region.name }}</option>
+                        {% endfor %}
+                    </select><br/>
+                    <select style="width:330px; margin-top: 3px" name="address_locality"></select><br/>
+
+                    <div class="address_txt"><div class="required">*</div>Улица</div><input name="address_street" class="address_input" type="text"><br/>
+                    <div class="address_txt"><div class="required">*</div>Дом</div><input name="address_building" class="address_input" type="text"><br/>
+                    <div class="address_txt">Кабинет</div><input name="address_placement" class="address_input" type="text" />
+                </td></tr>
+
+            <tr class="row" name="referer"><td class="padding_9 nowrap right">Кто привел</td>
+                <td class="secondary">
+                    <select name="referer_type_id">
+                        {% for item in dir_referer_type_set %}<option value="{{ item.id }}">{{ item.name }}</option>{% endfor %}
+                    </select><br/>
+                    <select function="select_sentry_user" name="referer_user">
+                        <option value=""></option>
+                        <optgroup post_id="12" label="Менеджер"></optgroup>
+                    </select>
+                    <!--input name="referer_user" class="wide" type="text"-->
+                </td></tr>
+
+            <tr class="row" name="security_previously"><td class="padding_9 nowrap right">Кем охранялся ранее</td>
+                <td class="secondary"><input name="security_previously" class="wide" type="text" /></td></tr>
+
+            <!--tr class="row"><td class="cell middle">Ответственный менеджер</td>
+                <td class="secondary"><input name="warden" class="wide" type="text"></td></tr-->
+            <tr class="row"><td class="padding_9 right">Комментарий</td>
+                <td class="secondary">{{ info_form.comment }}</td></tr>
+
+            <tr class="row"><td colspan="2">
+                <fieldset class="in_pop" id="tags"><legend>Метки</legend>
+                    <div class="in_pop_sublist"></div>
+                    <select id="client_object_tags">
+                        {% for item in dir_tag_set %}
+                            <option value="{{ item.id }}" name="{{ item.name }}">{{ item.name }}{% if item.description %} - {{ item.description }}{% endif %}</option>
+                        {% endfor %}
+                    </select>
+                    <span class="btn_ui" action="object_tag_add" icon="object_add" name="subtypes"><div class="txt">Добавить</div><div class="icon"></div></span>
+                </fieldset>
+
+                <button class="btn_ui bg" type="submit" icon="save"><div class="txt">Сохранить</div><div class="icon"></div></button>
+                <span class="btn_ui bg" action="object_reset" icon="reset"><div class="txt">Сбросить</div><div class="icon"></div></span>
+                <!--span class="btn_ui" action="remove"><div class="txt">Удалить</div><div class="icon"></div></span-->
+            </td></tr>
+            </tbody>
+        </table>
+    </form>
+
+</div>

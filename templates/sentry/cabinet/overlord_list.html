@@ -1,0 +1,19 @@
+{% extends "inside/index.html" %}
+{% block content %}
+
+
+<div class="resultCount">В списке: {{ cab_set.count }}</div>
+
+<table class="tableInfo">
+{% for item in cab_set %}
+    <tr class="row"><td class="cell full_name">{{ item.client.id }}</td>
+        <td class="cell full_name">{{ item.full_name }}</td>
+        <td class="cell secondary">{{ item.client.name }}</td>
+        <td class="cell secondary">{{ item.email }}</td>
+    </tr>
+{% empty %}
+    Sorry, no items
+{% endfor %}
+</table>
+
+{% endblock %}

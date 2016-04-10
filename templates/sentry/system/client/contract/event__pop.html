@@ -1,0 +1,45 @@
+<div class="pop" id="event_pop">
+    <div class="header"><b>Событие</b><div class="close"></div></div>
+    <form>
+        <table class="tableInfo wide margin_null">
+            <tbody>
+            <!--tr class="row2"><td class="padding_9 right">Договор</td>
+                <td class="cell secondary"><select name="service"></select></td></tr-->
+            <tr class="row2"><td class="padding_9 right"></td>
+                <td class="cell secondary"><select name="event_type">
+                    {% for item in dir_bonus_set %}
+                        <option value="{{ item.id }}" name="{{ item.label }}">{{ item.description }}</option>
+                    {% endfor %}
+                </select>
+                </td></tr>
+            <tr class="row2"><td class="padding_9 right">Сумма</td>
+                <td><input name="cost" type="text" class="width_70"><div class="txt9">руб.</div>
+                </td></tr>
+            <tr class="row2"><td class="padding_9 right">Дата</td>
+                <td class="data">
+                    <input class="datepicker" name="event_date" type="text">
+                </td></tr>
+            <tr class="row2"><td class="padding_9 right">Сотрудник</td>
+                <td class="cell secondary">
+                    <!--input name="sentry_user" type="text" class="wide" disabled-->
+                    <select function="select_sentry_user" name="sentry_user">
+                        <option value=""></option>
+                        <optgroup post_id="12" label="Менеджер"></optgroup>
+                        <optgroup post_id="8" label="Инженер"></optgroup>
+                        <optgroup post_id="18" label="Офис-менеджер"></optgroup>
+                        <optgroup post_id="13" label="Менеджер-бухгалтер"></optgroup>
+                        <optgroup post_id="25" label="Техник"></optgroup>
+                    </select>
+                </td></tr>
+            <tr class="row2"><td class="cell right">Комментарий</td>
+                <td class="cell secondary">
+                    <textarea cols="43" name="comment" rows="3" aria-invalid="false"></textarea>
+                </td></tr>
+            <tr><td colspan="2">
+                <button type="submit" class="btn_ui bg" icon="save"><div class="txt">Сохранить</div><div class="icon"></div></button>
+                <div class="btn_ui bg left" action="event_delete" icon="delete"><div class="txt">Удалить</div><div class="icon"></div></div>
+            </td></tr>
+            </tbody>
+        </table>
+    </form>
+</div>

@@ -1,0 +1,74 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+
+<link href="{{ STATIC_URL }}index/css/sentry.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="{{ STATIC_URL }}jquery/ui/js/jquery-ui-1.10.3.custom.js"></script>
+
+<link href="{{ STATIC_URL }}jquery/ui/development-bundle/themes/base/jquery.ui.autocomplete.css" type="text/css" rel="stylesheet">
+<script type="text/javascript" src="{{ STATIC_URL }}jquery/ui/development-bundle/ui/minified/jquery.ui.autocomplete.min.js"></script>
+
+
+<script type="text/javascript" src="{{ STATIC_URL }}monitor/js/config/codes.js"></script>
+
+
+<div class="hidden">
+    <div class="wires_select">
+    <select class="select_02">
+        <option value="0">Удалить запись</option>
+        {% for group_item in group_set %}
+            <optgroup label="{{ group_item.description }}">
+                {% for item in dir_event_set %}
+                    {% if group_item.id == item.group.id %}
+                        <option value="{{ item.id }}">{{ item.description }}</option>
+                    {% endif %}
+                {% endfor %}
+            </optgroup>
+
+        {% endfor %}
+    </select>
+    </div>
+</div>
+
+
+
+<div class="content">
+    <table class="tableInfo thick">
+        <thead id="codesHead">
+        <tr class="row title">
+            <td class="cell">Код</td>
+            <td class="cell" colspan="2">Событие</td>
+        </tr>
+        </thead>
+        <tbody class="show" id="codesBody">
+            {% for item in codes_set %}
+                <tr class="row" code_id="{{ item.id }}" dir_event_id="{{ item.dir_event.id }}">
+                    <td class="cell_slim code"><div class="txt">{{ item.code }}</div></td>
+                    <td class="cell_slim dir_event"><div class="txt">{{ item.dir_event.description }}</div></td>
+                    <td class="ui_button gui_edit" action="codeEdit"></td>
+                </tr>
+            {% endfor %}
+            <tr class="white"><td colspan="3"><span class="button" action="codeAdd">Добавить код</span>
+            </td></tr>
+        </tbody>
+    </table>
+</div>
+
+
+<!-- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- .hide -->
+
+<div class="pop blockInfo" id="object_menu">
+    <div class="header"><b>Объект</b><div class="button_02 pop_close" action="objectCloseInfo"></div></div>
+    <div class="field">Договор: <span key="order_num"></span></div>
+    <div class="field">Объект: <span key="object_name"></span></div>
+    <hr>
+    <div class="field">Адрес: <span key="address"></span></div>
+    <div class="field">ГБР: <span key="gbr"></span></div>
+    <div class="blockInfo" key="contacts"></div>
+    <hr>
+    <div class="field">Описание шлейфов:</div>
+    <table key="wires"><tbody></tbody></table>
+    <div class="button" onclick="addWire()">Добавить шлейф</div>
+    <div class="button" onclick="saveWire()">Сохранить</div>
+</div>
+
+{% endblock %}

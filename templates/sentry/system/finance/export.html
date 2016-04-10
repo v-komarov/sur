@@ -1,0 +1,50 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+
+    {% include "sentry/system/finance/__left_block.html" %}
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/finance/export.js"></script>
+
+    <div class="middleBlock"><h2 class="cabinet_title">{{ title }}</h2>
+
+        <table class="tableInfo searchObject">
+            <tbody>
+            <tr class="row">
+                <td class="padding_9 right">Экспорт</td>
+                <td colspan="2" class="cell"><select class="width_320" name="export_type">
+                    <option value="">часов и ЗП сотрудников постов</option>
+                </select>
+                </td>
+            </tr>
+            <tr class="row">
+                <td class="padding_9 right">Охранная организация</td>
+                <td colspan="2">
+                    <div class="down_box left" name="security_company_filter">
+                        <div class="btn_ui" icon="filter" action="security_company_filter" title="Охранная организация"><div class="icon"></div></div>
+                        <ul class="drop_list" id="security_company_list">
+                            {% for item in security_company_set %}
+                                <li checked="checked" security_company_id="{{ item.id }}" title="{{ item.name }}">
+                                    <div class="chechbox"></div><div class="txt">{{ item.name }}</div></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="width_290" name="security_company_list"></div>
+                </td></tr>
+
+            <tr class="row"><td class="padding_9 right">Период</td>
+                <td colspan="2">
+                    <input class="datepicker" type="text" value="{{ month_day }}" name="from" id="from"><span style="float:left; padding:8px 10px 0 2px;">-</span>
+                    <input class="datepicker" type="text" value="{{ today }}" name="to" id="to">
+                </td></tr>
+
+            <tr class="row status white">
+                <td colspan="3"><div class="btn_ui bg" action="export_ajax" icon="download" title="Экспорт"><div class="icon"></div><div class="txt">Экспорт</div></div></td>
+            </tr>
+
+            </tbody>
+        </table>
+
+        <div class="clear"></div><div class="loading">Загрузка</div>
+
+
+    </div>
+{% endblock %}

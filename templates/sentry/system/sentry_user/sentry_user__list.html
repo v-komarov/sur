@@ -1,0 +1,33 @@
+<h2 class="cabinet_title">{{ title }}</h2>
+
+<table class="tableInfo searchObject"><tbody>
+<tr class="row">
+    <td class="padding right">Статус</td>
+    <td class="cell">
+        <select class="wide" name="is_active">
+            <option value="">все</option>
+            <option value="1" selected>активен</option>
+            <option value="0">не активен</option>
+        </select>
+    </td></tr>
+</tbody></table>
+
+<div class="result_count"></div>
+
+<table class="tableInfo" id="users_list">
+    <thead><tr class="row title">
+        <td class="cell"><input class="wide" type="text"  placeholder="Ф.И.О." value="" name="full_name"></td>
+        <td class="cell"><input class="wide" type="text"  placeholder="Логин" value="" name="username"></td>
+        <td class="cell">
+            <select class="wide" name="user_post"><option value="all" selected>Должность (все)</option>
+                {% for item in user_post_set %}
+                    <option value="{{ item.id }}">{{ item.name }}</option>
+                {% endfor %}
+            </select></td>
+        <td><div class="btn_ui" action="add" icon="object_add" title="Добавить"><div class="icon"></div></div></td>
+    </tr></thead>
+    <tbody class="show"></tbody>
+</table>
+
+<div class="clear"></div>
+

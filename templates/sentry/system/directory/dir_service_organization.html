@@ -1,0 +1,103 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+    {% include "sentry/system/directory/__left_block.html" %}
+
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/directory/dir_service_organization.js"></script>
+    <div class="middleBlock"><h2 class="cabinet_title">{{ title }}</h2>
+
+        <table class="tableInfo show" id="company_list">
+            <thead>
+            <tr class="row title">
+                <td class="cell"><input class="wide" type="text"  placeholder="Наименование" value="" name="company_name"></td>
+                <td style="width:36px">{% if perms.system.directory_service_organization_add %}
+                    <div class="btn_ui" action="add" icon="object_add" title="Добавить"><div class="icon"></div></div>
+                {% else %}<div class="empty_28"></div>
+                {% endif %}
+                </td>
+            </tr>
+            </thead>
+            <tbody class="show"></tbody>
+        </table>
+
+        <div class="clear"></div>
+
+        <!-- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- .hide -->
+
+        <div class="pop" id="pop_company">
+            <div class="header"><b>Организация</b><div class="close"></div></div>
+            <form>
+
+                <table class="tableInfo wide margin_null">
+                    <tr class="row2">
+                        <td class="cell middle">Название</td>
+                        <td class="cell secondary"><input size="55" type="text" value="" name="name"></td></tr>
+                    <tr class="row2">
+                        <td class="cell middle">Край, область</td>
+                        <td class="cell secondary"><input class="wide" type="text" value="" name="address_locality__region__name"></td></tr>
+                    <tr class="row2">
+                        <td class="cell middle">Населенный пункт</td>
+                        <td class="cell secondary"><input class="wide" type="text" value="" name="address_locality__name"></td></tr>
+                    <tr class="row2">
+                        <td class="cell middle">Адрес / индекс</td>
+                        <td class="cell secondary nowrap">
+                            <input class="half" type="text" value="" name="address"><b class="txt2">/</b><input class="half" type="text" value="" name="address_index">
+                    <tr class="row2">
+                        <td class="cell middle">Телефон / факс</td>
+                        <td class="cell secondary nowrap">
+                            <input class="half" type="text" value="" name="phone"><b class="txt2">/</b><input class="half" type="text" value="" name="fax">
+                        </td></tr>
+                    <tr class="row2">
+                        <td class="cell middle">ИНН / КПП</td>
+                        <td class="cell secondary nowrap">
+                            <input class="half" type="text" value="" name="inn"><b class="txt2">/</b><input class="half" type="text" value="" name="kpp">
+                        </td></tr>
+                    <tr class="row2">
+                        <td class="cell middle">Банк</td>
+                        <td class="cell secondary"><input class="wide" type="text" value="" name="bank"></td></tr>
+                    <tr class="row2">
+                        <td class="cell middle">БИК</td>
+                        <td class="cell secondary"><input class="wide" type="text" value="" name="bank__bik"></td></tr>
+                    <tr class="row">
+                        <td class="cell middle">Корреспондентский счёт</td>
+                        <td class="cell secondary"><input class="wide" type="text" value="" name="bank__correspondent_account"></td></tr>
+                    <tr class="row2">
+                        <td class="cell middle">Расчетный счет</td>
+                        <td class="cell secondary"><input class="wide" type="text" value="" name="bank_account"></td></tr>
+                    <tr class="row2">
+                        <td class="cell middle">№ лицензии</td>
+                        <td class="cell secondary"><input class="wide" type="text" value="" name="license"></td></tr>
+                    <tr class="row2">
+                        <td class="cell middle">Руководитель</td>
+                        <td class="cell secondary">
+                            <select class="wide" name="director">
+                                <optgroup label="Администратор">
+                                    {% for item in director_set %}
+                                        {% if item.post.name == "Администратор" %}
+                                            <option value="{{ item.id }}">{{ item.full_name }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </optgroup>
+                                <optgroup label="Руководитель">
+                                    {% for item in director_set %}
+                                        {% if item.post.name == "Руководитель" %}
+                                            <option value="{{ item.id }}">{{ item.full_name }}</option>
+                                        {% endif %}
+                                    {% endfor %}
+                                </optgroup>
+                            </select>
+                        </td></tr>
+
+                    <tr>
+                        <td colspan="2">
+                            <button class="btn_ui bg" type="submit" icon="save" title="Сохранить"><div class="icon"></div><div class="txt">Сохранить</div></button>
+                            <div class="btn_ui bg" action="delete" icon="delete" title="Удалить"><div class="icon"></div><div class="txt">Удалить</div></div>
+                        </td></tr>
+                </table>
+            </form>
+
+        </div>
+
+
+    </div>
+
+{% endblock %}

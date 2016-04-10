@@ -1,0 +1,46 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+    {% include "sentry/system/client/__left_block.html" %}
+
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/pop_menu.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/client/object_service.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/client/object_service_cost.js"></script>
+
+    <div class="middleBlock" client_id="{{ client_id }}" object_id="{{ object_id }}">
+        <h2 class="cabinet_title">{{ client_object_set.name }}: {{ title|lower }}</h2>
+
+        <table class="tableInfo" id="service_list">
+            <thead><tr><td class="button_list" colspan="2">
+                <b class="txt">Список услуг</b>
+
+                {% if perms.system.client_object_service_add %}
+                    <div class="btn_ui" action="service_add" icon="object_add" name="object_service" title="Добавить услугу"><div class="icon"></div></div>
+                {% endif %}
+                <div class="down_box">
+                    <div class="btn_ui" icon="filter" action="service_filter" title="Фильтр"><div class="icon"></div></div>
+                    <ul class="drop_list" id="filter_service_type">
+                        {% for item in dir_service_type_set %}
+                            <li checked="checked" service_type_id="{{ item.id }}" title="{{ item.description }}">
+                                <div class="chechbox"></div><div class="txt">{{ item.name }}</div></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+                <div class="btn_ui" action="service_reset" icon="reset" name="object_service" title="Обновить"><div class="icon"></div></div>
+
+            </td></tr>
+            <tr class="row title">
+                <td class="cell">Услуга</td>
+                {% if perms.system.client_object_service_cost %}
+                    <td class="cell">Стоимость</td>
+                {% endif %}
+            </tr>
+            </thead>
+            <tbody class="show compact"></tbody>
+        </table>
+
+        {% include "sentry/system/client/object_service__pop.html" %}
+        {% include "sentry/system/client/object_service_cost__pop.html" %}
+
+    </div>
+
+{% endblock %}

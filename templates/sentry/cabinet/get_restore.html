@@ -1,0 +1,40 @@
+{% extends "index.html" %}
+{% block content %}
+
+<link href="{{ STATIC_URL }}jquery/ui/css/cupertino/jquery-ui-1.10.3.custom.css" rel="stylesheet">
+<script type="text/javascript" src="{{ STATIC_URL }}jquery/ui/js/jquery-1.9.1.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}jquery/ui/js/jquery-ui-1.10.3.custom.js"></script>
+
+<script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery-validate.min.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}index/js/inside/cabinet/get_restore.js"></script>
+
+<div class="page">
+    <h1 class="page_title">Восстановление доступа в Личный кабинет</h1>
+
+    {% if done %}
+        <h3 class="title">На ваш email отправлены дальнейшие инструкции.</h3>
+    {% else %}
+
+    <form class="request_form" action="/cabinet/get_restore/" method="post">{% csrf_token %}
+        {% if error %}<div class="txt_error">{{ error }}</div>{% endif %}
+        <table><tbody>
+             <tr><td class="txt">E-mail</td>
+                <td>{{ form.email }}</td>
+                </tr>
+        </tbody></table>
+
+        {% if Captcha_error %}<div class="txt_error">Вы неверно ввели символы. Попробуйте еще раз</div>{% endif %}
+        <div class="txt_captcha">
+            <span class="txt">Введите символы:</span>
+            <span>{{ form.captcha }}</span>
+        </div>
+
+        <input type="submit" value="Отправить заявку">
+
+    </form>
+
+    {% endif %}
+
+</div>
+
+{% endblock %}

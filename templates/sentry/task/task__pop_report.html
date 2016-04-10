@@ -1,0 +1,52 @@
+<script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/task/task__pop_report.js"></script>
+<div class="pop" id="task__pop_report">
+    <div class="header"><b></b><div class="close"></div></div>
+    <form>
+        <table class="tableInfo wide margin_null"><tbody class="show">
+        <tr class="row2" name="create_user">
+            <td class="cell middle">Отчет добавил</td><td class="cell secondary"></td></tr>
+        <tr class="row2" name="warden">
+            <td class="cell middle">Ответственный</td><td class="cell secondary"></td></tr>
+        <tr class="row2" name="doer">
+            <td class="cell middle">Исполнитель</td>
+            <td class="cell secondary info"></td>
+            <td class="cell secondary edit">
+                <!--input name="doer" class="wide" type="text" value=""-->
+                <select function="select_sentry_user" name="doer">
+                    <option value=""></option>
+                    <optgroup post_id="12" label="Менеджер"></optgroup>
+                    <optgroup post_id="8" label="Инженер"></optgroup>
+                    <optgroup post_id="25" label="Техник"></optgroup>
+                    <optgroup post_id="18" label="Офис-менеджер"></optgroup>
+                    <optgroup post_id="13" label="Менеджер-бухгалтер"></optgroup>
+                </select>
+
+                <div name="security_squad">ГБР<select><option value=""></option>
+                        {% for item in dir_security_squad_set %}<option value="{{ item.id }}">{{ item.name }}</option>{% endfor %}
+                    </select>
+                </div>
+            </td>
+        </tr>
+        <tr class="row2" name="status">
+            <td class="cell middle">Статус</td>
+            <td class="cell secondary info"></td>
+            <td class="cell secondary edit">
+                <select><option value="2">в процессе</option><option value="3">выполнена</option></select>
+            </td></tr>
+        <tr>
+            <td class="cell info" colspan="2">Отчет<div name="comment"></div></td>
+            <td class="cell edit" colspan="2">Отчет<br/><textarea cols="50" name="comment" rows="4"></textarea></td>
+        </tr>
+        <tr>
+            <td colspan="2">
+                <div style="float:right; padding: 0 10px 5px;">
+                    <button class="btn_ui bg" type="submit" icon="save"><div class="txt">Сохранить</div><div class="icon"></div></button>
+                    <span class="btn_ui bg" action="delete" icon="delete"><div class="txt">Удалить</div><div class="icon"></div></span>
+                </div>
+            </td></tr>
+        </tbody></table>
+
+    </form>
+
+</div>
+

@@ -1,0 +1,56 @@
+#service_list {
+    padding: 0;
+
+    display: inline-block;
+}
+#service_list .button_list__button,
+#service_list .button_list {
+    background-color: #f1f1f1;
+    padding: 0;
+    margin: 0 0 5px 0;
+    border: 1px solid #7CB2C8;
+    min-height: 36px;
+}
+#service_list .button_list__button b,
+#service_list .button_list b {
+    padding: 9px 15px;
+    display: inline-block;
+    font-size: 15px;
+    color: #3379A5;
+}
+#service_list .button_list__button {
+    margin: 0;
+}
+
+#service_list .tableInfo {
+    margin: 0;
+    display: inline-table;
+}
+
+.wide2 {
+    display: table;
+    width: 100%;
+}
+
+
+
+.service__item {
+
+    margin-top: 5px;
+}
+.service__item tr,
+.service__item td {
+    cursor: pointer;
+}
+
+.service__item [name=event_date] {
+    font-size: 12px;
+    padding: 6px 8px 0 0;
+}
+.service__item .device_list {
+
+}
+.service__item .device_list a {
+    border-top: 1px solid #7CB2C8;
+    background-color: #fff;
+}

@@ -1,0 +1,130 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+    <link href="{{ STATIC_URL }}index/css/sentry_monitor.css" type="text/css" rel="stylesheet">
+    <script type="text/javascript" src="{{ STATIC_URL }}jquery/ui/js/jquery-ui-1.10.3.custom.js"></script>
+
+    <link href="{{ STATIC_URL }}jquery/ui/development-bundle/themes/base/jquery.ui.autocomplete.css" type="text/css" rel="stylesheet">
+    <script type="text/javascript" src="{{ STATIC_URL }}jquery/ui/development-bundle/ui/minified/jquery.ui.autocomplete.min.js"></script>
+
+
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/monitor/operator/list.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/monitor/operator/list_events.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/monitor/operator/list_objects.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/monitor/operator/list_buttons.js"></script>
+
+
+    <div class="content_events">
+        <table class="tableInfo">
+            <thead id="eventsHead">
+            <tr class="white">
+                <td colspan="4"><div class="server_time">00:00:00</div>
+                    <select class="event_filter">
+                        {% for item in event_filter %}
+                            <option class="item" value="{{ item.name }}" {% if forloop.first %}selected{% endif %}>{{ item.description }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            </tr>
+            <tr class="row title">
+                <td class="cell event_time">Время</td>
+                <td class="cell object_num">№</td>
+                <td class="cell object_name">Объект</td>
+                <td class="cell event">Событие</td>
+            </tr>
+            </thead>
+        </table><br />
+        <div class="content_scroll">
+            <table class="tableInfo thick">
+                <tbody id="eventsBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="content_objects">
+        <table class="tableInfo">
+            <thead id="objectsHead">
+            <tr class="white">
+                <td colspan="2">
+                    <input type="text" name="object_name" value="" id="autocomplete_object">
+                <span id="buttons_objects_status">
+                    <div class="button2 all" title="Все объекты" action="all">0</div>
+                    <div class="button2 unlock" title="Не под охраной" action="unlock">0</div>
+                    <div class="button2 lock" title="Под охраной" action="lock">0</div>
+                    <div class="button2 alarm" title="Тревожные" action="alarm">0</div>
+                </span>
+                </td>
+            </tr>
+            <tr class="row title">
+                <td class="cell object_num">№</td>
+                <td class="cell object_name">Объект</td>
+            </tr>
+            </thead>
+        </table>
+        <div class="content_scroll">
+            <table class="tableInfo thick">
+                <tbody id="objectsBody"></tbody>
+            </table>
+        </div>
+    </div>
+
+
+
+    <!-- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- .hide -->
+
+    <div class="hidden">
+
+        <select class="gbr_select">
+            {% for item in gbr_set %}
+                <option class="item" value="{{ item.id }}">{{ item.name }}</option>
+            {% endfor %}
+        </select>
+
+        <select class="alarm_report">
+            {% for item in alarm_report_set %}
+                <option class="item" value="{{ item.id }}">{{ item.name }}</option>
+            {% endfor %}
+        </select>
+
+    </div>
+
+    <div class="pop" id="alarm_menu">
+        <table class="tableInfo">
+            <thead id="alarmsHead" class="header">
+            <tr class="row title">
+                <td class="cell event_time">Время</td>
+                <td class="cell object_num">№</td>
+                <td class="cell object_name">Объект</td>
+                <td class="cell event">Событие</td>
+            </tr>
+            </thead>
+            <tbody id="alarmsBody" class="thick">
+            </tbody>
+        </table>
+    </div>
+
+    <div class="pop" id="event_menu">
+        <div class="header"><b>Событие</b><span class="pop_close"></span></div>
+        <div><span class="time"></span><span class="description"></span></div>
+        <hr>
+        <div class="field">Объект: <span key="object_name"></span></div>
+        <div class="field">id объекта: <span key="object_id"></span></div>
+        <hr>
+        <div class="field">Адрес: <span key="address"></span></div>
+        <div class="field">ГБР: <span key="gbr"></span></div>
+    </div>
+
+    <div class="pop" id="object_menu">
+        <div class="header"><b>Объект</b>
+            <div class="pop_close"></div>
+        </div>
+        <div class="field">Договор: <span key="order_num"></span></div>
+        <div class="field">Объект: <span key="object_name"></span></div>
+        <div class="field">id объекта: <span key="object_id"></span></div>
+        <hr>
+        <div class="field">Адрес: <span key="address"></span></div>
+        <div class="field">ГБР: <span key="gbr"></span></div>
+        <hr>
+        <span class="button">Фильтр</span>
+    </div>
+
+{% endblock %}

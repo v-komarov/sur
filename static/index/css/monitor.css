@@ -1,0 +1,65 @@
+.wrapper {
+    padding: 0;
+}
+
+.leftShore {
+    height: 700px;
+    float: left;
+    width: 990px;
+    margin-bottom: 40px;
+    padding: 5px 10px;
+}
+
+.tableInfo {
+    margin: 20px 0 0 0;
+}
+.tableInfo .cell {
+    padding: 5px;
+}
+.ui-resizable-s {
+    height: 14px;
+    background:url("../img/ui/scroll_s_bg.gif") no-repeat center #bcbcbc;
+    border-top: 1px solid #a3a3a3;
+}
+.ui-resizable-s:hover { background-color: #a9a9aa; }
+
+
+table.title {
+    position: absolute;
+    z-index: 2;
+    background-color: #f1f1f1;
+    margin: 1px 0 0 1px;
+    font-size: .9em;
+}
+table.title .cell {
+    padding: 0 3px 0 5px;
+}
+table.title .cell:not(:last-child) {
+    border-right: 1px solid #000;
+}
+
+.blockButtons .ui_button {
+    margin: 2px 10px 0 0;
+    float: left;
+}
+
+#objects {
+    overflow-y: scroll;
+    border: 1px solid #aaaaaa;
+    border-bottom: none;
+    height: 35%;
+}
+#objects .tableInfo {
+    margin-bottom: 17px;
+}
+#events {
+    overflow-y: scroll;
+}
+
+
+.scroll {
+    cursor: move;
+    height: 20px;
+    width: 700px;
+    background-color: #ffd4b3;
+}

@@ -1,0 +1,54 @@
+<script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/client/contract/contract__pop.js"></script>
+<div class="pop" id="contract_pop">
+    <div class="header"><b>Новый договор</b><div class="close"></div></div>
+
+    <form>
+        <table class="tableInfo wide margin_null">
+            <tbody>
+            <tr class="row2"><td class="padding_9 nowrap right"><div class="required">*</div>Обслуживающая организация</td>
+                <td class="secondary"><select class="wide" name="service_organization"><option/>
+                    {% for item in dir_service_organization_set %}<option value="{{ item.id }}">{{ item.name }}</option>{% endfor %}
+                </select></td></tr>
+
+            <tr class="row2"><td class="padding_9 right"><div class="required">*</div>Тип услуг</td>
+                <td class="secondary"><select class="wide" name="service_type"><option/>
+                    {% for item in dir_service_type_set %}<option value="{{ item.id }}" name="{{ item.name }}">{{ item.name }} ({{ item.description }})</option>{% endfor %}
+                </select></td></tr>
+
+            <tr class="row2"><td class="padding_9 right"><div class="required">*</div>Номер договора</td>
+                <td class="secondary"><select name="name"></select></td></tr>
+            <tr><td class="padding_9 right">Дата договора</td>
+                <td><input class="datepicker" name="begin_date" type="text"></td></tr>
+            <tr class="row2"><td class="padding_9 right">Дата окончания договора</td>
+                <td><input class="datepicker" name="end_date" type="text"></td></tr>
+
+            <tr class="row2" name="security_previously"><td class="padding_9 nowrap right">Кем охранялся ранее</td>
+                <td class="secondary"><input name="security_previously" class="wide" type="text" /></td></tr>
+
+            <tr class="row2"><td class="padding_9 right">Комментарий</td>
+                <td class="secondary"><textarea cols="43" name="comment" rows="2"></textarea></td></tr>
+
+            <tr class="row2"><td colspan="2">
+                <fieldset class="in_pop" id="tags"><legend>Метки</legend>
+                    <div class="in_pop_sublist"></div>
+                    <select id="client_contract_tags">
+                        {% for item in dir_tag_set %}
+                            {% if item.root == 'client_contract' %}
+                                <option value="{{ item.id }}" name="{{ item.name }}">{{ item.name }}{% if item.description %} - {{ item.description }}{% endif %}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <span class="btn_ui bg left" action="object_tag_add" icon="object_add" name="subtypes"><div class="txt">Добавить</div><div class="icon"></div></span>
+                </fieldset>
+            </td></tr>
+
+            <tr><td colspan="2">
+                <button class="btn_ui bg" type="submit" icon="save"><div class="txt">Сохранить</div><div class="icon"></div></button>
+                <!--span class="btn_ui bg" action="contract_reset" icon="reset"><div class="txt">Сбросить</div><div class="icon"></div></span-->
+                <span class="btn_ui bg left" action="contract_delete" icon="delete"><div class="txt">Удалить</div><div class="icon"></div></span>
+            </td></tr>
+            </tbody>
+        </table>
+    </form>
+
+</div>

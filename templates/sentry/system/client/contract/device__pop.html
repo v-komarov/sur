@@ -1,0 +1,74 @@
+<script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/client/contract/device.js"></script>
+
+<div class="pop" id="device_install_pop">
+    <form>
+        <div class="header"><b>Подключение к объектовому устройству</b><div class="close"></div></div>
+
+        <table class="tableInfo wide margin_null">
+            <tr class="row2"><td class="padding_9 text_right">Объектовое устройство</td>
+                <td><input name="device" class="left margin_5" type="text" value=""><div class="device_link">карточка О/У</div>                </td></tr>
+            <tr class="row2"><td class="padding_9 text_right">Установка</td>
+                <td><input name="install_date" class="datepicker" type="text" value="" action="date">
+                    <select class="user_right" function="select_sentry_user" name="install_user">
+                        <option value=""></option>
+                        <optgroup post_id="8" label="Инженер"></optgroup>
+                        <optgroup post_id="25" label="Техник"></optgroup>
+                    </select>
+                </td></tr>
+            <tr class="row2"><td class="padding_9 text_right">Снятие</td>
+                <td><input name="uninstall_date" class="datepicker" type="text" value="" action="date">
+                    <select class="user_right" function="select_sentry_user" name="uninstall_user">
+                        <option value=""></option>
+                        <optgroup post_id="8" label="Инженер"></optgroup>
+                        <optgroup post_id="25" label="Техник"></optgroup>
+                    </select>
+                </td></tr>
+            <!--tr class="row2"><td class="cell middle">Пароль</td>
+                <td class="cell secondary"><input name="password" class="wide" type="text" value=""></td></tr-->
+            <tr class="row2"><td class="padding_9 text_right">Комментарий</td>
+                <td class="cell secondary"><textarea cols="43" id="id_passport" name="comment" rows="3"></textarea></td></tr>
+            <tr><td colspan="2">
+                <button type="submit" class="btn_ui bg" icon="save"><div class="txt">Сохранить</div><div class="icon"></div></button>
+                <!--div class="btn_ui bg" action="device_install_reset" icon="reset"><div class="txt">Сбросить</div><div class="icon"></div></div-->
+                <div class="btn_ui bg left" action="device_install_delete" icon="delete" action="delete"><div class="txt">Удалить</div><div class="icon"></div></div>
+            </td></tr>
+        </table>
+    </form>
+</div>
+
+
+<div class="pop" id="device_pop">
+    <div class="header"><b>Карточка устройства</b><div class="close"></div></div>
+    <table class="tableInfo wide margin_null">
+        <tr class="row2">
+            <td class="padding_76 right">Название</td>
+            <td class="cell secondary"><select name="device_type"><option value=""></option>
+                {% for item in dir_device_type_set %}
+                    <option value="{{ item.id }}">{{ item.name }}</option>
+                {% endfor %}
+            </select></td></tr>
+        <tr class="row2"><td class="padding_9 text_right">Порядковый номер</td>
+            <td><input name="name" class="left margin_5" type="text" value=""></td></tr>
+        <!--tr class="row2"><td class="padding_9 text_right">Серия - номер</td>
+            <td class="cell secondary">
+                <input name="series" size="3" type="text" value=""><span class="txt2">-</span><input name="number" size="9" type="text" value="">
+            </td></tr-->
+        <tr class="row2 switch" name="belong">
+            <td class="padding_9 text_right">Аренда</td><td><div class="chechbox"></div></td></tr>
+        <tr class="row2"><td colspan="2">
+            <table class="tableInfo wide" id="device_pop_install_list">
+                <thead>
+                <tr><td class="inline_block padding bold" colspan="2">Подключенные объекты</td></tr>
+                <tr class="row title"><td class="cell">Объект</td><td class="cell">Приоритет</td></tr>
+                </thead>
+                <tbody class="show compact"><tr class="row"><td class="cell click"></td><td class="cell click"></td></tr></tbody>
+            </table>
+        </td></tr>
+        <tr>
+            <td colspan="2">
+                <div class="btn_ui bg" action="device_update" icon="save"><div class="txt">Сохранить</div><div class="icon"></div></div>
+                <!--div class="btn_ui bg" action="device_reset" icon="reset"><div class="txt">Сбросить</div><div class="icon"></div></div-->
+            </td></tr>
+    </table>
+</div>
+

@@ -1,0 +1,65 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+{% include "sentry/system/client/__left_block.html" %}
+
+<script type="text/javascript" src="{{ STATIC_URL }}index/js/pop_menu.js"></script>
+<script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/client/object_salary.js"></script>
+
+<div class="middleBlock" client_id="{{ client_id }}" object_id="{{ object_id }}">
+    <h2 class="cabinet_title">{{ object_name }}: плата сотрудникам</h2>
+
+    <table class="tableInfo show">
+        <thead><tr class="row title">
+            <td colspan="2" class="cell">Наименование услуги</td>
+            <td class="cell">Оплата</td>
+        </tr></thead>
+        <tbody class="show" id="salary_list" object_id="{{ object_id }}">
+        {% for salary in service_salary_list %}
+        <tr class="row" service_id="{{ salary.service_id }}" service_salary_id="{{ salary.service_salary_id }}">
+            <td class="cell">{{ salary.service_name }}<b class="spacer">:</b></td>
+            <td class="cell secondary">{{ salary.salary_type }}</td>
+            <td class="cell">{{ salary.salary }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- .hide -->
+
+    <div class="pop" id="pop_salary">
+        <div class="header"><b>Плата сотруднику</b><div class="close"></div></div>
+        <table class="tableInfo wide margin_null">
+            <tr class="row"><td class="cell middle">Оплата</td>
+                <td class="cell secondary">{{ form.salary }}</td></tr>
+            <tr class="row"><td class="cell middle">Дата</td>
+                <td>{{ form.begin_date }}</td></tr>
+            <tr class="row"><td class="cell middle">Тип</td>
+                <td class="cell secondary"><select name="salary_type" class="wide">
+                    {% for item in salary_type %}
+                        <option value="{{ item }}">{{ item }}</option>
+                    {% endfor %}
+                </select></td></tr>
+
+            <tr class="row hide" id="show_log"><td colspan="2" class="cell">
+                <table class="tableinfo">
+                    <thead></thead>
+                    <tbody class="show"></tbody>
+                </table>
+            </td></tr>
+
+            <tr class="row"><td colspan="2">
+                <div style="float:right; padding: 0 10px 5px">
+                    <span class="btn_ui" action="save" icon="save"><div class="txt">Сохранить</div><div class="icon"></div></span>
+                    <span class="btn_ui" action="reset" icon="reset"><div class="txt">Сбросить</div><div class="icon"></div></span>
+                    <span class="btn_ui" action="remove" icon="delete"><div class="txt">Удалить</div><div class="icon"></div></span>
+                </div>
+
+            </td></tr>
+            </tbody>
+        </table>
+
+    </div>
+
+</div>
+
+{% endblock %}

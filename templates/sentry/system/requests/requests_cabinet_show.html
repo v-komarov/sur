@@ -1,0 +1,68 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+
+<script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/requests/requests_cabinet_show.js"></script>
+<div class="middleBlock">
+
+<div class="cabinet_menu">
+    <a class="req_button3" href="/system/requests/cabinet/">Назад к списку</a>
+</div>
+
+<h3 class="title red">{{ error }}</h3>
+
+{% if user_request %}
+<table class="tableInfo" request_id="{{ user_request.0.id }}">
+    <thead><tr class="row">
+        <td class="cell">Время заявки</td>
+        <td class="cell">№ договора</td>
+        <td class="cell">Клиент</td>
+        <td class="cell">Контактное лицо</td>
+        <td class="cell">Телефон</td>
+        <td class="cell">e-mail</td>
+        </tr></thead>
+    {% for user in user_request %}
+        <tr class="row">
+            <td class="cell">{{ user.date_request|date:"d.m.Y" }} <span class="time">{{ user.date_request|date:"H:i:s" }}</td>
+            <td class="cell">{{ user.order_num }}</td>
+            <td class="cell">{{ user.client_name }}</td>
+            <td class="cell"><b>{{ user.full_name }}</b></td>
+            <td class="cell">{{ user.phone }}</td>
+            <td class="cell">{{ user.email }}</td>
+            </tr>
+    {% endfor %}
+</table>
+{% else %}
+    error, no user_request
+{% endif %}
+
+{% for item in client_objects_list %}
+    {% if forloop.first %}
+        <h3 class="title">Список найденных объектов:</h3>
+        <div class="client_objects_list">
+    {% endif %}
+
+    <p class="item" client_id="{{ item.client_id }}">
+        <b>{{ item.order_num }}-{{ item.security_type__name }}-{{ item.security_subtype__name }} [ {{ item.order_date }} ]</b>
+        <b>{{ item.name }}</b> <i>{{ item.status }}</i>
+        </p>
+
+    {% if forloop.last %}
+        </div>
+        <div class="clear"></div>
+        <table class="tableInfo persons" id="peoples"></table>
+        <div class="blockButtons">
+            <a href="denied/" class="button denied">Отклонить</a>
+            <a href="allowed/" class="button allowed">Одобрить заявку</a>
+        </div>
+    {% endif %}
+
+    {% empty %}
+        <h3 class="title">{{ error }}</h3>
+        <div class="blockButtons">
+            <a href="denied/" class="button denied">Отклонить</a>
+        </div>
+{% endfor %}
+
+
+</div>
+{% endblock %}

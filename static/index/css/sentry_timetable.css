@@ -1,0 +1,229 @@
+select.selectObject {
+    padding: 3px;
+}
+.timetable {
+    font-size: .95em;
+}
+.timetable .cell {
+    border-right: 1px solid #7CB2C8;
+    min-width: 26px;
+    min-height: 26px;
+    vertical-align: middle;
+    padding: 0;
+}
+.timetable .title .cell:not(:first-child),
+.timetable tbody .cell:not(:first-child) {
+    text-align: center;
+    white-space: nowrap;
+}
+.tableInfo .hours {
+    vertical-align: middle;
+    text-align: center;
+}
+.timetable .btn_ui[action=user_drop] {
+    opacity: .5;
+    border-left: 1px solid #ccc;
+}
+.timetable .btn_ui[action=user_drop]:hover {
+    opacity: 1;
+}
+
+.tableInfo [name=sentry_user] [action=user_shift] {
+    margin: 0;
+}
+
+.timetable td[weekday="5"],
+.timetable td[weekday="6"] {
+    background-color: #ffe7e7;
+}
+.timetable .hover td[weekday="5"], .timetable .hover td[weekday="6"],
+.timetable .row:hover td[weekday="5"], .timetable .row:hover td[weekday="6"] {
+    background-color: #ffbebe;
+}
+#pop_day_focus {
+    width: 27px;
+    height: 27px;
+    float: left;
+    border: 3px solid #56a1d3;
+}
+#pop_day_focus,
+#pop_day {
+    position: absolute;
+    z-index: 9;
+    display: none;
+}
+#pop_day {
+    border: 2px solid #56a1d3;
+}
+#pop_day div {
+    cursor: pointer;
+    background-color: #fff;
+    padding: 6px 9px;
+
+}
+#pop_day div:hover {
+    background-color: #c9e1f2;
+}
+#pop_shift .timelist {
+    margin: 5px 0;
+}
+#pop_shift_close .hours,
+#pop_shift .hours {
+    display: inline-block;
+    margin: 4px;
+    min-width: 20px;
+    text-align: center;
+}
+#pop_shift .button {
+    margin: 0;
+    padding: 5px 10px 4px;
+    display: inline-block;
+    float: none;
+}
+#pop_shift span[action=remove] {
+    float: left;
+    margin-left: 0;
+}
+#pop_shift tr[shift=completed] .hours {
+    position: absolute;
+    background-color: #fff;
+    border: 1px solid #78BAED;
+    padding: 3px;
+    margin-top: 22px;
+}
+#pop_shift tr[shift=completed] select.timelist[name=begin_time],
+#pop_shift tr[shift=completed] select.timelist[name=end_time] {
+    margin: 5px 0;
+}
+#pop_shift tr[shift=completed] .reason {
+    margin: 0 10px 0 40px;
+}
+#pop_shift div[action=set_shift_plan],
+#pop_shift div[action=set_shift] {
+    margin: 4px 5px 4px 0;
+}
+
+.timetable thead .cell,
+.timetable tbody .one {
+    opacity: .5;
+    padding: 6px 0;
+    vertical-align: middle;
+    min-width: 28px;
+    min-height: 16px;
+    width: 28px;
+}
+.timetable .one:hover { opacity: 1 }
+
+.pop2 {
+    position: fixed;
+    margin: 10px auto 0;
+    border: 1px solid #56a1d3;
+    padding: 18px 25px 18px 16px;
+    z-index: 20;
+    background: #fff;
+    box-shadow: 0 0 20px #707070;
+    display: none;
+}
+.timetable tbody .pick {
+    background: url("../img/ui/ui_minimal.gif") no-repeat -226px -258px;
+    padding: 6px;
+    vertical-align: middle;
+    min-width: 14px;
+    height: 15px;
+    box-shadow: 0 0 6px #56a1d3 inset;
+}
+.timetable tbody [status=shift] {
+    background-color: #ffff00;
+}
+.timetable tbody [status=worked] {
+    background-color: #666666;
+    color: #fff;
+}
+.timetable tbody [status=planned] {
+    background-color: #00cc00;
+    color: #fff;
+}
+.timetable tbody div[plan=unplanned] {
+    color: #000;
+}
+
+.timetable[armed="1"] tbody div.one {
+    border-bottom: 5px solid red;
+    padding-bottom: 1px;
+}
+
+
+select.timelist {
+    padding: 2px;
+    margin: 0;
+}
+
+.pop .scrolling {
+    max-height: 200px;
+    overflow: auto;
+}
+.pop .scrolling .item {
+    display: block;
+    padding: 1px 4px;
+}
+.pop .scrolling .hover,
+.pop .scrolling .item:hover {
+    color: #fff;
+    background-color: #56a1d3;
+}
+#pop_user_time .button {
+    float: none;
+    margin: 10px;
+    padding: 10px 15px;
+}
+.timetable thead tr td:first-child,
+.timetable tbody tr td:first-child {
+    max-width: 300px;
+    min-width: 300px;
+    text-align: left;
+}
+.timetable td[name=hours],
+.timetable td[name=salary] {
+    padding: 5px 0;
+    min-width: 85px;
+}
+.timetable tr.hover [name=full_name],
+.timetable .row:hover [name=full_name],
+.timetable tr.hover a,
+.timetable .row:hover a,
+.timetable tr.hover [name=salary],
+.timetable .row:hover [name=salary] {
+    color: #fff;
+    background-color: #56a1d3;
+}
+
+.timetable td[name=full_name] a {
+    float: none;
+    display: inline-block;
+    vertical-align: top;
+}
+.timetable tr.hover [name=salary] b, .timetable .row:hover [name=salary] b {
+    color: #fff;
+}
+
+.timetable .cell b.worked {
+    font-weight: bold;
+    color: #000;
+}
+.timetable .cell b.total {
+    color: #009900;
+}
+
+.tableCheckpoint .href_block {
+    display: block;
+    padding: 3px 5px 4px;
+    text-decoration: none;
+}
+.tableCheckpoint .href_block:hover {
+    color: #fff;
+    background-color: #56a1d3;
+}
+
+.dash {
+
+}

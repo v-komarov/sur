@@ -1,0 +1,30 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html lang="ru" xml:lang="ru" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <link href="{{ STATIC_URL }}index/css/style.css" type="text/css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}index/css/sentry.css" type="text/css" rel="stylesheet">
+
+    <link rel="shortcut icon" href="{{ STATIC_URL }}index/img/favicon.ico">
+    <script type="text/javascript" src="{{ STATIC_URL }}jquery/jquery-1.10.2.min.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}jquery/ui/js/jquery-ui-1.10.3.custom.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/csrf.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/cabinet/login.js"></script>
+    <title>СУР - офицер</title>
+</head>
+
+<body>
+
+<div>{{ user.username }}</div>
+
+<form class="login">
+    {% csrf_token %}
+    <div class="title">СУР «Ураган»</div>
+    <label><div class="txt">Логин:</div><input type="text" name="email"></label>
+    <label><div class="txt">Пароль:</div><input type="password" name="password"></label>
+    <div class="buttons"><button type="button" name="submit">Войти</button></div>
+</form>
+
+</body>
+<html>
+

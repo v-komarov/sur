@@ -1,0 +1,65 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+
+    {% include "sentry/system/finance/__left_block.html" %}
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/finance/bonus.js"></script>
+
+    <div class="middleBlock"><h2 class="cabinet_title">{{ title }}</h2>
+
+        <table class="tableInfo searchObject">
+            <tbody>
+            <tr class="row">
+                <td class="padding_9 right">Тип бонуса</td>
+                <td colspan="2">
+                    <div class="down_box left" name="bonus_filter">
+                        <div class="btn_ui" icon="filter" action="bonus_filter" title="Бонус"><div class="icon"></div></div>
+                        <ul class="drop_list" id="filter_bonus">
+                            {% for item in bonus_type_set %}
+                                <li checked="checked" bonus_id="{{ item.id }}" title="{{ item.description }}">
+                                    <div class="chechbox"></div><div class="txt">{{ item.name }}</div></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                    <div class="width_290" name="bonus_list"></div>
+                </td></tr>
+            <tr class="row">
+                <td class="padding_9 right">Пользователь</td>
+                <td class="cell secondary" colspan="2">
+                    <select class="wide width_320" name="manager"><option value="">все</option>
+                        <optgroup label="Менеджер"></optgroup>
+                        <optgroup label="Инженер"></optgroup>
+                        <optgroup label="Техник"></optgroup>
+                    </select>
+                </td></tr>
+            <tr class="row"><td class="padding_9 right">Период</td>
+                <td colspan="2">
+                    <input class="datepicker" type="text" value="{{ month_day }}" name="from" id="from"><span style="float:left; padding:8px 10px 0 2px;">-</span>
+                    <input class="datepicker" type="text" value="{{ today }}" name="to" id="to">
+                </td></tr>
+
+            <tr class="row status white">
+                <td colspan="3"><div class="btn_ui bg" action="bonus_ajax" icon="calculator" title="Обновить"><div class="icon"></div><div class="txt">Посчитать</div></div></td>
+            </tr>
+
+            </tbody>
+        </table>
+
+        <div class="clear"></div><div class="loading">Загрузка</div>
+        <div class="clear"></div><div class="result_count" id="bonus_count"></div>
+
+        <table class="tableInfo" id="bonus_list">
+            <thead><tr class="row title">
+                <td class="cell right" label="sentry_user">Ф.И.О.</td>
+                {% for item in bonus_type_set %}
+                    <td class="cell" label="{{ item.label }}">{{ item.name }}</td>
+                {% endfor %}
+                <td class="cell" label="total">Всего</td>
+            </tr></thead>
+            <tbody class="list show"></tbody>
+        </table>
+
+        <div class="clear"></div><div class="result_count" id="object_count"></div>
+        <div class="list" id="object_list"></div>
+
+    </div>
+{% endblock %}

@@ -1,0 +1,140 @@
+#contract,
+#object_list {
+    padding: 0;
+    display: inline-block;
+    vertical-align: top;
+}
+#contract table,
+#object_list table {
+    display: table;
+    width: 100%;
+    margin: 0 0 2px;
+}
+div.button_list {
+    background-color: #f1f1f1;
+    padding: 0;
+    margin: 0 0 2px 0;
+    border: 1px solid #7CB2C8;
+    min-height: 36px;
+}
+#task_add__pop .client_object b.txt,
+#object_list .button_list b {
+    padding: 9px 10px;
+    display: inline-block;
+    font-size: 15px;
+    color: #3379A5;
+}
+
+#object_list .tableInfo {
+    margin: 0;
+}
+#object_list #list .button_list {
+    margin: 2px 0 0;
+}
+
+#object_list #list .object__item {
+    margin-bottom: 13px;
+}
+#object_list .object__item__title {
+    background-color: #c2dfeb;
+}
+#task_add__pop .client_object b.txt[status=connected],
+.object__item b[status=connected] {
+    background-color: #abf4ab;
+}
+#task_add__pop .client_object b.txt[status=disconnecting],
+.object__item b[status=disconnecting] {
+    background-color: #e70000;
+}
+#task_add__pop .client_object b.txt[status=discconnected],
+.object__item b[status=discconnected] {
+    background-color: #c2dfeb;
+}
+#task_add__pop .client_object b.txt[status=paused],
+.object__item b[status=paused] {
+    background-color: #cc99ff;
+}
+
+span[name=event_date] {
+    font-size: 14px;
+    font-weight: bold;
+    padding: 4px 6px 0 0;
+}
+span[name=log_date] {
+    font-size: 12px;
+    padding: 6px 0 0 6px;
+}
+
+.event_list {
+    border-top: 1px solid #7CB2C8;
+    margin-top: 2px;
+}
+.event_list [name=pause_list] {
+    padding: 2px 0;
+}
+.event_list [name=pause_list] .pause__item {
+    padding: 4px 6px;
+}
+.event_list [name=pause_list] .pause__item:hover {
+    background: #a1bfe0;
+    color: #fff;
+}
+
+#object_list table tr:first-child {
+    border-top: none;
+}
+#object_pop span[sign=contract_date] {
+    margin-left: 5px;
+}
+#object_pop .select_cost_type,
+#object_pop .input_cost {
+    float: left;
+    width: 60px;
+    margin: 5px 10px 0 0;
+}
+#object_pop .select_cost_type {
+    width: 130px;
+}
+#object_pop .txt_cost_type {
+    float: left;
+    margin: 10px 15px 0 0;
+}
+
+#cost_log table {
+    max-width: none;
+}
+
+.wide2 {
+    display: table;
+    width: 100%;
+}
+
+
+
+.service__item {
+
+    margin-top: 5px;
+}
+.service__item tr,
+.service__item td {
+    cursor: pointer;
+}
+
+.service__item [name=event_date] {
+    font-size: 12px;
+    padding: 6px 8px 0 0;
+}
+.service__item .device_list {
+
+}
+.service__item .device_list a {
+    border-top: 1px solid #7CB2C8;
+    background-color: #fff;
+}
+
+.bg_green {
+    background-color: #abf4ab;
+}
+.bg_red {
+    background-color: #e70000;
+}

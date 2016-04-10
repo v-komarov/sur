@@ -1,0 +1,15 @@
+{% extends "index.html" %}
+{% block content %}
+
+
+<div class="page">
+
+<h1 class="page_title">Ваша заявка отправлена</h1>
+{{ id }}
+{{ objects_list }}
+<p class="page_title">После подтверждения нашим менеджером, на e-mail: <b>{{ email }}</b> будет отправлена инструкция по завершению регистрации.</p>
+<!-- p class="page_title">На Ваш e-mail: <b>{{ email }}</b> отправлена инструкция по дальнейшей регистрации.</p -->
+
+</div>
+
+{% endblock %}

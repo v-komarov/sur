@@ -1,0 +1,97 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+    {% include "sentry/system/post/__left_block.html" %}
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/pop_menu.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/post/personal.js"></script>
+
+    <div class="middleBlock"><h2 class="cabinet_title">{{ title }}</h2>
+
+        <table class="tableInfo search" side="expand">
+            <tbody>
+            <tr class="row search__item" label="identity_expire"><td class="padding_9 right">Удостоверение до</td>
+                <td class="padding_right"><input class="datepicker" type="text" value="" name="identity_expire"></td></tr>
+            <tr class="row search__item" label="certificate_expire"><td class="padding_9 right">Свидетельство до</td>
+                <td class="padding_right"><input class="datepicker" type="text" value="" name="certificate_expire"></td></tr>
+            <tr class="row search__item" label="certificate_check"><td class="padding_9 right">Период. проверка до</td>
+                <td class="padding_right"><input class="datepicker" type="text" value="" name="certificate_check"></td></tr>
+            <tr class="row search__item" label="weapon_expire"><td class="padding_9 right">РСЛа до</td>
+                <td class="padding_right"><input class="datepicker" type="text" value="" name="weapon_expire"></td></tr>
+            <tr class="row search__item" label="is_active"><td class="padding_9 right">Состояние</td>
+                <td class="padding_right">
+                    <select class="wide margin_5" name="is_active">
+                        <option value="1">активен</option>
+                        <option value="0">удален</option>
+                        <option value="">все</option>
+                    </select></td></tr>
+            <tr class="row search__item" label="address"><td class="padding_9 right">Адрес</td>
+                <td class="padding_right"><input class="wide margin_5" type="text" value="" name="address"></td></tr>
+            </tbody>
+        </table>
+
+        <table class="tableInfo search" side="primary">
+            <tbody>
+            <tr class="row search__item" label="service_organization"><td class="padding_9 right">Охранная организация</td>
+                <td class="padding_right"><select class="wide margin_5" name="service_organization"><option value="">все</option>
+                    {% for item in dir_service_organization_set %}
+                        <option value="{{ item.id }}">{{ item.name }}</option>
+                    {% endfor %}
+                </select></td></tr>
+            <tr class="row search__item" label="user_post"><td class="padding_9 right">Должность</td>
+                <td class="padding_right">
+                    <select class="wide margin_5" name="user_post">
+                        <option value="" selected>все</option>
+                        {% for item in user_post_set %}
+                            <option value="{{ item.id }}">{{ item.name }}</option>
+                        {% endfor %}
+                    </select></td></tr>
+            <tr class="row search__item" label="user_status"><td class="padding_9 right">Статус</td>
+                <td class="padding_right">
+                    <select class="wide margin_5" name="user_status">
+                        <option value="" selected>все</option>
+                        {% for item in user_status_set %}
+                            <option value="{{ item.id }}">{{ item.name }}</option>
+                        {% endfor %}
+                    </select></td></tr>
+            <tr class="row search__item" label="category"><td class="padding_9 right">Разряд</td>
+                <td class="padding_right">
+                    <select class="wide margin_5" name="category">
+                        <option value="">все</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                    </select></td></tr>
+            <tr class="row search__item" label="full_name"><td class="padding_9 right">Ф.И.О.</td>
+                <td class="padding_right"><input class="wide margin_5" type="text" value="" name="full_name"></td></tr>
+            <tr class="row white"><td colspan="2">
+                <div class="btn_ui bg" action="search" icon="search"><div class="txt">Найти</div><div class="icon"></div></div>
+                <div class="btn_ui bg" action="reset" icon="reset"><div class="txt">Сбросить</div><div class="icon"></div></div>
+            </td></tr>
+            </tbody>
+        </table>
+
+
+        <div class="result_count"></div>
+
+        <table class="tableInfo" id="user_list">
+            <thead><tr class="row title">
+                <td class="cell"><p class="txt5">Ф.И.О.</p></td>
+                <td class="cell"><p class="txt5">Должность</p></td>
+                <td class="cell"><p class="txt5">Статус</p></td>
+                <td class="cell"><p class="txt5">Удостоверение</p></td>
+                <td class="cell"><p class="txt5">Cвидетельство</p></td>
+                <td class="cell"><p class="txt5">Проверка</p></td>
+                <td class="cell"><p class="txt5">РСЛа</p></td>
+                <td style="width: 10px;"><div class="btn_ui" action="object_add" icon="object_add" title="Добавить"><div class="icon"></div></div></td>
+            </tr></thead>
+            <tbody class="show"></tbody>
+        </table>
+
+        {% include "sentry/system/post/personal__pop_details.html" %}
+        {% include "sentry/system/post/personal__pop_card.html" %}
+        {% include "sentry/system/post/personal__pop_certificate.html" %}
+        {% include "sentry/system/post/personal__pop_identity.html" %}
+        {% include "sentry/system/post/personal__pop_weapon.html" %}
+
+    </div>
+
+{% endblock %}

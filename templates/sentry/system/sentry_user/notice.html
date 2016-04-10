@@ -1,0 +1,14 @@
+{% extends "sentry/index.html" %}
+{% block content %}
+
+{% include "sentry/system/sentry_user/__left_block.html" %}
+
+<div class="middleBlock"><h2 class="cabinet_title">{{ title }}</h2>
+
+    <p>Добавлено оповещений: {{ count }}</p>
+    {{ text }}
+
+
+</div>
+
+{% endblock %}

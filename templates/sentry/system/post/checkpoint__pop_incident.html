@@ -1,0 +1,33 @@
+<div class="pop" id="pop_incident">
+    <div class="header"><b></b><div class="close"></div></div>
+    <table class="tableInfo wide margin_null">
+        <tr class="row" name="service">
+            <td class="cell middle">Объект</td>
+            <td class="cell secondary" name="object_name"><b></b></td></tr>
+
+        <tr class="row" name="begin">
+            <td class="cell middle">Дата события</td>
+            <td><input class="datepicker" name="begin_date" type="text"></td></tr>
+        <tr class="row" name="end">
+            <td class="cell middle">Дата прибытия</td>
+            <td><input class="datepicker" name="end_date" type="text"></td></tr>
+
+        <tr class="row" name="armory">
+            <td class="cell middle">Тип события</td>
+            <td class="cell secondary">
+                <select>
+                    {% for incident in dir_incident_type_set %}
+                        <option class="item" value="{{ incident.id }}">{{ incident.name }}</option>
+                    {% endfor %}
+                </select></td></tr>
+
+        <tr class="row" name="comment">
+            <td class="cell">Комментарий</td>
+            <td class="cell secondary"><textarea rows="2" cols="35"></textarea></td></tr>
+
+        <tr class="row" name="buttons">
+            <td colspan="2">
+                <span class="btn_ui bg" action="object_add" icon="object_add"><div class="txt">Добавить</div><div class="icon"></div></span>
+            </td></tr>
+    </table>
+</div>
