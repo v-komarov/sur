@@ -129,9 +129,9 @@ function task_Edit(task_id) {
             $('#task__pop [name=create_user]').text(task['create_user']+' ('+task['create_date']+')');
             $('#task__pop [name=complete_date]').parent('tr').attr('task_status',task['status__label']);
             $('#task__pop [name=complete_date] div.text').text(task['complete_date']);
-            var object_href = '/system/client/'+task['client_id']+'/object/'+task['object_id']+'/';
+            var object_href = '/system/client/'+task['client']+'/contract/'+task['contract']+'/';
             $('#task__pop a.client_object').attr('href',object_href);
-            $('#task__pop a.client_object div.txt4').text(task['object_name']);
+            $('#task__pop a.client_object div.txt4').text(task['object__name']);
             $('#task__pop div.service_list').remove();
             if(task['service_list']){
                 $('#task__pop a.client_object').prepend('<div class="service_list"></div>');
@@ -159,8 +159,15 @@ function task_Edit(task_id) {
 
             for(key in data['task']['report_list']){
                 var report = data['task']['report_list'][key];
+                var doer_string = '';
+                if(report['doer']) {
+                    doer_string = '<div class="title">['+report['create_date']+'] '+report['doer__full_name']+'</div>'
+                }
+                else if(report['security_squad']) {
+                    doer_string = '<div class="title">['+report['create_date']+'] '+report['security_squad__name']+'</div>'
+                }
                 var report_div = '<div class="item" report_id="'+report['id']+'" time="'+report['time']+'">' +
-                    '<div class="title">['+report['create_date']+'] '+report['doer']+'</div>'+
+                    doer_string +
                     '<div class="comment">'+report['comment']+'</div></div>';
                 $('#task__pop #log_list').append(report_div);
             }
@@ -191,7 +198,7 @@ function log_listSort() {
 function task_Update() {
     var task_array = get_each_value('#task__pop');
     task_array['task'] = $('#task_list tbody tr.hover').attr('task_id');
-    //task_array['complete_date'] = $('#task__pop td[name=complete_date] .text').text();
+    task_array['complete_date'] = $('#task__pop td[name=complete_date] .text').text();
     $.ajax({ url:'/task/ajax/update/', type:'post', dataType:'json', data:task_array,
         success: function(data){
             $('.pop').hide();

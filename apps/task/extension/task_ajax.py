@@ -147,9 +147,14 @@ def get(request, data):
                 'id': item.id,
                 'time': item.create_date.strftime("%Y%m%d%H%M%S"),
                 'create_date': item.create_date.strftime("%d.%m.%Y %H:%M"),
-                'doer': item.doer.full_name,
                 'comment': item.comment
             }
+            if item.doer:
+                report['doer'] = item.doer.id
+                report['doer__full_name'] = item.doer.full_name
+            elif item.security_squad:
+                report['security_squad'] = item.security_squad.id
+                report['security_squad__name'] = item.security_squad.name
             data['task']['report_list'].append(report)
 
     task_log_set = task_models.task_log.objects.filter(task=task_set.id,is_active=1)
@@ -185,14 +190,17 @@ def create(request, data):
 
 
 def update(request, data):
-    task = task_models.task.objects.get(id=int(request.POST['task']))
-    form = task__form.task_form(request.POST, instance=task)
-    #form.object = 121
-    #form.create_user = 1
+    task_pre = task_models.task.objects.get(id=int(request.POST['task']))
+    contract_id = task_pre.contract_id
+    object_id = task_pre.object_id
+    form = task__form.task_form(request.POST, instance=task_pre)
+
     if form.is_valid():
-        task = form.save()
+        task = form.save(commit=False)
+        task.contract_id = contract_id
+        task.object_id = object_id
         task.save()
-        data['answer'] = 'done111'
+        data['answer'] = 'done'
     else:
         data['errors'] = form.errors
 
@@ -218,29 +226,32 @@ def get_report(request,data):
         'create_user': report_set.user.full_name,
         'warden_id': report_set.warden.id,
         'warden': report_set.warden.full_name,
-        'doer_id': report_set.doer.id,
-        'doer': report_set.doer.full_name,
-        'security_squad': report_set.security_squad_id,
         'comment': report_set.comment
     }
+    if report_set.doer:
+        data['report']['doer'] = report_set.doer.id
+        data['report']['doer__full_name'] = report_set.doer.full_name
+    elif report_set.security_squad:
+        data['report']['security_squad'] = report_set.security_squad.id
+        data['report']['security_squad__name'] = report_set.security_squad.name
     return data
 
 
 def create_report(request,data):
     task_set = task_models.task.objects.get(id=int(request.POST['task']))
-    status_id = int(request.POST['status_id'])
+    status_id = int(request.POST['status'])
     report_set = task_models.task_report.objects.create(
-        task_id = int(request.POST['task_id']),
+        task_id = int(request.POST['task']),
         status_id = status_id,
         create_date = datetime.datetime.now(),
         user_id = authorize.get_sentry_user(request)['id'],
         warden_id = task_set.warden_id,
         comment = request.POST['comment']
     )
-    if 'doer_id' in request.POST:
-        report_set.doer_id = int(request.POST['doer_id'])
-    elif 'security_squad' in request.POST:
-        report_set.security_squad_id = int(request.POST['security_squad_id'])
+    if 'doer' in request.POST and request.POST['doer'] != '':
+        report_set.doer_id = int(request.POST['doer'])
+    elif 'security_squad' in request.POST and request.POST['security_squad'] != '':
+        report_set.security_squad_id = int(request.POST['security_squad'])
     report_set.save()
     task_set.status_id = status_id
     task_set.save()

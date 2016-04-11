@@ -12,8 +12,6 @@ class task_form(forms.ModelForm):
             'contract',
             'object',
             'task_type',
-            'create_user',
-            'create_date',
             'complete_date',
             'initiator',
             'initiator_other',
@@ -22,13 +20,19 @@ class task_form(forms.ModelForm):
             'doer',
             'comment',
             ]
-    contract = forms.ModelChoiceField(queryset=system_models.client_contract.objects.filter(is_active=1))
-    object = forms.ModelChoiceField(queryset=system_models.client_object.objects.filter(is_active=1))
+    #contract = forms.ModelChoiceField(queryset=system_models.client_contract.objects.filter(is_active=1))
+    #object = forms.ModelChoiceField(queryset=system_models.client_object.objects.filter(is_active=1))
     task_type = forms.ModelChoiceField(queryset=task_models.task_type.objects.all())
-    create_user = forms.ModelChoiceField(queryset=system_models.sentry_user.objects.all())
-    #create_date = forms.DateTimeField(required=False)
-    #complete_date = forms.DateTimeField(required=False)
 
 
-
-
+class task_report_form(forms.ModelForm):
+    class Meta:
+        model = task_models.task_report
+        fields = [
+            'task',
+            'status',
+            'doer',
+            'security_squad',
+            'comment'
+            ]
+    task = forms.ModelChoiceField(queryset=task_models.task.objects.all())

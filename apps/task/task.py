@@ -73,10 +73,12 @@ def ajax(request,action):
         if request.user.has_perm('system.client'):
             data = task_ajax.get_report(request,data)
         else: data['error'] = 'Доступ запрещен'
+
     elif action=='create_report':
         if request.user.has_perm('system.client'):
             data = task_ajax.create_report(request,data)
         else: data['error'] = 'Доступ запрещен'
+
     elif action=='delete_report':
         if request.user.has_perm('system.client'):
             data = task_ajax.delete_report(request,data)

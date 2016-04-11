@@ -17,7 +17,7 @@
         <tr class="row2">
             <td class="padding_9 right">Тип заявки</td>
             <td class="secondary"><select name="task_type"><option value="all">все</option>
-                {% for item in dir_task_type_set %}
+                {% for item in task_type_set %}
                     <option value="{{ item.id }}">{{ item.name }}</option>
                 {% endfor %}
             </select></td></tr>

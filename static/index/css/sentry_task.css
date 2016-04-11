@@ -129,9 +129,8 @@ table.list td {
     font-size: 13px;
 }
 .list .complete_date {
-    border-bottom: none;
-    padding-top: 10px;
-    border-top: 1px solid #ccc;
+    border-left: 1px solid #ccc;
+    width: auto;
 }
 .list .comment {
     padding: 5px 10px 10px;

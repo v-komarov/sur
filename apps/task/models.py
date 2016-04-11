@@ -20,7 +20,7 @@ class task(models.Model):
     task_type = models.ForeignKey(task_type)
     status = models.ForeignKey(task_status, default=1)
     create_user = models.ForeignKey(system_models.sentry_user, null=True, blank=True, related_name='task_create_user')
-    create_date = models.DateTimeField(default=timezone.now)
+    create_date = models.DateTimeField(auto_now_add=True)
     complete_date = models.DateTimeField()
     device = models.ForeignKey(system_models.dir_device, null=True, blank=True)
     initiator = models.ForeignKey(system_models.client_user, null=True, blank=True)
@@ -54,7 +54,7 @@ class task_log(models.Model):
 class task_report(models.Model):
     task = models.ForeignKey(task)
     status = models.ForeignKey(task_status)
-    create_date = models.DateTimeField()
+    create_date = models.DateTimeField(auto_now_add=True)
     user = models.ForeignKey(system_models.sentry_user, related_name='task_report_user')
     warden = models.ForeignKey(system_models.sentry_user, related_name='task_report_warden')
     doer = models.ForeignKey(system_models.sentry_user, null=True, related_name='task_report_doer')

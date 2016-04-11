@@ -16,7 +16,7 @@ $(document).ready(function() {
         }
     });
 
-    $('#task__pop_report div[name=security_squad] select').on('change', function(){
+    $('#task__pop_report div select[name=security_squad]').on('change', function(){
         if($(this).val()==''){
             $('#task__pop_report tr[name=doer] select').removeAttr('disabled');
             var doer_id = $('#task__pop select[name=doer]').val();
@@ -69,6 +69,7 @@ function task_report_Delete() {
 
 
 function task_report_Edit(report_id) {
+    console.log(report_id);
     $('#task__pop #log_list div.hover').attr('class','item');
     if(report_id=='new'){
         $('#task__pop_report div.header b').text('Новый отчет');
@@ -79,6 +80,7 @@ function task_report_Edit(report_id) {
         $('#task__pop_report button[icon=save]').show();
         $('#task__pop_report span[action=delete]').hide();
         var doer_id = $('#task__pop select[name=doer]').val();
+        console.log(doer_id);
         $('#task__pop_report select[name=doer]').val(doer_id);
         popMenuPosition('#task__pop_report','multiple');
     }
@@ -92,7 +94,13 @@ function task_report_Edit(report_id) {
                 $('#task__pop_report td.edit').hide();
                 $('#task__pop_report tr[name=create_user] td.secondary').text(report['create_user']+' ['+report['create_date']+']');
                 $('#task__pop_report tr[name=warden] td.secondary').text(report['warden']);
-                $('#task__pop_report tr[name=doer] td.info').text(report['doer']);
+                if(report['doer']){
+                    $('#task__pop_report tr[name=doer] td.info').text(report['doer__full_name']);
+                }
+                else if(report['security_squad']){
+                    $('#task__pop_report tr[name=doer] td.info').text(report['security_squad__name']);
+                }
+
                 $('#task__pop_report tr[name=status] td.info').text(report['status']);
                 $('#task__pop_report div[name=comment]').text(report['comment']);
 
@@ -106,23 +114,22 @@ function task_report_Edit(report_id) {
 
 
 function task_report_Update() {
-    var report_pack = {};
-    report_pack['task_id'] = $('#task_list tr.hover').attr('task_id');
+    var report_pack = get_each_value('#task__pop_report');
+    report_pack['task'] = $('#task_list tr.hover').attr('task_id');
     var security_squad_id = $('#task__pop_report div[name=security_squad] select').val();
     if(security_squad_id){
-        report_pack['security_squad_id'] = $('#task__pop_report div[name=security_squad] select').val();
+        report_pack['security_squad'] = security_squad_id;
     } else {
-        report_pack['doer_id'] = $('#task__pop_report select[name=doer]').val();
+        report_pack['doer'] = $('#task__pop_report select[name=doer]').val();
     }
-    report_pack['status_id'] = $('#task__pop_report tr[name=status] select').val();
-    report_pack['comment'] = $('#task__pop_report textarea[name=comment]').val();
     $.ajax({ url:'/task/ajax/create_report/', type:'post', dataType:'json', data:report_pack,
         success: function(data){
-            task_Search();
-            task_Edit(report_pack['task_id']);
+            //task_Search();
+            task_Edit(report_pack['task']);
         }
     });
 }
+
 
 function task_report_Validate() {
     $.validator.setDefaults({
