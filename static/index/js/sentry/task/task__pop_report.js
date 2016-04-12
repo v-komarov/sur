@@ -26,42 +26,43 @@ $(document).ready(function() {
             $('#task__pop_report tr[name=doer] select[name=doer]').attr('disabled','disabled');
         }
     });
-/*
-    $('#task__pop_report tr[name=doer] input').autocomplete({
-        source: function(request, response) {
-            $.ajax({
-                url: '/system/sentry_user/ajax/search/', type:'get', dataType:'json',
-                data: {full_name: request.term, limit: 10 },
-                success: function(data) {
-                    response($.map(data['user_list'], function(item) {
-                        return {
-                            label: item.full_name,
-                            user_id: item.id
-                        }
-                    }));
-                }
-            });
-        },
-        change: function(event, ui) {
-            if(ui.item){
-                var user_id = ui.item.user_id
-            } else {
-                var user_id = 'new';
-                $(this).val('');
-            }
-            $(this).attr('user_id', user_id);
-        },
-        minChars: 2, zIndex: 100, deferRequestBy: 200
-    });
-*/
+    /*
+     $('#task__pop_report tr[name=doer] input').autocomplete({
+     source: function(request, response) {
+     $.ajax({
+     url: '/system/sentry_user/ajax/search/', type:'get', dataType:'json',
+     data: {full_name: request.term, limit: 10 },
+     success: function(data) {
+     response($.map(data['user_list'], function(item) {
+     return {
+     label: item.full_name,
+     user_id: item.id
+     }
+     }));
+     }
+     });
+     },
+     change: function(event, ui) {
+     if(ui.item){
+     var user_id = ui.item.user_id
+     } else {
+     var user_id = 'new';
+     $(this).val('');
+     }
+     $(this).attr('user_id', user_id);
+     },
+     minChars: 2, zIndex: 100, deferRequestBy: 200
+     });
+     */
     task_report_Validate();
 });
 
 
 function task_report_Delete() {
     var report_id = $('#task__pop #log_list div.hover').attr('report_id');
-    $.ajax({ url:'/task/ajax/delete_report/?report_id='+report_id, type:'get', dataType:'json',
+    $.ajax({ url:'/task/ajax/delete_report/?report='+report_id, type:'get', dataType:'json',
         success: function(data){
+            task_Search();
             task_Edit( $('#task_list tr.hover').attr('task_id') );
         }
     });
@@ -71,6 +72,8 @@ function task_report_Delete() {
 function task_report_Edit(report_id) {
     console.log(report_id);
     $('#task__pop #log_list div.hover').attr('class','item');
+    $('#task__pop_report input, #task__pop_report textarea').val('');
+
     if(report_id=='new'){
         $('#task__pop_report div.header b').text('Новый отчет');
         $('#task__pop_report td.info').hide();
@@ -124,7 +127,7 @@ function task_report_Update() {
     }
     $.ajax({ url:'/task/ajax/create_report/', type:'post', dataType:'json', data:report_pack,
         success: function(data){
-            //task_Search();
+            task_Search();
             task_Edit(report_pack['task']);
         }
     });

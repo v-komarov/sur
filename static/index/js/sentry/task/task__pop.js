@@ -92,13 +92,12 @@ $(document).ready(function() {
 
 function task_Delete() {
     var tr = $('#task_list tbody tr.hover');
-    var task_id = tr.attr('task_id');
-    $.ajax({ url:'/task/ajax/delete/?task_id='+task_id, type:'get', dataType:'json',
+    $.ajax({ url:'/task/ajax/delete/?task='+tr.attr('task_id'), type:'get', dataType:'json',
         success: function (data) {
             if(data['error']){
                 alert(data['error']);
             } else if(data['answer']=='done'){
-                $('#task_list tr[task_id='+task_id+']').remove()
+                task_Search();
             }
         }
     });
@@ -106,15 +105,14 @@ function task_Delete() {
 
 
 function task_Clean() {
-    $('#task__pop input').val('');
-    $('#task__pop input').removeAttr('user_id');
+    $('#task__pop input, #task__pop textarea').val('');
+    $('#task__pop input').removeAttr('item_id');
     $('#task__pop select').removeAttr('selected');
 }
 
 
 function task_Edit(task_id) {
     var object_id = $('#task_list tr[task_id='+task_id+']').attr('object_id');
-    console.log('task_Edit()');
     task_Clean();
     $('#task_list tbody tr:not(.caution)').attr('class','row');
     $('#task_list tbody tr[task_id='+task_id+']').attr('class','row hover');

@@ -207,7 +207,7 @@ def update(request, data):
     return data
 
 
-def delete(request,data):
+def delete(request, data):
     task = task_models.task.objects.get(id = int(request.GET['task']))
     task.is_active = 0
     task.save()
@@ -237,7 +237,7 @@ def get_report(request,data):
     return data
 
 
-def create_report(request,data):
+def create_report(request, data):
     task_set = task_models.task.objects.get(id=int(request.POST['task']))
     status_id = int(request.POST['status'])
     report_set = task_models.task_report.objects.create(
@@ -285,15 +285,13 @@ def create_report(request,data):
     return data
 
 
-def delete_report(request,data):
-    task_models.task_report.objects \
-        .filter(id=int(request.GET['report_id'])) \
-        .update(is_active=0)
+def delete_report(request, data):
+    task_models.task_report.objects.filter(id=int(request.GET['report'])).update(is_active=0)
     data['answer'] = 'done'
     return data
 
 
-def get_log(request,data):
+def get_log(request, data):
     log_set = task_models.task_log.objects.get(id=int(request.GET['log_id']))
     data['log'] = {
         'id': log_set.id,
@@ -307,7 +305,7 @@ def get_log(request,data):
     return data
 
 
-def change_complete_date(request,data):
+def change_complete_date(request, data):
     new_date = date_convert.convert(request.POST['new_date'])
     task_set = task_models.task.objects.get(id=int(request.POST['task_id']))
     task_set.complete_date = new_date
@@ -324,9 +322,7 @@ def change_complete_date(request,data):
     return data
 
 
-def delete_log(request,data):
-    task_models.task_log.objects \
-        .filter(id=int(request.GET['log_id'])) \
-        .update(is_active=0)
+def delete_log(request, data):
+    task_models.task_log.objects.filter(id=int(request.GET['log_id'])).update(is_active=0)
     data['answer'] = 'done'
     return data

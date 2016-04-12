@@ -88,6 +88,7 @@ $(document).ready(function() {
 
 function contract_task_add_Pop(client_id,contract_id,object_id) {
     console.log('contract_task_add_Pop');
+    task_Clean();
     $.ajax({ url:'/system/client/object/ajax/get_object/?object='+object_id, type:'get', dataType:'json',
         success: function(data){
             var object_title = $('.object__item[object_id='+object_id+'] .object__item__title b.txt').clone();
@@ -108,6 +109,7 @@ function contract_task_add_Pop(client_id,contract_id,object_id) {
 
 function task_add_Pop(client_id, object_id) {
     console.log('task_add_Pop');
+    task_Clean();
     //select_client_object_user(object_id);
     $('#object_list div.item').attr('class','item');
     $('#object_list div.item[object_id='+object_id+']').attr('class','item hover');
@@ -125,6 +127,12 @@ function task_add_Pop(client_id, object_id) {
             popMenuPosition('#task_add__pop','single');
         }
     });
+}
+
+function task_Clean() {
+    $('#task_add__pop input, #task_add__pop textarea').val('');
+    $('#task_add__pop input').removeAttr('item_id');
+    $('#task_add__pop select').removeAttr('selected');
 }
 
 

@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
 
-from django.utils import timezone
 from django.db import models
 from apps.system import models as system_models
 
@@ -8,6 +7,7 @@ from apps.system import models as system_models
 class task_type(models.Model):
     label = models.CharField(max_length=128)
     name = models.CharField(max_length=128)
+
 
 class task_status(models.Model):
     label = models.CharField(max_length=32)
@@ -39,6 +39,7 @@ class task(models.Model):
             report_list.append(item.weapon_id)
         return report_list
 
+
 class task_log(models.Model):
     task = models.ForeignKey(task)
     create_date = models.DateTimeField()
@@ -48,8 +49,8 @@ class task_log(models.Model):
     comment = models.TextField()
     is_active = models.SmallIntegerField(default=1)
     class Meta:
-        #db_table = 'task_log'
         pass
+
 
 class task_report(models.Model):
     task = models.ForeignKey(task)
