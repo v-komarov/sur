@@ -44,9 +44,9 @@ def index(request, client_id=None, contract_id=None):
         dir_service_type_set = db_sentry.dir_service_type.objects.filter(is_active=1)
         dir_service_subtype_set = db_sentry.dir_service_subtype.objects.filter(is_active=1)
 
-        return render_to_response('sentry/system/client/contract/contract.html', locals(), RequestContext(request))
+        return render_to_response('system/client/contract/contract.html', locals(), RequestContext(request))
     else:
-        return render_to_response('sentry/403.html', locals(), RequestContext(request))
+        return render_to_response('403.html', locals(), RequestContext(request))
 
 
 def list(request, client_id=None):
@@ -54,9 +54,9 @@ def list(request, client_id=None):
     if request.user.has_perm('system.client'):
         title = 'Список договоров'
         client_set = db_sentry.client.objects.get(id=client_id)
-        return render_to_response('sentry/system/client/contract/contract_list.html', locals(), RequestContext(request))
+        return render_to_response('system/client/contract/contract_list.html', locals(), RequestContext(request))
     else:
-        return render_to_response('sentry/403.html', locals(), RequestContext(request))
+        return render_to_response('403.html', locals(), RequestContext(request))
 
 
 def ajax(request, action=None):

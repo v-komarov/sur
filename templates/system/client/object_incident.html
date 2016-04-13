@@ -1,0 +1,35 @@
+{% extends "index.html" %}
+{% block content %}
+    {% include "system/client/__left_block.html" %}
+
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/client/object_incident.js"></script>
+
+    <div class="middleBlock" client_id="{{ client_id }}" object_id="{{ object_id }}">
+        <h2 class="cabinet_title">{{ client_object_set.name }}: {{ title|lower }}</h2>
+
+        {% if perms.system.client_object_incident_add %}
+            <div class="tableInfo">
+                <div class="btn_ui bg" action="incident_add" icon="object_add"><div class="txt">Добавить</div><div class="icon"></div></div>
+                <div class="btn_ui bg" action="incident_list_refresh" icon="reset"><div class="txt">Обновить</div><div class="icon"></div></div>
+            </div>
+        {% endif %}
+
+        <div class="clear"></div>
+        <table class="tableInfo" id="incident_list" client_id="{{ client_id }}" object_id="{{ object_id }}">
+            <thead><tr class="row title">
+                <td class="cell">Дата</td>
+                <td class="cell">Прибытие<br/>(минуты)</td>
+                <td class="cell">Тип</td>
+                <td class="cell">Описание</td>
+                <td class="cell">Зарегистрировал</td>
+            </tr></thead>
+            <tbody class="show"></tbody>
+        </table>
+
+        <div class="clear"><div class="loading">Загрузка</div></div>
+
+        {% include "system/client/object_incident__pop.html" %}
+
+    </div>
+
+{% endblock %}

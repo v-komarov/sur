@@ -103,7 +103,7 @@ def object(request, object_id, year=None):
                     month_list.append(month_calc)
 
 
-        return render_to_response('sentry/cabinet/client/objects_calc.html', locals(), RequestContext(request) )
+        return render_to_response('cabinet/client/objects_calc.html', locals(), RequestContext(request) )
     else:
         return render_to_response('404.html', RequestContext(request) )
 '''

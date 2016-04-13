@@ -500,15 +500,14 @@ class client_user_email(models.Model):
 class client_user(models.Model):
     full_name = models.CharField(max_length=256)
     priority = models.IntegerField(default=1)
-    post = models.ForeignKey(dir_user_post, null=True, blank=True)
-    birthday = models.DateTimeField(null=True, blank=True)
-    passport = models.CharField(max_length=256, null=True, blank=True)
-    address = models.CharField(max_length=512, null=True, blank=True)
-    client_user_phone = models.ManyToManyField(client_user_phone)
-    client_user_email = models.ManyToManyField(client_user_email)
+    post = models.ForeignKey(dir_user_post, blank=True, null=True)
+    birthday = models.DateTimeField(blank=True, null=True)
+    passport = models.CharField(max_length=256, blank=True, null=True)
+    address = models.CharField(max_length=512, blank=True, null=True)
     comment = models.TextField(blank=True)
     is_active = models.SmallIntegerField(default=1)
-
+    client_user_phone = models.ManyToManyField(client_user_phone)
+    client_user_email = models.ManyToManyField(client_user_email)
     def __unicode__(self):
         return self.full_name
     class Meta:

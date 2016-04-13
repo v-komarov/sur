@@ -26,9 +26,9 @@ def index(request, client_id=None, contract_id=None):
         dir_user_post_set = db_sentry.dir_user_post.objects.filter(is_active=1)
         phone_type = ['сотовый'.decode('utf-8'),'городской'.decode('utf-8')]
         form = client__form.client_user()
-        return render_to_response('sentry/system/client/client_user.html', locals(), RequestContext(request))
+        return render_to_response('system/client/client_user.html', locals(), RequestContext(request))
     else:
-        return render_to_response('sentry/403.html', locals(), RequestContext(request))
+        return render_to_response('403.html', locals(), RequestContext(request))
 
 
 def ajax(request, action=None):

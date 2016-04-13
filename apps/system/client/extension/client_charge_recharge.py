@@ -204,9 +204,9 @@ def re(request, data=None, client_id=None, service_id=None):
             data['answer'] = 'done'
             return data
         else:
-            return render_to_response('sentry/system/client/client_recalculation.html', locals(), RequestContext(request) )
+            return render_to_response('system/client/client_recalculation.html', locals(), RequestContext(request) )
     else:
-        return render_to_response('sentry/403.html', locals(), RequestContext(request) )
+        return render_to_response('403.html', locals(), RequestContext(request) )
 
 
 def charge_sum_total(**kwargs):

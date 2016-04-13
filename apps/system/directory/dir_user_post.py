@@ -22,9 +22,9 @@ def index(request, client_id=None):
     if request.user.has_perm('system.client'):
         title = 'Должности'
         post_set = db_sentry.dir_user_post.objects.filter(is_active=1)
-        return render_to_response('sentry/system/directory/dir_user_post.html', locals(), RequestContext(request))
+        return render_to_response('system/directory/dir_user_post.html', locals(), RequestContext(request))
     else:
-        return render_to_response('sentry/403.html', locals(), RequestContext(request) )
+        return render_to_response('403.html', locals(), RequestContext(request) )
 
 
 def ajax(request,action):

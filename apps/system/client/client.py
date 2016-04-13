@@ -24,9 +24,9 @@ def index(request, client_id=None):
         legal_type_base_set = db_sentry.dir_legal_type_base.objects.all()
         pay_type = ['Банк'.decode('utf-8'),'Касса'.decode('utf-8'),'Взаимозачет'.decode('utf-8'),'Терминал'.decode('utf-8')]
 
-        return render_to_response('sentry/system/client/client.html', locals(), RequestContext(request))
+        return render_to_response('system/client/client.html', locals(), RequestContext(request))
     else:
-        return render_to_response('sentry/403.html', locals(), RequestContext(request))
+        return render_to_response('403.html', locals(), RequestContext(request))
 
 
 def add(request, client_id=None):
@@ -38,9 +38,9 @@ def add(request, client_id=None):
         legal_type_base_set = db_sentry.dir_legal_type_base.objects.all()
         pay_type = ['Банк'.decode('utf-8'),'Касса'.decode('utf-8'),'Взаимозачет'.decode('utf-8'),'Терминал'.decode('utf-8')]
 
-        return render_to_response('sentry/system/client/client.html', locals(), RequestContext(request))
+        return render_to_response('system/client/client.html', locals(), RequestContext(request))
     else:
-        return render_to_response('sentry/403.html', locals(), RequestContext(request))
+        return render_to_response('403.html', locals(), RequestContext(request))
 
 
 def ajax(request, action=None):

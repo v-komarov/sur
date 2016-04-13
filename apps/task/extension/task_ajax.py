@@ -15,40 +15,45 @@ def search(request, data):
     data['day_list'] = {}
     data['task_list'] = []
     today = datetime.datetime.today().replace(hour=0, minute=0) - datetime.timedelta(days=1)
-    if request.POST['expand'] == 'false':
-        task_set = task_models.task.objects.filter(is_active=1) \
-            .exclude(complete_date__lte=today, status__label='done')
-        if 'uncompleted' in request.POST:
-            task_set = task_set.filter(status=1)
-        if 'expired' in request.POST:
-            task_set = task_set.filter(complete_date__gte=today)
+
+    try:
+        from_date = datetime.datetime.strptime(request.POST['from_date'], '%d.%m.%Y')
+    except:
+        from_date = datetime.datetime(1970,1,1,0,0,0)
+    try:
+        to_date = datetime.datetime.strptime(request.POST['to_date'], '%d.%m.%Y')
+    except:
+        to_date = today + datetime.timedelta(days=360)
+
+    task_set = task_models.task.objects.filter(
+        complete_date__range=(from_date, to_date),
+        is_active=1
+    )
+
+    if 'task_status' in request.POST and request.POST['task_status'] != '':
+        task_set = task_set.filter(status=request.POST['task_status'])
     else:
-        try: from_date = datetime.datetime.strptime(request.POST['from_date'], '%d.%m.%Y')
-        except: from_date = today
-        try: to_date = datetime.datetime.strptime(request.POST['to_date'], '%d.%m.%Y')
-        except: to_date = today
-        task_set = task_models.task.objects.filter(complete_date__range=(from_date, to_date), is_active=1)
+        task_set = task_set.exclude(status__label='done', complete_date__lte=datetime.datetime.today())
 
-        if request.POST['task_status']=='expired':
-            task_set = task_set \
-                .filter(complete_date__lte=datetime.datetime.today()) \
-                .exclude(status__label='done')
-        elif request.POST['task_status']!='all': task_set = task_set.filter(status__label=request.POST['task_status'])
-
-        if 'contract' in request.POST:
-            task_set = task_set.filter(service__contract_number=str(request.POST['contract']))
+    if 'uncompleted' in request.POST and request.POST['uncompleted'] == 'true':
+        task_set = task_set.exclude(status__label='done')
+    if 'expired' in request.POST and request.POST['expired'] == 'true':
+        task_set = task_set.exclude(complete_date__lte=datetime.datetime.today())
 
 
-    if 'doer' in request.POST:
+    if 'contract' in request.POST and request.POST['contract'] != '':
+        task_set = task_set.filter(contract__contract_number=str(request.POST['contract']))
+
+    if 'doer' in request.POST and request.POST['doer'] != '':
         task_set = task_set.filter(doer=int(request.POST['doer']))
-    if 'warden' in request.POST:
+    if 'warden' in request.POST and request.POST['warden'] != '':
         task_set = task_set.filter(warden=int(request.POST['warden']))
 
 
-    if 'task_type' in request.POST:
+    if 'task_type' in request.POST and request.POST['task_type'] != '':
         task_set = task_set.filter(task_type=request.POST['task_type'])
-    if 'locality_id' in request.POST:
-        task_set = task_set.filter(object__address_building__street__locality_id=int(request.POST['locality_id']))
+    if 'locality' in request.POST and request.POST['locality'] != '':
+        task_set = task_set.filter(object__address_building__street__locality_id=int(request.POST['locality']))
 
     if 'order_by' in request.POST:
         task_set = task_set.order_by(request.POST['order_by'])
@@ -71,7 +76,11 @@ def search(request, data):
             'doer': item.doer.full_name,
             'address': item.object.get_address(),
             'comment': item.comment }
-        task_report_set = task_models.task_report.objects.filter(task=item.id,is_active=1)
+        if item.contract:
+            task['client'] = item.contract.client.id
+            task['client__name'] = item.contract.client.name
+
+        task_report_set = task_models.task_report.objects.filter(task=item.id, is_active=1)
         if task_report_set:
             try: doer = task_report_set[0].doer.full_name
             except: doer = ''
@@ -80,10 +89,6 @@ def search(request, data):
                 'doer': doer,
                 'comment': task_report_set[0].comment
             }
-            #if item.service_id:
-            #task['service_list'] = item.service.object.get_service_list()
-            #task['service_string'] = item.service.get_service_string()
-            #task['service_status'] = item.service.object.status.label
 
         if item.complete_date >= today:
             day_string = item.complete_date.strftime("%Y%m%d")
@@ -102,7 +107,7 @@ def search(request, data):
 def get(request, data):
     datetime_now = datetime.datetime.today().replace(hour=0, minute=0) - datetime.timedelta(days=1)
     task_set = task_models.task.objects.get(id=int(request.GET['task']))
-    if task_set.status.label!='process' and datetime_now > task_set.complete_date:
+    if task_set.status.label != 'done' and datetime_now > task_set.complete_date:
         status = 'expired'
     else:
         status = task_set.status.label
@@ -208,7 +213,7 @@ def update(request, data):
 
 
 def delete(request, data):
-    task = task_models.task.objects.get(id = int(request.GET['task']))
+    task = task_models.task.objects.get(id=int(request.GET['task']))
     task.is_active = 0
     task.save()
     data['answer'] = 'done'
@@ -286,7 +291,14 @@ def create_report(request, data):
 
 
 def delete_report(request, data):
-    task_models.task_report.objects.filter(id=int(request.GET['report'])).update(is_active=0)
+    task_report = task_models.task_report.objects.get(id=int(request.GET['report']))
+    task_report.is_active = 0
+    task_report.save()
+    if task_report.status.label == 'done':
+        task = task_models.task.objects.get(id=task_report.task.id)
+        if not task_models.task_report.objects.filter(task=task.id, is_active=1).exists():
+            task.status_id = 2
+            task.save()
     data['answer'] = 'done'
     return data
 

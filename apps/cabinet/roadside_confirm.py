@@ -21,7 +21,7 @@ def confirm(request, token=None):
                     url = settings.ROOT_URL+'manager/requests/roadside/' )
         send_mail.send('managers', title, message)
 
-        return render_to_response('sentry/cabinet/roadside_confirm.html', locals(), RequestContext(request) )
+        return render_to_response('cabinet/roadside_confirm.html', locals(), RequestContext(request) )
 
     else:
         return render_to_response('404.html', RequestContext(request) )

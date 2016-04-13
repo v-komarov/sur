@@ -1,0 +1,38 @@
+{% extends "index.html" %}
+{% block content %}
+
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/directory/dir_address_2_locality.js"></script>
+
+    {% include "system/directory/__left_block.html" %}
+
+    <div class="middleBlock"><h2 class="cabinet_title">{{ title }}</h2>
+
+        <div class="result_count"></div>
+        <table class="tableInfo">
+            <thead>
+            <tr class="row title">
+                <td class="cell">
+                    <select class="wide" name="region"><option value="">Регион (все)</option>
+                        {% for region in dir_address_1_region %}
+                            <option value="{{ region.id }}" {% if region.id == settings_set.region_id %}selected{% endif %}>{{ region.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+                <td class="cell">
+                    <input size="45" type="text"  placeholder="Населенный пункт" value="" name="locality_name">
+                </td>
+                <td>
+                    {% if perms.system.directory_locality_add %}
+                        <div class="btn_ui" action="locality_add" icon="object_add" title="Добавить"><div class="icon"></div></div>
+                    {% else %}<div class="empty_28"></div>
+                    {% endif %}
+                    <!--div class="btn_ui bg" action="reset" icon="reset"><div class="icon"></div></div-->
+                </td>
+            </tr>
+            </thead>
+            <tbody class="show"></tbody>
+        </table>
+
+    </div>
+
+{% endblock %}

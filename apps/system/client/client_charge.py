@@ -27,9 +27,9 @@ def index(request, client_id=None):
         )
         years_list = [datetime.date.today().year]
 
-        return render_to_response('sentry/system/client/client_charge.html', locals(), RequestContext(request))
+        return render_to_response('system/client/client_charge.html', locals(), RequestContext(request))
     else:
-        return render_to_response('sentry/403.html', locals(), RequestContext(request))
+        return render_to_response('403.html', locals(), RequestContext(request))
 
 
 

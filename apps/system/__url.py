@@ -12,8 +12,6 @@ urlpatterns = [
     url(r'^$', search.index),
     # Клиенты / объекты
     url(r'^client/', include('apps.system.client.__url')),
-    # Посты
-    url(r'^post/', include('apps.post.__url')),
     # Финансы
     url(r'^finance/', include('apps.finance.__url')),
     # Аналитика

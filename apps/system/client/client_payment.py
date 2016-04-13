@@ -29,10 +29,10 @@ def index(request,client_id=None):
         except: pass
         years_list.sort()
 
-        return render_to_response('sentry/system/client/client_payment.html', locals(), RequestContext(request))
+        return render_to_response('system/client/client_payment.html', locals(), RequestContext(request))
 
     else:
-        return render_to_response('sentry/403.html', locals(), RequestContext(request))
+        return render_to_response('403.html', locals(), RequestContext(request))
         
         
 def ajax(request,action=None):

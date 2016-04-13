@@ -53,7 +53,7 @@ def index(request, client_id=None):
 
         else:
             title = 'Список ГБР'
-            return render_to_response('sentry/system/directory/dir_security_group.html', locals(), RequestContext(request))
+            return render_to_response('system/directory/dir_security_group.html', locals(), RequestContext(request))
     else:
         return render_to_response('404.html', RequestContext(request))
 

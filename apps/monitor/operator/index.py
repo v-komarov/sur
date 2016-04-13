@@ -30,4 +30,4 @@ def test(request, client_id=None):
         {'name':'object','description':'На объекте'}
     ]
 
-    return render_to_response('sentry/monitor/operator/test.html', locals(), RequestContext(request))
+    return render_to_response('monitor/operator/test.html', locals(), RequestContext(request))

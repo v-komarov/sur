@@ -14,9 +14,9 @@ def index(request):
     if request.user.has_perm('system.client'):
         request.session['lunchbox'] = lunchbox.get(request)
         title = 'Справочник банков'
-        return render_to_response('sentry/system/directory/dir_bank.html', locals(), RequestContext(request))
+        return render_to_response('system/directory/dir_bank.html', locals(), RequestContext(request))
     else:
-        return render_to_response('sentry/403.html', locals(), RequestContext(request) )
+        return render_to_response('403.html', locals(), RequestContext(request) )
 
 
 

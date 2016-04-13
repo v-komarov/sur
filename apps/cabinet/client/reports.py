@@ -77,7 +77,7 @@ def report(request, object_id=None, period=1):
             return HttpResponse(data)
 
         else:
-            return render_to_response('sentry/cabinet/client/reports.html', locals(), RequestContext(request) )
+            return render_to_response('cabinet/client/reports.html', locals(), RequestContext(request) )
 
     return render_to_response('404.html', RequestContext(request) )
 '''

@@ -72,14 +72,14 @@ def get_access(request):
             title = 'Новый запрос на регистрацию'
             message = '<p>Новый запрос на регистрацию от '+str(request.POST['full_name'].encode('utf-8'))+', '+settings.ROOT_URL+'cabinet/mng/requests_reg/ </p>'
             send_mail.send(manager_emails, title, message)
-            return render_to_response('sentry/cabinet/get_access_continue.html', locals(), RequestContext(request) )
+            return render_to_response('cabinet/get_access_continue.html', locals(), RequestContext(request) )
 
         else:
             Captcha_error = True
     else:
         form = forms.regForm()
 
-    return render_to_response('sentry/cabinet/get_access.html', locals(), RequestContext(request) )
+    return render_to_response('cabinet/get_access.html', locals(), RequestContext(request) )
 
 
 def get_restore(request):
@@ -105,7 +105,7 @@ def get_restore(request):
     else:
         form = forms.regForm()
 
-    return render_to_response('sentry/cabinet/get_restore.html', locals(), RequestContext(request) )
+    return render_to_response('cabinet/get_restore.html', locals(), RequestContext(request) )
 
 
 def confirmation(request, token):
@@ -119,7 +119,7 @@ def confirmation(request, token):
             else:
                 error = 'Пароли не совпадают'
 
-        return render_to_response('sentry/cabinet/get_access_continue.html', locals(), RequestContext(request) )
+        return render_to_response('cabinet/get_access_continue.html', locals(), RequestContext(request) )
     else:
         return render_to_response('404.html', RequestContext(request) )
 

@@ -19,9 +19,9 @@ def index(request, client_id=None, contract_id=None):
         client_object_set = db_sentry.client_object.objects.filter(client_contract=contract_id)
         incident_set = db_sentry.client_object_incident.objects.filter(object__client_contract=contract_id, is_active=1)
         incident_type_set = db_sentry.dir_incident_type.objects.filter(is_active=1)
-        return render_to_response('sentry/system/client/object_incident.html', locals(), RequestContext(request))
+        return render_to_response('system/client/object_incident.html', locals(), RequestContext(request))
     else:
-        return render_to_response('sentry/403.html', locals(), RequestContext(request) )
+        return render_to_response('403.html', locals(), RequestContext(request) )
 
 
 def ajax(request,action=None):

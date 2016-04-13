@@ -255,11 +255,12 @@ function object_Edit(object_id) {
         $('#object_pop .header b .service_string').removeAttr('class').attr('style','display: inline-block');
         service_subtype('set_type');
         address_locality_Search();
+        object_Tag('clear');
     }
 }
 
 
-function object_Tag(action,object_id,data) {
+function object_Tag(action, object_id, data) {
     if(action=='add'){
         var tag_id = parseInt( $('#object_pop select#client_object_tags').val() );
         var tag_txt = $('#object_pop select#client_object_tags :selected').attr('name');
@@ -299,6 +300,10 @@ function object_Tag(action,object_id,data) {
             }
         }
     }
+    else if(action=='clear') {
+        $('#object_pop .in_pop_tag select').val('').removeAttr('style');
+        $('#object_pop select .in_pop_tag option').removeClass('hide');
+    }
 
     $('#object_pop select#client_object_tags option').removeAttr('class').removeAttr('selected');
     $('#object_pop .in_pop_tag .item').each(function(){
@@ -317,7 +322,7 @@ function object_Tag(action,object_id,data) {
 }
 
 
-function service_subtype(action,data) {
+function service_subtype(action, data) {
     //console.log('service_subtype:',action);
     $('#object_pop select#subtypes').show();
     $('#object_pop [action=subtype_add]').show();
@@ -355,6 +360,7 @@ function service_subtype(action,data) {
             $('#object_pop .in_pop_subtypes').append(span);
         }
     }
+
     var service_type_id = $('#object_pop select#subtypes').attr('service_type_id');
     $('#object_pop select#subtypes option[service_type_id='+service_type_id+']').removeAttr('class').removeAttr('selected');
     $('#object_pop .in_pop_subtypes .item').each(function() {
@@ -378,17 +384,18 @@ function service_subtype(action,data) {
 }
 
 
-function address_locality_Search(action,data_address) {
+function address_locality_Search(action, data_address) {
     //console.log('address_locality_Search:',action);
+    console.log(lunchbox['setting']['region']);
     var region_id = '';
     if(action=='change') {
         region_id = $('#object_pop select[name=address_region]').val();
     }
-    if(!data_address['region']) {
-        region_id = lunchbox['setting']['region'];
+    if(data_address && data_address['region']) {
+        region_id = data_address['region'];
     }
     else {
-        region_id = data_address['region'];
+        region_id = lunchbox['setting']['region'];
     }
     $('[name=address_region]').val(region_id);
     $.ajax({ url:'/system/directory/locality/ajax/search/?region_id='+region_id, type:'get', dataType:'json',

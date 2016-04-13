@@ -1,0 +1,60 @@
+{% extends "index.html" %}
+{% block content %}
+
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/setting/event_groups.js"></script>
+
+    {% include "system/setting/__left_block.html" %}
+
+    <div class="middleBlock"><h2 class="cabinet_title">{{ title }}</h2>
+
+        <table class="tableInfo searchObject"><tbody>
+        <tr class="row">
+            <td class="cell middle">Менеджер</td>
+            <td class="cell secondary">
+                <select class="wide" name="manager"><option value=""></option>
+                    {% for item in sentry_user_set %}
+                        <option value="{{ item.id }}">{{ item.full_name }}</option>
+                    {% endfor %}</select>
+            </td></tr>
+        <tr class="row">
+            <td class="cell middle">Ответственный за выполнение заявок</td>
+            <td class="cell secondary">
+                <select class="wide" name="warden"><option value=""></option>
+                    {% for item in sentry_user_set %}
+                        <option value="{{ item.id }}">{{ item.full_name }}</option>
+                    {% endfor %}</select>
+            </td></tr>
+        <tr class="row">
+            <td class="cell middle">Программист ОУ</td>
+            <td class="cell secondary">
+                <select class="wide" name="programmer"><option value=""></option>
+                    {% for item in sentry_user_set %}
+                        <option value="{{ item.id }}">{{ item.full_name }}</option>
+                    {% endfor %}</select>
+            </td></tr>
+        <tr class="row">
+            <td class="cell middle">Техник подключения ОУ</td>
+            <td class="cell secondary">
+                <select class="wide" name="technician"><option value=""></option>
+                    {% for item in sentry_user_set %}
+                        <option value="{{ item.id }}">{{ item.full_name }}</option>
+                    {% endfor %}</select>
+            </td></tr>
+        <!--tr class="row">
+            <td class="cell middle">Бонус за программирование ОУ</td>
+            <td class="cell secondary"><input size="10" type="text" name="bonus_programming"></td></tr>
+        <tr class="row">
+            <td class="cell middle">Бонус за подключение объекта</td>
+            <td class="cell secondary"><input size="10" type="text" name="bonus_connection"></td></tr-->
+
+
+        <tr class="row white"><td colspan="2">
+            <span class="btn_ui bg" action="update" icon="save"><div class="txt">Сохранить</div><div class="icon"></div></span>
+            <span class="btn_ui bg" action="reset" icon="reset"><div class="txt">Обновить</div><div class="icon"></div></span>
+        </td></tr>
+
+        </tbody></table>
+
+    </div>
+
+{% endblock %}

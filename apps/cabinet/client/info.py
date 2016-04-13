@@ -14,7 +14,7 @@ def info(request):
     if client_id and request.user.has_perm('cabinet.client_info'):
         client = db_security.client_.objects.using('security').filter(id=client_id)
         client_person = db_security.client_person_.objects.using('security').filter(client=client_id)
-        return render_to_response('sentry/cabinet/client/info.html', locals(), RequestContext(request) )
+        return render_to_response('cabinet/client/info.html', locals(), RequestContext(request) )
     elif request.user.has_perm('cabinet.roadside_show'):
         return redirect('/manager/roadside/')
     else:

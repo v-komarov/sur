@@ -1,0 +1,14 @@
+<div class="leftBlock">
+
+    {% if perms.system.client %}
+        <a class="item {% if request.path|slice:'5:' == '/checkpoint/' %}selected{% endif %}"
+            href="/post/checkpoint/">Текущие смены</a>{% endif %}
+    {% if perms.system.client %}
+        <a class="item {% if request.path|slice:'5:' == '/timetable/' %}selected{% endif %}"
+            href="/post/timetable/">График</a>{% endif %}
+    {% if perms.system.client %}
+        <a class="item {% if request.path|slice:'5:' == '/personal/' %}selected{% endif %}"
+            href="/post/personal/">Сотрудники</a>{% endif %}
+
+
+</div>

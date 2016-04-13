@@ -25,9 +25,9 @@ def index(request):
             'service_type': 'по типу охраны'
         }
 
-        return render_to_response('sentry/system/analytics/statistics.html', locals(), RequestContext(request) )
+        return render_to_response('system/analytics/statistics.html', locals(), RequestContext(request) )
     else:
-        return render_to_response('sentry/403.html', locals(), RequestContext(request) )
+        return render_to_response('403.html', locals(), RequestContext(request) )
 
 
 

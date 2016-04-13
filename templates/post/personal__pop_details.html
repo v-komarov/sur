@@ -1,0 +1,56 @@
+<script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/post/personal_details.js"></script>
+
+<div class="pop" id="pop_user_details">
+    <div class="header"><b></b><div class="close"></div></div>
+
+    <form>
+    <table class="tableInfo wide margin_null"><tbody>
+    <tr><td colspan="2">
+        {% include "post/personal__pop__navigation.html" with focus="details" %}
+    </td></tr>
+
+    <tr class="row2">
+        <td class="padding_9 right"><div class="required">*</div>Ф.И.О.</td>
+        <td class="secondary"><input class="wide" type="text" value="" name="full_name"></td></tr>
+    <tr class="row2">
+        <td class="padding_9 right"><div class="required">*</div>Должность</td>
+        <td class="secondary">
+            <select name="user_post">
+                {% for item in user_post_set %}
+                    <option value="{{ item.id }}">{{ item.name }}</option>
+                {% endfor %}
+            </select></td></tr>
+    <tr class="row2">
+        <td class="padding_9 right"><div class="required">*</div>День рождения</td>
+        <td><input class="datepicker" type="text" value="" name="birthday"></td></tr>
+    <tr class="row2">
+        <td class="padding_9 right"><div class="required">*</div>Телефоны</td>
+        <td class="secondary">
+            <input type="text" value="" name="mobile_phone" size="9">
+            <input type="text" value="" name="city_phone" size="9">
+            <input type="text" value="" name="other_phone" size="9">
+        </td></tr>
+    <tr class="row2">
+        <td class="padding_9 right">Паспорт</td>
+        <td class="secondary">
+            <input type="text" value="" name="passport_series" size="9">
+            <input type="text" value="" name="passport_number" size="9"><br />
+            <textarea cols="41" name="passport_data" rows="3"></textarea></td></tr>
+    <tr class="row2">
+        <td class="padding_9 right"><div class="required">*</div>Адрес (прописка)</td>
+        <td class="secondary"><textarea cols="41" name="address" rows="3"></textarea></td></tr>
+    <tr class="row2">
+        <td class="padding_9 right">Адрес (другой)</td>
+        <td class="secondary"><textarea cols="41" name="address2" rows="3"></textarea></td></tr>
+    <tr>
+        <td class="padding_9 right">Комментарий</td>
+        <td class="secondary"><textarea cols="41" name="comment" rows="3"></textarea></td></tr>
+    <tr><td colspan="2">
+        {% include "post/personal__pop__buttons.html" %}
+    </td></tr>
+
+    </tbody></table>
+    </form>
+
+</div>
+

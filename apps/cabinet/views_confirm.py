@@ -32,7 +32,7 @@ def confirm(request, token=None):
             else:
                 error = 'Пароли не совпадают'
 
-        return render_to_response('sentry/cabinet/get_access_confirm.html', locals(), RequestContext(request) )
+        return render_to_response('cabinet/get_access_confirm.html', locals(), RequestContext(request) )
 
     else:
         return render_to_response('404.html', RequestContext(request) )
@@ -54,7 +54,7 @@ def confirm_restore(request, token=None):
             else:
                 error = 'Пароли не совпадают'
 
-        return render_to_response('sentry/cabinet/get_access_confirm_restore.html', locals(), RequestContext(request) )
+        return render_to_response('cabinet/get_access_confirm_restore.html', locals(), RequestContext(request) )
 
     else:
         return render_to_response('404.html', RequestContext(request) )

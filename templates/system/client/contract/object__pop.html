@@ -1,0 +1,141 @@
+<div class="pop" id="object_pop">
+    <div class="header"><b>Договор</b><div class="close"></div></div>
+    <form>
+
+        <table class="tableInfo wide margin_null">
+            <tr class="row2"><td class="padding_9 nowrap right"><div class="required">*</div>Пульт</td>
+                <td class="secondary">
+                    <select style="width:100px;" name="console"><option />
+                        {% for item in dir_device_console_set %}<option value="{{ item.id }}">{{ item.name }}</option>{% endfor %}
+                    </select>
+                    <select style="float:right; width:90px;" name="console_number"></select>
+                    <div class="address_txt" style="width:130px; margin:4px 6px 0 0; float:right;"><div class="required">*</div>Номер на пульте</div>
+                </td></tr>
+            <tr class="row2"><td class="padding_9 nowrap right"><div class="required">*</div>Название объекта</td>
+                <td class="secondary"><input class="wide" name="name" type="text"></td></tr>
+            <tr class="row2"><td colspan="2">
+                <fieldset class="in_pop" id="fieldset_subtypes"><legend>Подтипы охраны</legend>
+                    <div class="in_pop_sublist in_pop_subtypes"></div>
+                    <select id="subtypes">
+                        {% for item in dir_service_subtype_set %}
+                            <option value="{{ item.id }}" service_type_id="{{ item.service_type.id }}" short_name="{{ item.name }}">{{ item.name }}{% if item.description %} - {{ item.description }}{% endif %}</option>
+                        {% endfor %}
+                    </select>
+                    <span class="btn_ui bg left" action="subtype_add" icon="object_add"><div class="txt">Добавить</div><div class="icon"></div></span>
+                </fieldset></td></tr>
+            <tr class="row2" name="cost_type">
+                <td class="padding_9 right">Тип оплаты</td>
+                <td class="secondary">
+                    <select style="width:150px;" name="cost_type">
+                        {% for item in dir_cost_type_set %}<option value="{{ item.id }}">{{ item.name }}</option>{% endfor %}
+                    </select>
+                    <input style="float:right; width:100px;" name="cost_value" type="text">
+                    <div class="address_txt" style="width:60px; margin:4px 6px 0 0; float:right;">Цена</div>
+                </td></tr>
+            <tr class="row2"><td class="padding_9 right"><div class="required">*</div>День начисления</td>
+                <td class="secondary">
+                    <input name="charge_month_day" size="2" type="text">
+                    <select name="charge_month">
+                        {% for item in dir_charge_month_set %}
+                            <option value="{{ item.id }}">{{ item.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td></tr>
+            <tr class="row2" name="cost_string">
+                <td class="padding_9 right">Стоимость услуги</td>
+                <td>
+                    <input name="cost_value" class="input_cost" type="text" aria-invalid="false">
+                    <select name="cost_type" class="select_cost_type"><option></option>
+                        {% for item in dir_cost_type_set %}
+                            <option value="{{ item.id }}" cost_type_label="{{ item.label }}">{{ item.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <div class="btn_ui bg" action="cost_add" icon="edit" title="Изменить стоимость"><div class="icon"></div><div class="txt">Изменить</div></div>
+                </td>
+            </tr>
+
+            <tr class="row2" name="referer"><td class="padding_9 nowrap right"><div class="required">*</div>Кто привел</td>
+                <td class="secondary">
+                    <select name="referer_type" style="width:100px;"><option />
+                        {% for item in dir_referer_type_set %}<option value="{{ item.id }}">{{ item.name }}</option>{% endfor %}
+                    </select>
+                    <select function="select_sentry_user" name="referer_user" style="width:225px;">
+                        <optgroup post_id="12" label="Менеджер"></optgroup>
+                    </select>
+                    <!--input name="referer_user" class="wide" type="text"-->
+                </td></tr>
+            <tr>
+                <td class="padding_9 text_right">Адрес</td>
+                <td class="secondary">
+                    <select style="width:142px; margin-top:3px" name="address_region">
+                        {% for region in dir_address_1_region_set %}
+                            <option value="{{ region.id }}">{{ region.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <select style="width:184px; margin-top: 3px" name="address_locality"></select></td></tr>
+            <tr>
+                <td class="padding_5 text_right">Улица</td>
+                <td class="text_left">
+                    <input name="address_street" class="address_input" type="text">
+                    <div class="address_txt" style="width:34px; margin: 6px 8px 0 0;">Дом</div><input name="address_building" class="address_input" type="text"></td></tr>
+            <tr class="row2">
+                <td class="text_right">
+                    <select style="width:110px; margin:8px 4px 0 0" name="address_placement_type">
+                        {% for placement in dir_address_placement_type_set %}
+                            <option value="{{ placement.id }}">{{ placement.description }}</option>
+                        {% endfor %}
+                    </select></td>
+                <td class="secondary text_left"><input name="address_placement" class="address_input" type="text" />
+                </td></tr>
+            <tr class="row2"><td class="padding_9 nowrap right">Пароль</td>
+                <td class="secondary"><input name="password" class="wide" type="text" /></td></tr>
+
+            <tr class="row2"><td class="padding_9 nowrap right"><div class="required">*</div>ГБР</td>
+                <td class="secondary"><select name="security_squad"><option />
+                    {% for item in dir_security_squad_set %}
+                        <option value="{{ item.id }}">{{ item.name }}</option>
+                    {% endfor %}
+                </select></td></tr>
+
+            <tr class="row2"><td class="padding_9 right">Мат. ответственность</td>
+                <td class="switch" name="financial_responsibility" checked="checked"><div class="chechbox"></div><div class="txt"></div></td></tr>
+
+            <tr class="row2"><td class="padding_9 right">Вид деятельности</td>
+                <td class="secondary"><input name="occupation" class="wide" type="text" /></td></tr>
+            <tr class="row2"><td class="padding_9 right">Комментарий</td>
+                <td class="secondary"><textarea cols="43" name="comment" rows="2"></textarea></td></tr>
+
+            <tr class="row2"><td colspan="2">
+                <fieldset class="in_pop" id="tags"><legend>Метки</legend>
+                    <div class="in_pop_sublist in_pop_tag"></div>
+                    <select id="client_object_tags">
+                        {% for item in dir_tag_set %}
+                            {% if item.root == 'client_object' %}
+                                <option value="{{ item.id }}" name="{{ item.name }}">{{ item.name }}{% if item.description %} - {{ item.description }}{% endif %}</option>
+                            {% endif %}
+                        {% endfor %}
+                    </select>
+                    <span class="btn_ui bg left" action="object_tag_add" icon="object_add" name="subtypes"><div class="txt">Добавить</div><div class="icon"></div></span>
+                </fieldset>
+            </td></tr>
+
+            <tr class="row2"><td class="padding_9 nowrap right"><div class="required">*</div>Ответственный менеджер</td>
+                <td class="secondary"><select function="select_sentry_user" name="client_object_warden">
+                    <option value=""></option>
+                    <optgroup post_id="12" label="Менеджер"></optgroup>
+                    <optgroup post_id="8" label="Инженер"></optgroup>
+                    <optgroup post_id="18" label="Офис-менеджер"></optgroup>
+                    <optgroup post_id="13" label="Менеджер-бухгалтер"></optgroup>
+                    <optgroup post_id="25" label="Техник"></optgroup>
+                </select></td></tr>
+
+            <tr><td colspan="2">
+                <button class="btn_ui bg" type="submit" icon="save"><div class="txt">Сохранить</div><div class="icon"></div></button>
+                <!--span class="btn_ui bg" action="object_reset" icon="reset"><div class="txt">Сбросить</div><div class="icon"></div></span-->
+                <span class="btn_ui bg left" action="object_delete" icon="delete"><div class="txt">Удалить</div><div class="icon"></div></span>
+            </td></tr>
+            </tbody>
+        </table>
+    </form>
+
+</div>

@@ -28,9 +28,9 @@ def index(request, status='wait'):
         service_subtype_set = db_sentry.dir_service_subtype.objects.filter(is_active=1)
         holding_set = db_sentry.dir_holding.objects.filter(is_active=1)
 
-        return render_to_response('sentry/system/client/search.html', locals(), RequestContext(request))
+        return render_to_response('system/client/search.html', locals(), RequestContext(request))
     else:
-        return render_to_response('sentry/cabinet/login.html', RequestContext(request))
+        return render_to_response('cabinet/login.html', RequestContext(request))
 
 
 def ajax(request, action=None):

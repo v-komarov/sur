@@ -47,6 +47,19 @@ class contract_form(forms.ModelForm):
         ]
 
 
+class client_user(forms.ModelForm):
+    class Meta:
+        model = db_sentry.client_user
+        fields = [
+            'full_name',
+            'post',
+            'birthday',
+            'passport',
+            'address',
+            'comment'
+        ]
+
+
 class object_form(forms.ModelForm):
     class Meta:
         model = db_sentry.client_object
@@ -73,7 +86,7 @@ class client_bind(forms.ModelForm):
         model = db_sentry.client_bind
         fields = [
             'client_contract',
-            'client_object',
+            #'client_object',
             'console',
             'console_number',
             #'status',

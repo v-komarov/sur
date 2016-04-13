@@ -1,0 +1,30 @@
+{% extends "index.html" %}
+{% block content %}
+    {% include "system/directory/__left_block.html" %}
+
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/directory/dir_weapon_type.js"></script>
+
+    <div class="middleBlock"><h2 class="cabinet_title">{{ title }}</h2>
+        <div class="resultCount"></div>
+        <table class="tableInfo">
+            <thead>
+            <tr class="row title">
+                <td class="cell">
+                    <input class="wide" type="text"  placeholder="Наименование" value="" name="weapon_type_name"></td>
+                <td>
+                    {% if perms.system.directory_weapon_type_add %}
+                        <div class="btn_ui" action="add" icon="object_add" title="Добавить"><div class="icon"></div></div>
+                    {% else %}<div class="empty_28"></div>
+                    {% endif %}
+                </td>
+            </tr>
+            </thead>
+            <tbody class="show"></tbody>
+        </table>
+
+        <div class="clear"></div>
+        <div class="loading">Загрузка</div>
+
+    </div>
+
+{% endblock %}

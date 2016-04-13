@@ -1,0 +1,82 @@
+{% extends "index.html" %}
+{% block content %}
+    {% include "post/__left_block.html" %}
+
+    <link href="{{ STATIC_URL }}index/css/sentry_timetable.css" type="text/css" rel="stylesheet">
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/post/checkpoint.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/post/checkpoint_shift.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/post/checkpoint_incident.js"></script>
+
+    <div class="middleBlock"><h2 class="cabinet_title">{{ title }}</h2>
+
+        <table class="tableInfo searchObject"><thead>
+        <tr class="row"><td class="padding_9 right">Организация</td>
+            <td class="cell secondary" colspan="3">
+                <select class="wide" name="service_organization"><option value="all" selected>все</option>
+                    {% for item in service_organization_set %}
+                        <option value="{{ item.id }}">{{ item.name }}</option>
+                    {% endfor %}
+                </select>
+            </td></tr>
+        <tr class="row status">
+            <td class="switch" checked="checked" name="arrival"><div class="chechbox"></div><div class="txt">график заступления</div></td>
+            <td class="switch" checked="checked" name="watch"><div class="chechbox"></div><div class="txt">смены в работе</div></td>
+            <td class="switch" checked="checked" name="completed"><div class="chechbox"></div><div class="txt">завершенные смены</div></td>
+            <td><div class="btn_ui" action="reset" icon="reset" title="Обновить"><div class="icon"></div></div></td>
+        </tr>
+        </thead></table>
+
+        <div class="resultCount"></div>
+
+        <table class="tableInfo tableCheckpoint" id="post_arrival">
+            <thead>
+            <tr class="row title"><td class="cell" colspan="6"><div class="title_right">Должны заступить согласно графику</div></td></tr>
+            <tr class="row title">
+                <td class="cell"><input class="wide" type="text"  placeholder="Название" value="" name="full_name"></td>
+                <td class="cell"><p class="txt">Время</p></td>
+                <td class="cell"><p class="txt">Часы</p></td>
+                <td class="cell"><p class="txt">Ф.И.О.</p></td>
+                <td class="cell"><p class="txt">Комментарий</p></td>
+                <td class="cell"><p class="txt">Действие</p></td>
+            </tr></thead>
+            <tbody class="points show"></tbody>
+        </table>
+        <div class="clear"></div>
+
+        <table class="tableInfo tableCheckpoint" id="post_watch">
+            <thead>
+            <tr class="row title"><td class="cell" colspan="6"><div class="title_right">Смены в работе</div></td></tr>
+            <tr class="row title">
+                <td class="cell"><input class="wide" type="text"  placeholder="Название" value="" name="full_name"></td>
+                <td class="cell"><p class="txt">Время</p></td>
+                <td class="cell"><p class="txt">Часы</p></td>
+                <td class="cell"><p class="txt">Ф.И.О.</p></td>
+                <td class="cell"><p class="txt">Комментарий</p></td>
+                <td class="cell"><p class="txt">Действие</p></td>
+            </tr></thead>
+            <tbody class="points show"></tbody>
+        </table>
+        <div class="clear"></div>
+
+        <table class="tableInfo tableCheckpoint" id="post_completed">
+            <thead>
+            <tr class="row title"><td class="cell" colspan="6"><div class="title_right">Завершенные смены текущего периода</div></td></tr>
+            <tr class="row title">
+                <td class="cell"><input class="wide" type="text"  placeholder="Название" value="" name="full_name"></td>
+                <td class="cell"><p class="txt">Время</p></td>
+                <td class="cell"><p class="txt">Часы</p></td>
+                <td class="cell"><p class="txt">Ф.И.О.</p></td>
+                <td class="cell"><p class="txt">Комментарий</p></td>
+                <td class="cell"><p class="txt">Действие</p></td>
+            </tr></thead>
+            <tbody class="points show"></tbody>
+        </table>
+
+        <div><div class="loading">Загрузка</div></div>
+
+        {% include "post/checkpoint__pop_incident.html" %}
+        {% include "post/checkpoint__pop_shift.html" %}
+
+    </div>
+
+{% endblock %}

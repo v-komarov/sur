@@ -14,9 +14,9 @@ def index(request):
         dir_address_1_region = db_sentry.dir_address_1_region.objects.all()
         settings_set = db_sentry.setting_general.objects.get(user=None)
 
-        return render_to_response('sentry/system/directory/dir_address_1_region.html', locals(), RequestContext(request))
+        return render_to_response('system/directory/dir_address_1_region.html', locals(), RequestContext(request))
     else:
-        return render_to_response('sentry/403.html', locals(), RequestContext(request) )
+        return render_to_response('403.html', locals(), RequestContext(request) )
 
 
 

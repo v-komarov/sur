@@ -18,9 +18,9 @@ def balance(request):
         month_day = datetime.datetime.now().replace(day=1).strftime("%d.%m.%Y")
         client_set = db_sentry.client.objects.all()
         dir_locality_set = db_sentry.dir_address_2_locality.objects.all()
-        return render_to_response('sentry/system/finance/balance.html', locals(), RequestContext(request) )
+        return render_to_response('system/finance/balance.html', locals(), RequestContext(request) )
     else:
-        return render_to_response('sentry/403.html', locals(), RequestContext(request) )
+        return render_to_response('403.html', locals(), RequestContext(request) )
 
 
 def bonus(request):
@@ -29,9 +29,9 @@ def bonus(request):
         today = datetime.datetime.now().strftime("%d.%m.%Y")
         month_day = datetime.datetime.now().replace(day=1).strftime("%d.%m.%Y")
         bonus_type_set = db_sentry.dir_object_event_type.objects.filter(type='bonus',is_active=1)
-        return render_to_response('sentry/system/finance/bonus.html', locals(), RequestContext(request) )
+        return render_to_response('system/finance/bonus.html', locals(), RequestContext(request) )
     else:
-        return render_to_response('sentry/403.html', locals(), RequestContext(request) )
+        return render_to_response('403.html', locals(), RequestContext(request) )
 
 
 def export(request):
@@ -40,9 +40,9 @@ def export(request):
         today = datetime.datetime.now().strftime("%d.%m.%Y")
         month_day = datetime.datetime.now().replace(day=1).strftime("%d.%m.%Y")
         security_company_set = db_sentry.dir_security_company.objects.filter(is_active=1)
-        return render_to_response('sentry/system/finance/export.html', locals(), RequestContext(request) )
+        return render_to_response('system/finance/export.html', locals(), RequestContext(request) )
     else:
-        return render_to_response('sentry/403.html', locals(), RequestContext(request) )
+        return render_to_response('403.html', locals(), RequestContext(request) )
 
 
 def ajax(request,action):

@@ -1,0 +1,19 @@
+{% extends "index.html" %}
+{% block content %}
+{% include "system/client/__left_block.html" %}
+
+
+<div class="middleBlock"><h2 class="cabinet_title">Перерасчет</h2>
+
+    {{ client_id }}
+
+    <p>{{ cost.calculation_month }}</p>
+
+    {% for item in debug_list %}
+        <p>{{ item }}</p>
+    {% endfor %}
+
+
+</div>
+
+{% endblock %}

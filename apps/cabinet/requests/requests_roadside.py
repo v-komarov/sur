@@ -15,7 +15,7 @@ def list(request, status='wait'):
 
         request_roadside = db_sentry.site_roadside.objects.filter(status=status)
 
-        return render_to_response('sentry/system/requests/requests_roadside.html', locals(), RequestContext(request) )
+        return render_to_response('system/requests/requests_roadside.html', locals(), RequestContext(request) )
     else:
         return render_to_response('404.html', RequestContext(request) )
 

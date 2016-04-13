@@ -84,6 +84,7 @@ function search_expand(action){
     } else {
         $('.search .btn_ui[action=hide]').attr('action','expand');
         $('.search.expand').hide();
+        $('.search.expand select, .search.expand input').val('');
         $('.search .btn_ui[action=expand] .txt').text('Ещё детали');
         $('.search .btn_ui[action=expand]').attr('icon','arrow_right');
     }
@@ -94,7 +95,8 @@ function task_Search() {
     popMenuClose('all');
     loading('begin');
     $('#task_list tbody tr').remove();
-    var search_pack = {'expand':'false'};
+    var search_pack = get_each_value('.search');
+    search_pack['expand'] = 'false';
     if( $('table.expand').is(":visible") ) search_pack['expand'] = 'true';
     $('.search select, .search input').each(function() {
         var input_name = $(this).attr('name');
@@ -118,6 +120,9 @@ function task_Search() {
     $.ajax({ url:'/task/ajax/search/', type:'post', dataType:'json', data:search_pack,
         success: function(data){
             setTable(data);
+            loading('end');
+        },
+        error: function(data){
             loading('end');
         }
     });
@@ -158,7 +163,7 @@ function setTable(data) {
             '<div class="id">'+task['id']+'</div>'+'<div class="type">'+task['task_type__name']+'</div></td>' +
             '<td class="border-right">'+service_string+'<div class="clear"></div><div class="object_name">'+task['object_name']+'</div>' +
             '<div class="address">'+ task['address'] +'</div>' +
-            '<div class="client">Плательщик: '+task['client_name']+'</div></td>' +
+            '<div class="client">Плательщик: '+task['client__name']+'</div></td>' +
             '<td class="cell border-right">'+task['doer']+'</td>' +
             '<td><div class="comment">'+task['comment']+'</div>'+report+'</td>' +
             '<td class="border-left"><div class="datetime" title="Дата создания">'+task['create_date']+'</div>' +

@@ -17,9 +17,9 @@ def index(request, client_id=None):
         post_reason_set = db_sentry.dir_post_reason.objects.all()
         dir_incident_type_set = db_sentry.dir_incident_type.objects.all()
 
-        return render_to_response('sentry/system/post/checkpoint.html', locals(), RequestContext(request))
+        return render_to_response('post/checkpoint.html', locals(), RequestContext(request))
     else:
-        return render_to_response('sentry/403.html', RequestContext(request))
+        return render_to_response('403.html', RequestContext(request))
 
 
 def ajax(request,action):

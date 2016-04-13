@@ -72,7 +72,7 @@ table {
     height: 10px;
 }
 .tableInfo .hover,
-.tableInfo .show .row:hover:not(.title):not(.header):not(.white) {
+.tableInfo .show .row:hover:not(.title):not(.header):not(.white):not(.caution) {
     color: #000;
     background-color: #e1ebf7;
 }

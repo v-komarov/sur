@@ -17,9 +17,9 @@ def index(request,client_id=None):
         client_set = db_sentry.client.objects.get(id=client_id)
         form = client__form.Client_requisite(instance=client_set)
 
-        return render_to_response('sentry/system/client/client_requisite.html', locals(), RequestContext(request))
+        return render_to_response('system/client/client_requisite.html', locals(), RequestContext(request))
     else:
-        return render_to_response('sentry/403.html', locals(), RequestContext(request) )
+        return render_to_response('403.html', locals(), RequestContext(request) )
 
 
 def ajax(request,client_id=None,action=None):

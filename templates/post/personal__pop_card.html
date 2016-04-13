@@ -1,0 +1,76 @@
+<script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/post/personal_card.js"></script>
+
+<div class="pop" id="pop_user_card">
+    <div class="header"><b></b><div class="close"></div></div>
+
+    <form>
+        <table class="tableInfo wide margin_null">
+            <tbody class="show">
+
+            <tr><td colspan="2">{% include "post/personal__pop__navigation.html" with focus="card" %}</td></tr>
+
+            <tr class="row2">
+                <td class="padding_9 right"><div class="required">*</div>Охранная организация</td>
+                <td class="secondary"><select name="service_organization">
+                    {% for item in dir_service_organization_set %}
+                        <option value="{{ item.id }}">{{ item.name }}</option>
+                    {% endfor %}
+                </select></td></tr>
+            <tr class="row2">
+                <td class="padding_9 right"><div class="required">*</div>Серия, номер</td>
+                <td class="secondary">
+                    <input type="text" value="" name="series" size="2">
+                    <input type="text" value="" name="number" size="9">
+                </td></tr>
+            <tr class="row2">
+                <td class="padding_9 right"><div class="required">*</div>Дата выдачи</td>
+                <td><input class="datepicker" type="text" value="" name="date"></td></tr>
+            <tr>
+                <td class="cell right">Комментарий</td>
+                <td class="secondary"><textarea cols="43" name="comment" rows="3"></textarea></td></tr>
+
+            <tr><td colspan="2">{% include "post/personal__pop__buttons.html" %}</td></tr>
+
+            <tr><td colspan="2">
+                <fieldset class="in_pop" id="card_list"><legend>Список личных карточек</legend>
+                    <span class="btn_ui legend" action="object_add" icon="object_add" title="Добавить карточку"><div class="icon"></div></span>
+                    <table class="tableinfo wide">
+                        <thead><tr class="row title">
+                            <td class="cell">Серия №</td>
+                            <td class="cell">№ лицензии</td>
+                            <td class="cell">Дата выдачи</td>
+                            <td class="cell">Статус</td>
+                            <td class="cell">Комментарий</td></tr>
+                        </thead>
+                        <tbody class="show"></tbody>
+                    </table></fieldset>
+            </td></tr>
+
+            <tr><td colspan="2">
+                <fieldset class="in_pop" id="status_list"><legend>История статуса</legend>
+                    <span class="btn_ui legend" action="object_add" icon="object_add" title="Добавить статус"><div class="icon"></div></span>
+                    <table class="tableinfo wide">
+                        <thead><tr class="row title">
+                            <td class="cell">Статус</td>
+                            <td class="cell">Дата</td>
+                            <td class="cell">Комментарий</td></tr>
+                        </thead>
+                        <tbody class="show"></tbody>
+                    </table></fieldset>
+            </td></tr>
+
+            </tbody>
+        </table>
+
+        <table class="status_table hide" style="width: 100%"><tbody><tr>
+            <td></td>
+            <td><input type="text" value="" name="status_date"></td>
+            <td><input class="wide" type="text" value="" name="status_comment"></td>
+            <td><div class="ui_button" action="save"></div>
+                <div class="ui_button" action="cancel"></div>
+                <div class="ui_button" action="remove"></div></td></tr>
+        </tbody></table>
+    </form>
+
+</div>
+

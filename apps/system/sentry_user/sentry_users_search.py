@@ -29,4 +29,4 @@ def search(request):
             return HttpResponse(data, content_type='application/json')
 
     else:
-        return render_to_response('sentry/403.html', locals(), RequestContext(request) )
+        return render_to_response('403.html', locals(), RequestContext(request) )

@@ -1,0 +1,152 @@
+{% extends "index.html" %}
+{% block content %}
+    {% include "system/client/__left_block.html" %}
+
+    <link href="{{ STATIC_URL }}index/css/sentry__object.css" type="text/css" rel="stylesheet">
+    <link href="{{ STATIC_URL }}jquery/ui/css/cupertino/jquery-ui-1.10.3.custom.css" type="text/css" rel="stylesheet">
+    <script src="{{ STATIC_URL }}jquery/jquery.validate.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/pop_menu.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/client/object.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/client/object_event.js"></script>
+    {% if object_id %}
+        <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/client/object_service.js"></script>
+        <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/client/object_service_cost.js"></script>
+    {% endif %}
+
+    <div class="middleBlock" client_id="{{ client_id }}" object_id="{{ object_id }}">
+        <h2 class="cabinet_title">{% if position=='client_object_add' %}{{ client_set.name }}: создание нового объекта{% endif %}</h2>
+
+        {% include "system/client/object__pop.html" %}
+
+        {% if object_id %}
+            <table class="tableInfo">
+                <tr><td>
+                    <table id="client_object" class="tableInfo">
+                        <thead><tr><td class="button_list" colspan="2">
+                            <b class="txt">Общая информация</b>
+                            <!--div class="btn_ui" action="top_object_service_cost_edit" icon="calculator" title="Стоимость"><div class="icon"></div></div>
+                            <div class="btn_ui" action="top_object_service_edit" icon="document" title="Услуга"><div class="icon"></div></div>
+                            <div class="btn_ui" action="object_edit" icon="folder2" title="Объект"><div class="icon"></div></div-->
+                            <div class="btn_ui" action="object_edit" icon="edit" title="Редактировать"><div class="icon"></div></div>
+                            <div class="btn_ui" action="object_reset" icon="reset" title="Обновить"><div class="icon"></div></div>
+                            {% if perms.system.client_object_delete %}
+                                <div class="btn_ui" action="object_delete" icon="delete" title="Удалить объект"><div class="icon"></div></div>
+                            {% endif %}
+                            <div class="btn_ui" action="object_archive" icon="pack" title="В архив"><div class="icon"></div><div class="txt">В архив</div></div>
+                            <div class="btn_ui" action="object_unarchive" icon="unpack" title="Из архива"><div class="icon"></div><div class="txt">Из архива</div></div>
+                            <div class="btn_ui" action="object_task" icon="object_add" title="Заявка"><div class="icon"></div><div class="txt">Заявка</div></div>
+                        </td></tr></thead>
+
+                        <tbody class="show">
+                        <tr class="row" action="service">
+                            <td class="padding_76 text_right">Договор</td>
+                            <td class="border-left" name="contract_number"></td></tr>
+                        <tr class="row" action="service">
+                            <td class="padding_5 nowrap text_right">Обслуживающая организация</td>
+                            <td class="border_left padding" name="service_organization"></td></tr>
+                        <tr class="row" action="client">
+                            <td class="padding_5 nowrap text_right">Холдинг</td>
+                            <td class="border_left padding" name="holding"></td></tr>
+                        <tr class="row" action="client">
+                            <td class="padding_5 nowrap text_right">Клиент</td>
+                            <td class="border_left padding" name="client"></td></tr>
+                        <tr class="row" action="object">
+                            <td class="padding_5 nowrap text_right">Кем охранялся ранее</td>
+                            <td class="border_left padding" name="security_previously"></td></tr>
+                        <tr class="row" action="object">
+                            <td class="padding_5 nowrap text_right">Кто привел</td>
+                            <td class="border_left padding" name="referer"></td></tr>
+                        <tr class="row" action="service">
+                            <td class="padding_5 nowrap text_right" action="service">Дата начисления</td>
+                            <td class="border_left padding" name="contract_date"></td></tr>
+                        <tr class="row" action="object">
+                            <td class="padding_5 nowrap text_right" action="object">Материальная ответственность</td>
+                            <td class="border_left padding" name="financial_responsibility"></td></tr>
+                        <tr class="row" action="object">
+                            <td class="padding_5 nowrap text_right">Комментарий</td>
+                            <td class="border_left padding" name="object_comments"></td></tr>
+                        <tr class="row" name="tag_list" action="object">
+                            <td class="padding_5 nowrap text_right">Метки</td>
+                            <td class="border_left padding" name="tag_list"></td></tr>
+                        <!--tr class="row" name="cost" edit="cost">
+                            <td class="padding_5 nowrap text_right">Стоимость услуги</td><td class="border_left padding" name="service_cost"></td></tr>
+                        <tr class="row" name="cost" edit="cost">
+                            <td class="padding_5 nowrap text_right">Дата начисления</td><td class="border_left padding" name="service_cost_charge_month_day"></td></tr>
+                        <tr class="row" name="security_squad" edit="object">
+                            <td class="padding_5 nowrap text_right">ГБР</td><td class="border_left padding"></td></tr>
+                        <tr class="row" name="security_squad"  edit="service">
+                            <td class="padding_5 nowrap text_right">Пароль</td><td class="border_left padding" name="service_password"></td></tr>
+                        <tr class="row" name="device" edit="device">
+                            <td class="padding_5 nowrap text_right">Объектовое устройство</td><td class="border_left"></td></tr-->
+                        </tbody>
+                    </table>
+                </td></tr>
+                <tr><td>
+                    <table class="tableInfo wide2">
+                        <tbody class="show wide2">
+                        <tr class="row" action="event" event_type="client_object_contract_register" event_type_id="2" title="Договор зарегистрирован">
+                            <td class="padding right" name="event_type">Договор зарегистрирован</td>
+                            <td class="cell_2" name="event_date"></td>
+                            <td class="cell" name="sentry_user"></td>
+                            <td class="cell_3" name="log_date"></td></tr>
+                        <tr class="row" action="event" event_type="client_object_contract_return" event_type_id="3" title="Договор возвращается с печатью в офис">
+                            <td class="padding right" name="event_type">Договор вернулся</td>
+                            <td class="cell_2" name="event_date"></td>
+                            <td class="cell" name="sentry_user"></td>
+                            <td class="cell_3" name="log_date"></td></tr>
+                        <tr class="row" action="event" event_type="client_object_contract_notice" event_type_id="4" title="Уведомление ОВД о подключении объекта">
+                            <td class="padding right" name="event_type">Уведомление ОВД (подключение)</td>
+                            <td class="cell_2" name="event_date"></td>
+                            <td class="cell" name="sentry_user"></td>
+                            <td class="cell_3" name="log_date"></td></tr>
+                        <tr class="row" action="event" event_type="client_object_contract_notice_off" event_type_id="5" title="Уведомление ОВД об отключении объекта">
+                            <td class="padding right" name="event_type">Уведомление ОВД (отключение)</td>
+                            <td class="cell_2" name="event_date"></td>
+                            <td class="cell" name="sentry_user"></td>
+                            <td class="cell_3" name="log_date"></td></tr>
+                        </tbody>
+                    </table>
+                </td></tr>
+            </table>
+
+            {% include "system/client/object_event__pop.html" %}
+            {% include "system/client/object_event__pop_list.html" %}
+
+
+            {% if perms.system.client_object_service %}
+                <div id="service_list">
+                    <div class="button_list"><b class="txt">Список услуг</b>
+                        {% if perms.system.client_object_service_add %}
+                            <div class="btn_ui" action="service_add" icon="object_add" name="object_service" title="Добавить услугу"><div class="icon"></div></div>
+                        {% endif %}
+
+                        <div class="down_box hide">
+                            <div class="btn_ui" icon="filter" action="service_filter" title="Фильтр"><div class="icon"></div></div>
+                            <ul class="drop_list" id="filter_service_type">
+                                {% for item in dir_service_type_set %}
+                                    <li checked="checked" service_type_id="{{ item.id }}" title="{{ item.description }}">
+                                        <div class="chechbox"></div><div class="txt">{{ item.name }}</div></li>
+                                {% endfor %}
+                            </ul>
+                        </div>
+                        <div class="btn_ui hide" action="service_reset" icon="reset" name="object_service" title="Обновить"><div class="icon"></div></div>
+
+                    </div>
+                    <div id="list"></div>
+                </div>
+
+
+
+                {% include "system/client/object_service__pop.html" %}
+                {% if perms.system.client_object_service_cost %}
+                    {% include "system/client/object_service_cost__pop.html" %}
+                {% endif %}
+            {% endif %}
+
+        {% endif %}
+
+        {% include "task/task_add__pop.html" %}
+
+    </div>
+
+{% endblock %}

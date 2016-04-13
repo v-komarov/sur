@@ -120,7 +120,8 @@ def update(request, data=None):
 
         bind, created = db_sentry.client_bind.objects.get_or_create(
             client_contract_id = client_contract_id,
-            client_object_id = object.id )
+            client_object_id = object.id)
+        bind.is_active = 1
         bind.dir_service_subtype.clear()
         bind.dir_service_subtype = json.loads(request.POST['dir_service_subtype'])
         bind.save()
@@ -129,12 +130,15 @@ def update(request, data=None):
             bind = bind_form.save()
 
             # Cost
-            data['cc'] = 0
+            data['cost'] = 0
             if 'cost_value__text' in request.POST:
-                data['cc'] = 1
+                data['cost'] = 1
                 cost_current = db_sentry.client_bind_cost.objects.filter(client_bind_id=bind.id, is_active=1).first()
                 if not cost_current:
-                    cost_current = db_sentry.client_bind_cost.objects.create(client_bind_id=bind.id)
+                    cost_current = db_sentry.client_bind_cost.objects.create(
+                        client_bind_id = bind.id,
+                        cost_type_id = int(request.POST['cost_type'])
+                    )
 
                 if request.POST['cost_value__text'] == '':
                     cost_current.is_active = 0
@@ -146,14 +150,14 @@ def update(request, data=None):
 
             elif 'cost_value' in request.POST and request.POST['cost_value'] != '' \
                     and 'cost_type' in request.POST and request.POST['cost_type'] != '':
-                data['cc'] = 2
+                data['cost'] = 2
                 db_sentry.client_bind_cost.objects.create(
                     client_bind_id=bind.id,
                     cost_value = Decimal(request.POST['cost_value']),
                     cost_type_id = int(request.POST['cost_type'])
                 )
             if 'cost_new' in request.POST and 'begin_date_new' in request.POST:
-                data['cc'] = 3
+                data['cost'] = 3
                 cost_last = db_sentry.client_bind_cost.objects \
                     .filter(client_bind_id=bind.id, is_active=1) \
                     .exclude(cost_type=None).last()

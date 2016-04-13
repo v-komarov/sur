@@ -21,9 +21,9 @@ def render(request, client_id=None, object_id=None):
         dir_cost_type_set = db_sentry.dir_cost_type.objects.filter(is_active=1)
         dir_charge_month = db_sentry.dir_charge_month.objects.filter(is_active=1)
         service_cost_form = client__form.service_cost()
-        return render_to_response('sentry/system/client/object_service_cost.html', locals(), RequestContext(request))
+        return render_to_response('system/client/object_service_cost.html', locals(), RequestContext(request))
     else:
-        return render_to_response('sentry/403.html', locals(), RequestContext(request) )
+        return render_to_response('403.html', locals(), RequestContext(request) )
 
 
 def ajax(request, action=None):

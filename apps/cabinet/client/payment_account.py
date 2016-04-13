@@ -24,7 +24,7 @@ def accounts(request, obj_id=None, period=1):
             .filter(id__in=company_list)
 
 
-        return render_to_response('sentry/cabinet/client/payment_account.html', locals(), RequestContext(request) )
+        return render_to_response('cabinet/client/payment_account.html', locals(), RequestContext(request) )
 
     return render_to_response('404.html', RequestContext(request) )
 '''

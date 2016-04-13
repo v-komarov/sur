@@ -32,7 +32,7 @@ def index(request, client_id=None):
         months_list = month_name.get_mlist()
         month_now = datetime.date.today().month
 
-        return render_to_response('sentry/system/post/timetable.html', locals(), RequestContext(request))
+        return render_to_response('post/timetable.html', locals(), RequestContext(request))
     else:
         return render_to_response('404.html', RequestContext(request))
 

@@ -1,0 +1,174 @@
+{% extends "index.html" %}
+{% block content %}
+    {% include "system/client/__left_block.html" %}
+
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/client/client.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/client/client__address.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/client/client__requisite.js"></script>
+    <div class="middleBlock" client_id="{{ client_id }}">
+        <h2 class="cabinet_title">Клиент: {{ client_set.name }}</h2>
+
+        <form id="client_info_form">
+            <table class="tableInfo">
+                <tbody class="show">
+                <tr class="row2"><td colspan="2">
+                    <button class="btn_ui bg" action="save" icon="save" type="submit"><div class="txt">Сохранить</div><div class="icon"></div></button>
+                    <a href="/system/client/{{ client_id }}/contract/add/" class="btn_ui bg" icon="object_add" type="submit"><div class="txt">Создать договор</div><div class="icon"></div></a>
+                    <div class="btn_ui bg left" action="client_delete" icon="delete"><div class="txt">Удалить</div><div class="icon"></div></div>
+                </td></tr>
+
+                <tr class="row" id="holding">
+                    <td class="padding_9 text_right">Холдинг</td>
+                    <td class="cell secondary"><input name="holding" class="wide" type="text" value="{{ client_set.holding.name }}" item_id="{{ client_set.holding.id }}"></td></tr>
+                <tr class="row">
+                    <td class="padding_9 text_right"><div class="required">*</div>Форма собственности</td>
+                    <td class="cell secondary">
+                        <select name="legal_type" class="wide" item_id="{{ client_set.legal_type_base.legal_type.id }}">
+                            {% for item in legal_type_set %}
+                                <option value="{{ item.id }}" legal_label="{{ item.label }}">{{ item.name }}</option>
+                            {% endfor %}
+                        </select></td></tr>
+                <tr class="row">
+                    <td class="padding_9 text_right">На основании</td>
+                    <td class="cell secondary">
+                        <select name="legal_type_base" class="wide" item_id="{{ client_set.legal_type_base.id }}">
+                            {% for item in legal_type_base_set %}
+                                <option value="{{ item.id }}" legal_type_id="{{ item.legal_type.id }}">{{ item.name }}</option>
+                            {% endfor %}
+                        </select></td></tr>
+                <tr class="row" id="name">
+                    <td class="padding_9 text_right"><div class="required">*</div>Плательщик</td>
+                    <td class="cell secondary"><input name="name" class="wide" type="text" value="{{ client_set.name }}"></td></tr>
+                <tr class="row">
+                    <td class="padding_9 text_right"><div class="required">*</div>ИНН</td>
+                    <td class="cell secondary">
+                        <input name="inn" style="width: 110px;" type="text" value="{{ client_set.inn|default:"" }}">
+                        <div class="right">
+                            <div style="margin: 4px 8px 0; display: inline-block; float: left;">КПП</div>
+                            <input name="kpp" style="margin: 0; display: inline-block; float: right;" type="text" value="{{ client_set.kpp|default:"" }}">
+                        </div>
+                    </td></tr>
+
+                <tr class="row" id="pay">
+                    <td class="padding_5 text_right">Баланс</td>
+                    <td class="padding_5 secondary">{% if client_set.balance %}{{ client_set.balance }} руб.{% endif %}</td></tr>
+                <tr class="row" id="pay_type">
+                    <td class="padding_9 text_right">Форма оплаты</td>
+                    <td class="cell secondary">
+                        <select name="pay_type" class="wide">
+                            {% for item in pay_type %}
+                                <option value="{{ item }}">{{ item }}</option>
+                            {% endfor %}
+                        </select></td></tr>
+                <tr class="row" id="founding_date">
+                    <td class="padding_9 text_right">Дата основания</td>
+                    <td class="edit"><input name="founding_date" style="width: 70px; margin: 5px 0; float: left;" type="text" value="{{ client_set.founding_date|date:'d.m.Y' }}"></td></tr>
+
+                <tr class="row" id="address_actual">
+                    <td class="padding_9" colspan="2">
+                        <div class="address_txt"><div class="required">*</div>Фактический адрес</div>
+                        <select class="address_select" name="address_actual_region" mark="address_region" mark="address_region" item_id="{{ client_set.address_actual_building.street.locality.region.id }}"><option value=""></option>
+                            {% for region in dir_address_1_region_set %}<option value="{{ region.id }}">{{ region.name }}</option>{% endfor %}
+                        </select>
+                        <select  class="address_select" name="address_actual_locality" mark="address_locality" item_id="{{ client_set.address_actual_building.street.locality.id }}"></select>
+                        <div class="clear"></div><div class="address_txt"><div class="required">*</div>Улица</div>
+                        <input class="address_input" name="address_actual_street" mark="address_street" type="text" value="{{ client_set.address_actual_building.street.name|default:"" }}" item_id="{{ client_set.address_actual_building.street.id }}">
+                        <div class="address_txt">Индекс</div>
+                        <input class="address_input" name="address_actual_index" type="text" value="{{ client_set.address_actual_index|default:"" }}" />
+                        <div class="clear"></div><div class="address_txt"><div class="required">*</div>Дом / строение</div>
+                        <input class="address_input" name="address_actual_building" mark="address_building" type="text" value="{{ client_set.address_actual_building.name|default:"" }}" item_id="{{ client_set.address_actual_building.id }}">
+                        <select style="margin: 3px 0 0 40px; width: 110px;" name="address_actual_placement_type" mark="address_placement_type" item_id="{{ client_set.address_actual_placement_type.id }}">
+                            {% for item in dir_address_placement_type_set %}<option value="{{ item.id }}">{{ item.description }}</option>{% endfor %}
+                        </select>
+                        <input class="address_input" name="address_actual_placement" type="text" value="{{ client_set.address_actual_placement|default:"" }}" />
+                    </td>
+                </tr>
+
+                <tr class="row2"><td colspan="2"><button class="btn_ui bg" action="save" icon="save" type="submit"><div class="txt">Сохранить</div><div class="icon"></div></button></td></tr>
+
+                <tr class="row" id="address_legal">
+                    <td class="padding_9" colspan="2">
+                        <div class="address_txt">Юридический адрес</div>
+                        <select class="address_select" name="address_legal_region" mark="address_region" item_id="{{ client_set.address_legal_building.street.locality.region.id }}"><option value=""></option>
+                            {% for region in dir_address_1_region_set %}<option value="{{ region.id }}">{{ region.name }}</option>{% endfor %}
+                        </select>
+                        <select class="address_select" name="address_legal_locality" mark="address_locality" item_id="{{ client_set.address_legal_building.street.locality.id }}"></select>
+                        <div class="clear"></div>
+                        <div class="address_txt">Улица</div>
+                        <input class="address_input" name="address_legal_street" mark="address_street" type="text" value="{{ client_set.address_legal_building.street.name|default:"" }}" item_id="{{ client_set.address_legal_building.street.id }}">
+                        <div class="address_txt">Индекс</div>
+                        <input class="address_input" name="address_legal_index" type="text" value="{{ client_set.address_legal_index|default:"" }}" />
+                        <div class="clear"></div>
+                        <div class="address_txt">Дом / строение</div>
+                        <input class="address_input" name="address_legal_building" mark="address_building" type="text" value="{{ client_set.address_legal_building.name|default:"" }}" item_id="{{ client_set.address_legal_building.id }}">
+                        <select style="margin: 3px 0 0 40px; width: 110px;" name="address_legal_placement_type" mark="address_placement_type" item_id="{{ client_set.address_legal_placement_type.id }}">
+                            {% for item in dir_address_placement_type_set %}<option value="{{ item.id }}">{{ item.description }}</option>{% endfor %}
+                        </select>
+                        <input class="address_input" name="address_legal_placement" type="text" value="{{ client_set.address_legal_placement|default:"" }}" />
+                    </td>
+                </tr>
+
+                <tr class="row2"><td colspan="2"><button class="btn_ui bg" action="save" icon="save" type="submit"><div class="txt">Сохранить</div><div class="icon"></div></button></td></tr>
+
+                <tr class="row" id="address_postal">
+                    <td class="padding_9" colspan="2">
+                        <div class="address_txt">Почтовый адрес</div>
+                        <select class="address_select" name="address_postal_region" mark="address_region" item_id="{{ client_set.address_postal_building.street.locality.region.id }}"><option value=""></option>
+                            {% for region in dir_address_1_region_set %}<option value="{{ region.id }}">{{ region.name }}</option>{% endfor %}
+                        </select>
+                        <select class="address_select" name="address_postal_locality" mark="address_locality" item_id="{{ client_set.address_postal_building.street.locality.id }}"></select>
+                        <div class="clear"></div>
+                        <div class="address_txt">Улица</div>
+                        <input class="address_input" name="address_postal_street" mark="address_street" type="text" value="{{ client_set.address_postal_building.street.name|default:"" }}" item_id="{{ client_set.address_postal_building.street.id }}">
+                        <div class="address_txt">Индекс</div>
+                        <input class="address_input" name="address_postal_index" type="text" value="{{ client_set.address_postal_index|default:"" }}" />
+                        <div class="clear"></div>
+                        <div class="address_txt">Дом / строение</div>
+                        <input class="address_input" name="address_postal_building" mark="address_building" type="text" value="{{ client_set.address_postal_building.name|default:"" }}" item_id="{{ client_set.address_postal_building.id }}">
+                        <select style="margin: 3px 0 0 40px; width: 110px;" name="address_postal_placement_type" mark="address_placement_type" item_id="{{ client_set.address_postal_placement_type.id }}">
+                            {% for item in dir_address_placement_type_set %}<option value="{{ item.id }}">{{ item.description }}</option>{% endfor %}
+                        </select>
+                        <input class="address_input" name="address_postal_placement" type="text" value="{{ client_set.address_postal_placement|default:"" }}" />
+                    </td>
+                </tr>
+
+                <tr class="row2"><td colspan="2"><button class="btn_ui bg" action="save" icon="save" type="submit"><div class="txt">Сохранить</div><div class="icon"></div></button></td></tr>
+
+                <tr class="row">
+                    <td class="padding_9 text_right">Название банка</td>
+                    <td class="cell secondary"><input name="bank" class="wide" type="text" value="{{ client_set.bank.name }}" item_id="{{ client_set.bank.id }}"></td>
+                </tr>
+                <tr class="row">
+                    <td class="padding_9 text_right">БИК</td>
+                    <td class="cell secondary"><input name="bank__bik" class="wide" size="40" type="text" value="{{ client_set.bank.bik }}"></td></tr>
+                <tr class="row">
+                    <td class="padding_9 text_right">Корреспондентский счёт</td>
+                    <td class="cell secondary"><input name="bank__correspondent_account" class="wide" size="40" type="text" value="{{ client_set.bank.correspondent_account }}"></td></tr>
+                <tr class="row">
+                    <td class="padding_9 text_right">Расчетный счет</td>
+                    <td class="cell secondary"><input name="bank_account" class="wide" size="40" type="text" value="{{ client_set.bank_account }}"></td></tr>
+                <tr class="row">
+                    <td class="padding_9 text_right">ОГРН</td>
+                    <td class="cell secondary"><input name="ogrn" class="wide" size="40" type="text" value="{{ client_set.ogrn }}"></td></tr>
+                <tr class="row">
+                    <td class="padding_9 text_right">ОГРНИП</td>
+                    <td class="cell secondary"><input name="ogrnip" class="wide" size="40" type="text" value="{{ client_set.ogrnip }}"></td></tr>
+
+                {% if perms.system.client_change %}
+                    <tr class="row white"><td colspan="2">
+                        <!--span class="btn_ui bg" action="edit" icon="edit"><div class="txt">Редактировать</div><div class="icon"></div></span-->
+                        <button class="btn_ui bg" action="save" icon="save" type="submit"><div class="txt">Сохранить</div><div class="icon"></div></button>
+                        <a href="/system/client/{{ client_id }}/object/add/" class="btn_ui bg" icon="object_add" type="submit"><div class="txt">Создать договор</div><div class="icon"></div></a>
+                        <div class="btn_ui bg left" action="client_delete" icon="delete"><div class="txt">Удалить</div><div class="icon"></div></div>
+                        <!--span class="btn_ui bg" action="reset" icon="reset"><div class="txt">Сбросить</div><div class="icon"></div></span-->
+                        <!--span class="btn_ui bg" action="cancel" icon="cancel"><div class="txt">Отменить</div><div class="icon"></div></span-->
+                    </td></tr>
+                {% endif %}
+
+                </tbody>
+            </table>
+        </form>
+
+    </div>
+
+{% endblock %}

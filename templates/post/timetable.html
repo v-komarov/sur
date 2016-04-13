@@ -1,0 +1,52 @@
+{% extends "index.html" %}
+{% block content %}
+    {% include "post/__left_block.html" %}
+    <link href="{{ STATIC_URL }}index/css/sentry_timetable.css" type="text/css" rel="stylesheet">
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/pop_menu.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/post/timetable.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/post/timetable_user.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/post/timetable_shift.js"></script>
+
+    <div class="middleBlock"><h2 class="cabinet_title">{{ title }}</h2>
+        {% include "post/timetable__pop2.html" %}
+        <table class="tableInfo searchObject"><thead>
+        <tr class="row"><td class="padding_9 right">Организация</td>
+            <td class="cell secondary" colspan="2">
+                <select class="wide" name="service_organization">
+                    {% for item in dir_service_organization_set %}
+                        <option value="{{ item.id }}">{{ item.name }}</option>
+                    {% endfor %}
+                </select>
+            </td></tr>
+        <tr class="row"><td class="padding_9 right">Объект</td>
+            <td class="cell secondary" colspan="2">
+                <select class="selectObject wide" name="select_object"></select>
+            </td></tr>
+        <tr class="row"><td class="padding_9 right">Сотрудник</td>
+            <td class="cell secondary" colspan="2"><input class="wide" type="text" placeholder="Ф.И.О." value="" name="sentry_user"></td></tr>
+        <tr class="row"><td class="padding_9 right">Период</td>
+            <td class="secondary" name="month">
+                <select class="year">
+                    {% for item in years_list %}
+                        <option class="item" value="{{ item }}" {% if item = year_now %}selected{% endif %}>{{ item }}</option>
+                    {% endfor %}
+                </select>
+                <a class="arrow" action="prev"><</a>
+                <select class="month_list">
+                    {% for item in months_list %}
+                        <option class="item" value="{{ forloop.counter }}" {% if forloop.counter = month_now %}selected{% endif %}>{{ item }}</option>
+                    {% endfor %}
+                </select>
+                <a class="arrow" action="next">></a>
+            <td><div class="btn_ui btn_38" action="reset" icon="reset" title="Обновить"><div class="icon"></div></div></td>
+        </tr>
+        </thead></table>
+
+        <div class="clear"><div class="loading">Загрузка</div></div>
+        <div class="old"></div>
+
+        {% include "post/timetable__pop_shift.html" %}
+        {% include "post/timetable__pop_users.html" %}
+    </div>
+
+{% endblock %}

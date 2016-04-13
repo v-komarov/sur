@@ -50,7 +50,7 @@ def payments(request, year=None):
                     'comment':item['comment'],
                 })
 
-        return render_to_response('sentry/cabinet/client/payments.html', locals(), RequestContext(request) )
+        return render_to_response('cabinet/client/payments.html', locals(), RequestContext(request) )
     else:
         return render_to_response('404.html', RequestContext(request) )
 '''

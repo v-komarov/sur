@@ -20,7 +20,7 @@ def list(request, status='wait'):
         title = 'Заявки: Личный кабинет'
         users_request = db_sentry.auth_user_request.objects.filter(status=status)
 
-        return render_to_response('sentry/system/requests/requests_cabinet.html', locals(), RequestContext(request) )
+        return render_to_response('system/requests/requests_cabinet.html', locals(), RequestContext(request) )
     else:
         return render_to_response('404.html', RequestContext(request) )
 
@@ -51,7 +51,7 @@ def show(request, request_id=None):
         except:
             error = 'Нет объекта с таким № договора'
 
-        return render_to_response('sentry/system/requests/requests_cabinet_show.html', locals(), RequestContext(request) )
+        return render_to_response('system/requests/requests_cabinet_show.html', locals(), RequestContext(request) )
     else:
         return render_to_response('404.html', RequestContext(request) )
 
@@ -98,7 +98,7 @@ def reg_response(request, request_id=None, response=None, client_id=None):
                 user_request.status = 'wait'
                 user_request.save()
 
-            return render_to_response('sentry/system/requests/requests_cabinet_done.html', locals(), RequestContext(request) )
+            return render_to_response('system/requests/requests_cabinet_done.html', locals(), RequestContext(request) )
 
         elif response == 'denied':
             user_request.status = 'denied'

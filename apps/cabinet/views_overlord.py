@@ -22,7 +22,7 @@ def list(request):
                 Q(email='') | Q(email='нет') | Q(email='нету') | Q(email='net') | Q(email='-')
             )
 
-        return render_to_response('sentry/cabinet/overlord_list.html', locals(), RequestContext(request) )
+        return render_to_response('cabinet/overlord_list.html', locals(), RequestContext(request) )
     else:
         return render_to_response('404.html', RequestContext(request) )
 '''

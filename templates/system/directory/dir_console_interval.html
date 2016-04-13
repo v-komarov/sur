@@ -1,0 +1,74 @@
+{% extends "index.html" %}
+{% block content %}
+
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/directory/dir_console_interval.js"></script>
+
+    {% include "system/directory/__left_block.html" %}
+
+    <div class="middleBlock"><h2 class="cabinet_title">{{ title }}</h2>
+
+        <div class="result_count"></div>
+
+        <table class="tableInfo" id="console_interval_list">
+            <thead>
+            <tr class="row title">
+                <td class="cell">
+                    <select class="wide" name="device_console"><option value="">Пульты (все)</option>
+                        {% for item in device_console_set %}<option value="{{ item.id }}">{{ item.name }}</option>{% endfor %}
+                    </select></td>
+                <td class="cell">
+                    <select class="wide" name="service_organization"><option value="">Организации (все)</option>
+                        {% for item in service_organization_set %}<option value="{{ item.id }}">{{ item.name }}</option>{% endfor %}
+                    </select></td>
+                <td class="cell"><p class="txt">Интервал</p></td>
+                <td style="width:36px">
+                    {% if perms.system.directory_console_interval_add %}
+                        <div class="btn_ui" action="console_interval_add" icon="object_add" title="Добавить"><div class="icon"></div></div>
+                    {% else %}<div class="empty_28"></div>
+                    {% endif %}
+                </td>
+            </tr>
+            </thead>
+            <tbody class="show"></tbody>
+        </table>
+
+        <div class="clear"></div>
+
+        <!-- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- .hide -->
+
+        <div class="pop" id="console_interval_pop">
+            <div class="header"><b>Интервал</b><div class="close"></div></div>
+
+            <form>
+                <table class="tableInfo wide margin_null">
+                    <tr class="row2">
+                        <td class="padding_9 text_right">Организация</td>
+                        <td class="cell secondary">
+                            <select class="wide" name="service_organization">
+                                {% for item in service_organization_set %}<option value="{{ item.id }}">{{ item.name }}</option>{% endfor %}
+                            </select></td></tr>
+                    <tr class="row2">
+                        <td class="padding_9 text_right">Пульт</td>
+                        <td class="cell secondary">
+                            <select class="wide" name="device_console">
+                                {% for item in device_console_set %}<option value="{{ item.id }}">{{ item.name }}</option>{% endfor %}
+                            </select></td></tr>
+                    <tr class="row2">
+                        <td class="padding_9 text_right">Интревал</td>
+                        <td class="cell secondary nowrap">
+                            <input style="width:90px" type="text" value="" name="begin">
+                            <b class="txt2">-</b>
+                            <input style="width:90px" type="text" value="" name="end"></td></tr>
+                    <tr>
+                        <td colspan="2">
+                            <button class="btn_ui bg" type="submit" action="console_interval_update" icon="save" title="Сохранить"><div class="icon"></div><div class="txt">Сохранить</div></button>
+                            <div class="btn_ui bg left" action="console_interval_delete" icon="delete" title="Удалить"><div class="icon"></div><div class="txt">Удалить</div></div>
+                        </td></tr>
+                </table>
+            </form>
+
+        </div>
+
+    </div>
+
+{% endblock %}

@@ -2,11 +2,8 @@
 #  coding: utf-8
 
 from django.conf.urls import url
-import checkpoint
-import personal
 from apps.post import timetable, personal, checkpoint
 
-# Посты
 urlpatterns = [
     url(r'^checkpoint/$', checkpoint.index),
     url(r'^checkpoint/ajax/(?P<action>\w{1,32})/$', checkpoint.ajax),

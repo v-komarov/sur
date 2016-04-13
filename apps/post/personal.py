@@ -19,7 +19,7 @@ def index(request):
     if 'user_id' in request.GET:
         user_full_name = db_sentry.sentry_user.objects.get(id=int(request.GET['user_id'])).full_name
 
-    return render_to_response('sentry/system/post/personal.html', locals(), RequestContext(request))
+    return render_to_response('post/personal.html', locals(), RequestContext(request))
 
 
 def ajax(request, action):
@@ -108,4 +108,4 @@ def set_status(request, user_id=None):
                 cnt += 1
             return True
 
-        #return render_to_response('sentry/system/post/personal_set_status.html', locals(), RequestContext(request))
+        #return render_to_response('post/personal_set_status.html', locals(), RequestContext(request))

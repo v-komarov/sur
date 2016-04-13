@@ -20,7 +20,7 @@ def objects_list(request):
                     'locality__name','street__name','building')\
             .order_by('order_num')
 
-        return render_to_response('sentry/cabinet/client/objects.html', locals(), RequestContext(request) )
+        return render_to_response('cabinet/client/objects.html', locals(), RequestContext(request) )
     else:
         return render_to_response('404.html', RequestContext(request) )
 '''

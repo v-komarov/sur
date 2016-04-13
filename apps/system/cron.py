@@ -22,4 +22,4 @@ def start(request):
             time.sleep(max(0, start_time + interval - time.time()))
         Thread(target=start_parser)
     else:
-        return render_to_response('sentry/403.html', locals(), RequestContext(request))
+        return render_to_response('403.html', locals(), RequestContext(request))

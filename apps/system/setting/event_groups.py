@@ -16,9 +16,9 @@ def index(request, client_id=None):
         setting_set = db_sentry.setting_general.objects.get(user=None)
         sentry_user_set = db_sentry.sentry_user.objects.filter(is_active=1)
 
-        return render_to_response('sentry/system/setting/event_groups.html', locals(), RequestContext(request))
+        return render_to_response('system/setting/event_groups.html', locals(), RequestContext(request))
     else:
-        return render_to_response('sentry/403.html', locals(), RequestContext(request) )
+        return render_to_response('403.html', locals(), RequestContext(request) )
 
 
 def ajax(request, action=None):

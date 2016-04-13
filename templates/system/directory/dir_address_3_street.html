@@ -1,0 +1,44 @@
+{% extends "index.html" %}
+{% block content %}
+
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/directory/dir_address_3_street.js"></script>
+
+    {% include "system/directory/__left_block.html" %}
+
+    <div class="middleBlock"><h2 class="cabinet_title">{{ title }}</h2>
+
+        <div class="result_count"></div>
+
+        <table class="tableInfo" locality_default_id="{{ settings_set.locality_id }}">
+            <thead>
+            <tr class="row title">
+                <td colspan="2">
+                    <table class="inside"><tr>
+                        <td class="cell">
+                            <select class="wide" name="region"><option value="">Регион (все)</option>
+                                {% for region in dir_address_1_region %}
+                                    <option value="{{ region.id }}" {% if region.id == settings_set.region_id %}selected{% endif %}>{{ region.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </td>
+                        <td class="cell"><select class="wide" name="locality"></select></td>
+                    </tr>
+                    </table>
+                </td></tr>
+            <tr class="row title">
+                <td class="cell">
+                    <input class="wide" type="text"  placeholder="Улица" value="" name="street_name">
+                </td>
+                <td>{% if perms.system.directory_street_add %}
+                    <div class="btn_ui" action="add" icon="object_add" title="Добавить"><div class="icon"></div></div>
+                {% else %}<div class="empty_28"></div>
+                {% endif %}
+                </td>
+            </tr>
+            </thead>
+            <tbody class="show"></tbody>
+        </table>
+
+    </div>
+
+{% endblock %}

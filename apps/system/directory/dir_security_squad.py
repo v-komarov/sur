@@ -19,10 +19,10 @@ def index(request):
 
     if request.user.has_perm('system.client'):
         title = 'Список ГБР'
-        return render_to_response('sentry/system/directory/dir_security_squad.html', locals(), RequestContext(request))
+        return render_to_response('system/directory/dir_security_squad.html', locals(), RequestContext(request))
 
     else:
-        return render_to_response('sentry/403.html', locals(), RequestContext(request) )
+        return render_to_response('403.html', locals(), RequestContext(request) )
 
 
 def ajax(request,action):

@@ -19,9 +19,9 @@ def incident(request):
         client_set = db_sentry.client.objects.filter(is_active=1)
         incident_type_set = db_sentry.dir_incident_type.objects.all()
 
-        return render_to_response('sentry/system/analytics/incident.html', locals(), RequestContext(request) )
+        return render_to_response('system/analytics/incident.html', locals(), RequestContext(request) )
     else:
-        return render_to_response('sentry/403.html', locals(), RequestContext(request) )
+        return render_to_response('403.html', locals(), RequestContext(request) )
 
 
 

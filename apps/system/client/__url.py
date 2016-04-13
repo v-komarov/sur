@@ -60,7 +60,6 @@ urlpatterns = [
     url(r'^(?P<client_id>\d{1,11})/contract/(?P<contract_id>\d{1,11})/incident/$', object_incident.index),
     url(r'^contract/incident/ajax/(?P<action>\w{1,32})/$', object_incident.ajax),
 
-
     # Object
     url(r'^(?P<client_id>\d{1,11})/object/(?P<object_id>\d{1,11})/$', client_object.index),
     url(r'^(?P<client_id>\d{1,11})/object/add/$', client_object.index),

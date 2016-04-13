@@ -1,0 +1,38 @@
+{% extends "index.html" %}
+{% block content %}
+
+    {% include "task/__left_block.html" %}
+    <link href="{{ STATIC_URL }}index/css/sentry_task.css" type="text/css" rel="stylesheet">
+    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/task/task_add.js"></script>
+
+    <div class="middleBlock">
+        <table class="tableInfo search"><tbody>
+        <tr class="row"><td class="padding_9 right">№ договора</td>
+            <td class="cell secondary"><input class="wide" type="text" value="" name="contract_number"></td>
+        </tr>
+        <tr class="row"><td class="padding_9 right">Плательщик</td>
+            <td class="cell secondary"><input class="wide" type="text" value="" name="client_name"></td>
+        </tr>
+        <tr class="row"><td class="padding_9 right">Объект</td>
+            <td class="cell secondary"><input class="wide" type="text" value="" name="object_name"></td>
+        </tr>
+        <tr class="row"><td class="padding_9 right">Адрес (улица)</td>
+            <td class="cell secondary"><input class="wide" type="text" value="" name="address"></td>
+        </tr>
+
+        <tr class="row white"><td colspan="2">
+            <span class="btn_ui bg" action="search" icon="search"><div class="txt">Найти</div><div class="icon"></div></span>
+            <span class="btn_ui bg" action="reset" icon="reset"><div class="txt">Сбросить</div><div class="icon"></div></span>
+        </td></tr>
+
+        </tbody></table>
+
+        <div class="clear"></div>
+        <div class="result_count"></div>
+        <div class="list" id="object_list"></div>
+
+        {% include "task/task_add__pop.html" %}
+
+    </div>
+
+{% endblock %}

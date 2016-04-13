@@ -27,18 +27,18 @@ def index(request):
         dir_security_squad_set = db_sentry.dir_security_squad.objects.filter(is_active=1)
         dir_security_squad_set = db_sentry.dir_security_squad.objects.filter(is_active=1)
 
-        return render_to_response('sentry/task/task.html', locals(), RequestContext(request) )
+        return render_to_response('task/task.html', locals(), RequestContext(request) )
     else:
-        return render_to_response('sentry/403.html', locals(), RequestContext(request) )
+        return render_to_response('403.html', locals(), RequestContext(request) )
 
 
 def add(request):
     if request.user.has_perm('system.client'):
         title = 'Новая заявка'
         task_type_set = task_models.task_type.objects.all()
-        return render_to_response('sentry/task/task_add.html', locals(), RequestContext(request) )
+        return render_to_response('task/task_add.html', locals(), RequestContext(request) )
     else:
-        return render_to_response('sentry/403.html', locals(), RequestContext(request) )
+        return render_to_response('403.html', locals(), RequestContext(request) )
 
 
 def ajax(request,action):
@@ -112,6 +112,6 @@ def search(request):
             .values('id','full_name','post')
         locality_set = db_sentry.dir_address_2_locality.objects.all()
 
-        return render_to_response('sentry/task/task_search.html', locals(), RequestContext(request) )
+        return render_to_response('task/task_search.html', locals(), RequestContext(request) )
     else:
-        return render_to_response('sentry/403.html', locals(), RequestContext(request) )
+        return render_to_response('403.html', locals(), RequestContext(request) )

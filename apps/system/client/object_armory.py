@@ -22,7 +22,7 @@ def index(request, client_id=None, object_id=None):
             status__name__in = status_list,
             is_active = 1 )
 
-        return render_to_response('sentry/system/client/object_armory.html', locals(), RequestContext(request))
+        return render_to_response('system/client/object_armory.html', locals(), RequestContext(request))
     else:
         return render_to_response('404.html', RequestContext(request))
 

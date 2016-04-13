@@ -22,9 +22,9 @@ def index(request, client_id=None):
         user_post_set = db_sentry.dir_user_post.objects.all()
         users_set = db_sentry.sentry_user.objects.all()
 
-        return render_to_response('sentry/system/sentry_user/sentry_user.html', locals(), RequestContext(request))
+        return render_to_response('system/sentry_user/sentry_user.html', locals(), RequestContext(request))
     else:
-        return render_to_response('sentry/403.html', locals(), RequestContext(request) )
+        return render_to_response('403.html', locals(), RequestContext(request) )
 
 
 def ajax(request,action=None):
