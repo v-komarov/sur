@@ -677,7 +677,7 @@ class client_contract(models.Model):
         self.ovd_status_id = dir_object_status.objects.get(label=ovd_status).id
         self.save()
 
-        return [bind_list, 'status: '+str(status), 'ovd_status: '+str(ovd_status)]
+        return 'done status'#[bind_list, 'status: '+str(status), 'ovd_status: '+str(ovd_status)]
 
 
 class client_object(models.Model):
@@ -753,48 +753,6 @@ class client_object(models.Model):
             workflow_list[workflow.workflow_type.type].append(workflow_dict)
 
         return workflow_list
-
-    def check_contract_status(self, **kwargs):
-        if kwargs['contract_id']:
-            contract_id = kwargs['contract_id']
-        else:
-            contract_id = self.id
-        contract_set = client_object.objects.get(id=contract_id)
-
-        object_status_list = []
-        object_contract_status_list = []
-        for object in client_object.objects.filter(contract=contract_id, is_active=1):
-            event_list = []
-            for event in object.client_object_event_set.filter(event_type__type='core', is_active=1 ):
-                event_list.append(event.event_type.label)
-
-            contract_status = 'disconnected' # цвет поля «Дата договора»
-            if 'client_object_contract_notice' in event_list:
-                contract_status = 'connected'
-            if 'client_object_contract_notice_off' in event_list:
-                contract_status = 'disconnected'
-            object.contract_status_id = dir_object_status.objects.get(label=contract_status).id
-            object.save()
-
-            object_status_list.append(object.status.label)
-            object_contract_status_list.append(object.contract_status.label)
-
-        # цвет поля «Номер договора»
-        service_status = 'new'
-        if len(object_status_list)>0:
-            if 'connected' in object_status_list: service_status = 'connected'
-            else: service_status = 'disconnected'
-
-        # цвет поля «Дата договора»
-        contract_status = 'disconnected'
-        if len(object_contract_status_list)>0:
-            if 'connected' in object_contract_status_list: contract_status = 'connected'
-            else: contract_status = 'disconnected'
-
-        contract_set.status_id = dir_object_status.objects.get(label=service_status).id
-        contract_set.contract_status_id = dir_object_status.objects.get(label=contract_status).id
-        contract_set.save()
-        return {'service_status':service_status, 'contract_status':contract_status, 'object_list':object_status_list}
 
     def get_address(self):
         try: address = self.address_building.street.locality.name \

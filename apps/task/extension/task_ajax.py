@@ -264,26 +264,28 @@ def create_report(request, data):
     if task_set.task_type_id == 2: # Подключение объекта
         data['task_type'] = 'Подключение объекта'
         db_sentry.client_workflow.objects.create(
+            contract_id = task_set.contract_id,
             object_id = task_set.object_id,
-            service_id = task_set.service_id,
-            event_type_id = 6,
             sentry_user_id = report_set.user_id,
-            event_date = report_set.create_date,
+            workflow_type_id = 6,
+            workflow_date = report_set.create_date,
             comment = report_set.comment
         )
-        data['object_status'] = task_set.object.check_status()
+        if task_set.contract:
+            data['contract_status'] = task_set.contract.check_contract_status()
 
     elif task_set.task_type_id == 5: # Снятие объекта
         data['task_type'] = 'Снятие объекта'
         db_sentry.client_workflow.objects.create(
+            contract_id = task_set.contract_id,
             object_id = task_set.object_id,
-            service_id = task_set.service_id,
-            event_type_id = 7,
             sentry_user_id = report_set.user_id,
-            event_date = report_set.create_date,
+            workflow_type_id = 7,
+            workflow_date = report_set.create_date,
             comment = report_set.comment
         )
-        data['object_status'] = task_set.object.check_status()
+        if task_set.contract:
+            data['contract_status'] = task_set.contract.check_contract_status()
     #object_event_ajax.event_update(request);
 
     data['answer'] = 'done'
