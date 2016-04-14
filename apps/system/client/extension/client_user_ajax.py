@@ -8,37 +8,36 @@ from apps.system.client.extension import client__form
 
 def search(request, data):
     limit = 10
+    client_user_set = db_sentry.client_user.objects.all()
     if 'limit' in request.GET:
         limit = int(request.GET['limit'])
-    client_user_set = db_sentry.client_user.objects.all()
-    if 'object_id' in request.GET:
+    if 'object' in request.GET:
         client_user_set = db_sentry.client_object.objects \
-            .get(id=int(request.GET['object_id'])).client_user.get_query_set()
+            .get(id=int(request.GET['object'])).client_user.get_query_set()
     if 'full_name' in request.GET:
         client_user_set = db_sentry.client_user.objects.filter(
             full_name__icontains = request.GET['full_name'],
-            is_active = 1 )
+            is_active = 1
+        )
 
-    client_user_set = client_user_set.values('id','full_name')[:limit]
+    client_user_set = client_user_set.values('id', 'full_name')[:limit]
     data['client_user'] = [item for item in client_user_set]
     return data
 
 
 def get(request, data):
     client_user_set = None
-    if 'client_user_id' in request.GET:
-        client_user_set = db_sentry.client_user.objects \
-            .filter(id=int(request.GET['client_user_id']))
-    elif 'object_id' in request.GET:
-        client_user_set = db_sentry.client_object.objects \
-            .get(id=int(request.GET['object_id'])).client_user.get_query_set()
-    elif 'client_id' in request.GET:
-        client_user_set = db_sentry.client.objects.get(id=int(request.GET['client_id'])).client_user.all()
+    data['client_user_list'] = []
+    if 'client_user' in request.GET and request.GET['client_user'] != '':
+        client_user_set = db_sentry.client_user.objects.filter(id=int(request.GET['client_user']))
+    elif 'object' in request.GET and request.GET['object'] != '':
+        client_user_set = db_sentry.client_object.objects.get(id=int(request.GET['object'])).client_user.get_query_set()
+    elif 'client' in request.GET and request.GET['client'] != '':
+        client_user_set = db_sentry.client.objects.get(id=int(request.GET['client'])).client_user.all()
     else:
         data['error'] = 'no many no hany'
 
     if client_user_set:
-        data['client_user_list'] = []
         for client_user in client_user_set:
             profile = {}
             try: birthday = client_user.birthday.strftime("%d.%m.%Y")
@@ -46,10 +45,10 @@ def get(request, data):
             try: post_id = client_user.post.id
             except: post_id = None
             profile['general'] = {
-                'client_user_id': client_user.id,
+                'client_user': client_user.id,
                 'full_name': client_user.full_name,
                 'priority': client_user.priority,
-                'post_id': post_id,
+                'post': post_id,
                 'birthday': birthday,
                 'passport': client_user.passport,
                 'address': client_user.address,
@@ -59,7 +58,7 @@ def get(request, data):
             profile['phone_list'] = []
             for phone in client_user.client_user_phone.all():
                 profile['phone_list'].append({
-                    'client_user_phone_id': phone.id,
+                    'client_user_phone': phone.id,
                     'client_user_phone__code': phone.code,
                     'client_user_phone__phone': phone.phone,
                     'client_user_phone__phone_type': phone.phone_type,
@@ -69,7 +68,7 @@ def get(request, data):
             profile['email_list'] = []
             for email in client_user.client_user_email.all():
                 profile['email_list'].append({
-                    'client_user_email_id': email.id,
+                    'client_user_email': email.id,
                     'client_user_email__email': email.email
                 })
             data['client_user_list'].append(profile)
@@ -78,39 +77,22 @@ def get(request, data):
 
 
 def update(request, data):
-    form = client__form.client_user(request.POST)
-    if form.is_valid():
-        client_set = None
-        object_set = None
+    try:
+        client_user = db_sentry.client_user.objects.get(id=request.POST['client_user'])
+    except:
+        client_user = db_sentry.client_user.objects.create(full_name=int(request.POST['full_name']))
+    client_form = client__form.client_user(request.POST, instance=client_user)
+
+    if client_form.is_valid():
+        client_form.save()
         try:
-            client_set = db_sentry.client.objects.get(id=int(request.POST['client_id']))
+            client = db_sentry.client.objects.get(id=int(request.POST['client']))
+            client.client_user.add(client_user.id)
+            client.save()
         except:
-            object_set = db_sentry.client_object.objects.get(id=int(request.POST['object_id']))
-        #form.save()
-        if request.POST['client_user_id'] == 'new':
-            client_user_set = db_sentry.client_user.objects.create(full_name=request.POST['full_name'])
-            client_user_id = client_user_set.id
-            data['client_user_new_id'] = client_user_id
-        else:
-            client_user_id = int(request.POST['client_user_id'])
-            client_user_set = db_sentry.client_user.objects.get(id=client_user_id)
-
-        if client_set:
-            client_set.client_user.add(client_user_id)
-        elif object_set:
-            object_set.client_user.add(client_user_id)
-
-        client_user_set.full_name = request.POST['full_name']
-
-        try: client_user_set.post_id = int(request.POST['post_id'])
-        except: client_user_set.post_id = None
-
-        try: client_user_set.birthday = datetime.datetime.strptime(request.POST['birthday'], '%d.%m.%Y')
-        except: client_user_set.birthday = None
-        try: client_user_set.passport = request.POST['passport']
-        except: client_user_set.passport = None
-        client_user_set.address = request.POST['address']
-        client_user_set.comment = request.POST['comment']
+            object = db_sentry.client_object.objects.get(id=int(request.POST['object']))
+            object.client_user.add(client_user.id)
+            object.save()
 
         for phone in json.loads(request.POST['phone_list_delete']):
             try: db_sentry.client_user_phone.objects.get( id=int(phone) ).delete()
@@ -133,7 +115,7 @@ def update(request, data):
                     phone_type = phone['phone_type'],
                     comment = phone['comment']
                 )
-                client_user_set.client_user_phone.add(phone_set.id)
+                client_user.client_user_phone.add(phone_set.id)
                 data['phone_new_list'][phone['id']]=phone_set.id
 
             elif not data['error']:
@@ -150,20 +132,19 @@ def update(request, data):
                 email_set = db_sentry.client_user_email.objects.create(
                     email = email['email']
                 )
-                client_user_set.client_user_email.add(email_set.id)
+                client_user.client_user_email.add(email_set.id)
                 data['emails_new'][email['id']]=email_set.id
             else:
                 db_sentry.client_user_email.objects.filter(id=int(email['id'])).update(
                     email = email['email']
                 )
 
-        client_set.save()
-        client_user_set.save()
+        client_user.save()
 
-        if data['error'] and 'client_user_new_id' in data: client_user_set.delete() # Костыль
+        if data['error'] and 'client_user_new_id' in data: client_user.delete() # Костыль
 
     else:
-        data['error'] = form.errors
+        data['errors'] = form.errors
 
     return data
 
@@ -171,9 +152,9 @@ def update(request, data):
 
 def delete(request,data):
     try:
-        object_set = db_sentry.client_object.objects.get(id=int(request.POST['object_id']))
+        object_set = db_sentry.client_object.objects.get(id=int(request.POST['object']))
     except:
-        object_set = db_sentry.client.objects.get(id=int(request.POST['client_id']))
-    object_set.client_user.remove(int(request.POST['client_user_id']))
+        object_set = db_sentry.client.objects.get(id=int(request.POST['client']))
+    object_set.client_user.remove(int(request.POST['client_user']))
 
     return data

@@ -2,53 +2,57 @@
 {% block content %}
 
     {% include "task/__left_block.html" %}
-    <link href="{{ STATIC_URL }}index/css/sentry_task.css" type="text/css" rel="stylesheet">
-    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/task/task.js"></script>
-    <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/task/task__pop.js"></script>
+    <link href="{{ STATIC_URL }}task/css/sentry_task.css" type="text/css" rel="stylesheet">
+    <script type="text/javascript" src="{{ STATIC_URL }}task/js/task.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}task/js/task__pop.js"></script>
     <div class="middleBlock" client_id="{{ client_id }}" object_id="{{ object_id }}">
 
-        <table class="tableInfo search expand"><tbody>
-        <tr class="row"><td class="padding_9 right">Статус заявки</td>
-            <td class="padding_right"><select class="wide margin_5" name="task_status"><option value="" selected>все</option>
-                {% for item in task_status_set %}
-                    <option value="{{ item.id }}">{{ item.name }}</option>
-                {% endfor %}
-            </select>
-            </td></tr>
-        <tr class="row"><td class="padding_9 right">Фактический исполнитель</td>
-            <td class="secondary">
-                <select class="wide width_320" function="select_sentry_user" name="warden">
-                    <option value="">все</option>
-                    <optgroup post_id="1" label="Администратор"></optgroup>
-                    <optgroup post_id="12" label="Менеджер"></optgroup>
-                    <optgroup post_id="8" label="Инженер"></optgroup>
-                    <optgroup post_id="3" label="Бухгалтер"></optgroup>
-                    <optgroup post_id="21" label="Руководитель"></optgroup>
-                    <optgroup post_id="15" label="Оперативный дежурный"></optgroup>
-                    <optgroup post_id="25" label="Техник"></optgroup>
-                    <optgroup post_id="18" label="Офис-менеджер"></optgroup>
-                    <optgroup post_id="13" label="Менеджер-бухгалтер"></optgroup>
-                    <optgroup post_id="14" label="Начальник охраны"></optgroup>
-                    <optgroup post_id="9" label="Кадровик"></optgroup>
-                    <optgroup post_id="2" label="Администратор ГПБ"></optgroup>
-                </select>
-            </td></tr>
-        <tr class="row"><td class="padding_9 right">Выполнила ГБР</td>
-            <td class="padding_right"><select class="wide margin_5" name="squad">
-                <option></option>
-                <option value="all" selected>все</option>
-                {% for item in dir_security_squad_set %}
-                    <option value="{{ item.id }}">{{ item.name }}</option>
-                {% endfor %}
-            </select></td></tr>
-        <tr class="row"><td class="padding_9 right">№ договора</td>
-            <td class="padding_right"><input class="wide margin_5 sentry_user" type="text" value="" name="contract"></td></tr>
-        <tr class="row"><td class="padding_9 right">Период</td>
-            <td class="padding_right">
-                <input class="datepicker" type="text" value="{{ month_begin }}" name="from_date" id="from"><span style="float:left; padding:8px 10px;">-</span>
-                <input class="datepicker" type="text" value="{{ today }}" name="to_date" id="to"></td></tr>
-
-        </tbody></table>
+        <table class="tableInfo search expand">
+            <tbody>
+            <tr class="row"><td class="padding_9 right">Статус заявки</td>
+                <td class="padding_right">
+                    <select class="wide margin_5" name="task_status">
+                        <option></option>
+                        {% for item in task_status_set %}
+                            <option value="{{ item.id }}">{{ item.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td></tr>
+            <tr class="row"><td class="padding_9 right">Фактический исполнитель</td>
+                <td class="secondary">
+                    <select class="wide width_320" function="select_sentry_user" name="warden">
+                        <option></option>
+                        <optgroup post_id="1" label="Администратор"></optgroup>
+                        <optgroup post_id="12" label="Менеджер"></optgroup>
+                        <optgroup post_id="8" label="Инженер"></optgroup>
+                        <optgroup post_id="3" label="Бухгалтер"></optgroup>
+                        <optgroup post_id="21" label="Руководитель"></optgroup>
+                        <optgroup post_id="15" label="Оперативный дежурный"></optgroup>
+                        <optgroup post_id="25" label="Техник"></optgroup>
+                        <optgroup post_id="18" label="Офис-менеджер"></optgroup>
+                        <optgroup post_id="13" label="Менеджер-бухгалтер"></optgroup>
+                        <optgroup post_id="14" label="Начальник охраны"></optgroup>
+                        <optgroup post_id="9" label="Кадровик"></optgroup>
+                        <optgroup post_id="2" label="Администратор ГПБ"></optgroup>
+                    </select>
+                </td></tr>
+            <tr class="row"><td class="padding_9 right">Выполнила ГБР</td>
+                <td class="padding_right">
+                    <select class="wide margin_5" name="squad">
+                        <option></option>
+                        {% for item in dir_security_squad_set %}
+                            <option value="{{ item.id }}">{{ item.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td></tr>
+            <tr class="row"><td class="padding_9 right">№ договора</td>
+                <td class="padding_right"><input class="wide margin_5 sentry_user" type="text" value="" name="contract"></td></tr>
+            <tr class="row"><td class="padding_9 right">Период</td>
+                <td class="padding_right">
+                    <input class="datepicker" type="text" value="{{ month_begin }}" name="from_date" id="from"><span style="float:left; padding:8px 10px;">-</span>
+                    <input class="datepicker" type="text" value="{{ today }}" name="to_date" id="to"></td></tr>
+            </tbody>
+        </table>
 
 
         <table class="tableInfo search"><tbody>
@@ -56,7 +60,7 @@
             <td class="padding_9 right">Ответственное лицо</td>
             <td class="secondary" colspan="2">
                 <select class="wide width_320" function="select_sentry_user" name="warden">
-                    <option value="">все</option>
+                    <option></option>
                     <optgroup post_id="12" label="Менеджер"></optgroup>
                     <optgroup post_id="8" label="Инженер"></optgroup>
                     <optgroup post_id="18" label="Офис-менеджер"></optgroup>
@@ -68,7 +72,7 @@
             <td class="padding_9 right">Поручено к исполнению</td>
             <td class="secondary" colspan="2">
                 <select class="wide width_320" function="select_sentry_user" name="doer">
-                    <option value="">все</option>
+                    <option></option>
                     <optgroup post_id="12" label="Менеджер"></optgroup>
                     <optgroup post_id="8" label="Инженер"></optgroup>
                     <optgroup post_id="25" label="Техник"></optgroup>
@@ -84,7 +88,7 @@
         <tr class="row"><td class="padding_9 right">Тип заявки</td>
             <td class="secondary" colspan="2">
                 <select class="wide" name="task_type">
-                    <option value="">все</option>
+                    <option></option>
                     {% for item in task_type_set %}
                         <option value="{{ item.id }}">{{ item.name }}</option>
                     {% endfor %}
@@ -95,7 +99,7 @@
             <td class="secondary" colspan="2">
                 <select class="wide" name="order_by">
                     <option value="create_date">время создания</option>
-                    <option value="-create_date">время создания (обрат. порядок)</option>
+                    <option value="-create_date">время создания (обратный порядок)</option>
                     <!--option value="object__service_contract">номер договора</option-->
                     <!--option value="object__device_number">номер на пульте</option-->
                     <option value="comment">причина</option>

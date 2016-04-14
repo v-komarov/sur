@@ -503,8 +503,8 @@ class client_user(models.Model):
     post = models.ForeignKey(dir_user_post, blank=True, null=True)
     birthday = models.DateTimeField(blank=True, null=True)
     passport = models.CharField(max_length=256, blank=True, null=True)
-    address = models.CharField(max_length=512, blank=True, null=True)
-    comment = models.TextField(blank=True)
+    address = models.CharField(max_length=512, blank=True, null=True, help_text='Адрес')
+    comment = models.TextField(blank=True, help_text='Комментарий')
     is_active = models.SmallIntegerField(default=1)
     client_user_phone = models.ManyToManyField(client_user_phone)
     client_user_email = models.ManyToManyField(client_user_email)
@@ -1024,6 +1024,19 @@ class client_object_dir_device(models.Model):
         db_table = 'client_object_dir_device'
         default_permissions = ('view', 'add', 'change', 'delete')
 
+    def check_priority(self):
+        # Если ОУ не подключена, но назначается priority == 'primary', иначе по умолчанию 'secondary'
+        device_install_set = client_object_dir_device.objects.filter(device_id=self.device_id, is_active=1)
+        if device_install_set.exists():
+            priority = 0
+            for install in device_install_set:
+                if install.priority == 'primary':
+                    priority += 1
+            if priority < 1:
+                device_install_set[0].priority = 'primary'
+                device_install_set[0].save()
+        return 'done'
+
 class client_object_incident(models.Model):
     object = models.ForeignKey(client_object)
     incident_type = models.ForeignKey(dir_incident_type)
@@ -1073,7 +1086,7 @@ class sentry_log(models.Model):
     sentry_user = models.ForeignKey(sentry_user)
     client_contract = models.ForeignKey(client_contract, null=True, blank=True)
     client_object = models.ForeignKey(client_object, null=True, blank=True)
-    client_workflow = models.ForeignKey(client_workflow, null=True, blank=True)
+    client_workflow = models.ForeignKey(client_workflow, on_delete=models.CASCADE, blank=True, null=True)
     cost = models.ForeignKey(client_bind_cost, null=True, blank=True)
     charge = models.ForeignKey(client_object_charge, null=True, blank=True)
     incident = models.ForeignKey(client_object_incident, null=True, blank=True)

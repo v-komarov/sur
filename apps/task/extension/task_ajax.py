@@ -19,27 +19,26 @@ def search(request, data):
     try:
         from_date = datetime.datetime.strptime(request.POST['from_date'], '%d.%m.%Y')
     except:
-        from_date = datetime.datetime(1970,1,1,0,0,0)
+        from_date = datetime.datetime(1970, 1, 1, 0, 0, 0)
     try:
         to_date = datetime.datetime.strptime(request.POST['to_date'], '%d.%m.%Y')
     except:
-        to_date = today + datetime.timedelta(days=360)
+        to_date = today + datetime.timedelta(days=365)
 
-    task_set = task_models.task.objects.filter(
-        complete_date__range=(from_date, to_date),
-        is_active=1
-    )
+    task_set = task_models.task.objects.filter(complete_date__range=(from_date, to_date), is_active=1)
 
     if 'task_status' in request.POST and request.POST['task_status'] != '':
         task_set = task_set.filter(status=request.POST['task_status'])
     else:
-        task_set = task_set.exclude(status__label='done', complete_date__lte=datetime.datetime.today())
+        task_set = task_set.exclude(status__label='done', complete_date__lte=today)
+
+    if 'task_type' in request.POST and request.POST['task_type'] != '':
+        task_set = task_set.filter(task_type=request.POST['task_type'])
 
     if 'uncompleted' in request.POST and request.POST['uncompleted'] == 'true':
         task_set = task_set.exclude(status__label='done')
     if 'expired' in request.POST and request.POST['expired'] == 'true':
-        task_set = task_set.exclude(complete_date__lte=datetime.datetime.today())
-
+        task_set = task_set.exclude(complete_date__lte=today)
 
     if 'contract' in request.POST and request.POST['contract'] != '':
         task_set = task_set.filter(contract__contract_number=str(request.POST['contract']))
@@ -49,9 +48,6 @@ def search(request, data):
     if 'warden' in request.POST and request.POST['warden'] != '':
         task_set = task_set.filter(warden=int(request.POST['warden']))
 
-
-    if 'task_type' in request.POST and request.POST['task_type'] != '':
-        task_set = task_set.filter(task_type=request.POST['task_type'])
     if 'locality' in request.POST and request.POST['locality'] != '':
         task_set = task_set.filter(object__address_building__street__locality_id=int(request.POST['locality']))
 
@@ -271,8 +267,19 @@ def create_report(request, data):
             workflow_date = report_set.create_date,
             comment = report_set.comment
         )
+        if task_set.device:
+            install = db_sentry.client_object_dir_device.objects.create(
+                object_id = task_set.object.id,
+                device_id = task_set.device.id,
+                install_date = task_set.complete_date,
+                install_user_id = task_set.doer.id
+            )
+            install.check_priority()
+
         if task_set.contract:
-            data['contract_status'] = task_set.contract.check_contract_status()
+            client_bind = db_sentry.client_bind.objects.filter(client_contract_id=task_set.contract.id, is_active=1).first()
+            client_bind.check_bind_status()
+            #data['contract_status'] = task_set.contract.check_contract_status()
 
     elif task_set.task_type_id == 5: # Снятие объекта
         data['task_type'] = 'Снятие объекта'

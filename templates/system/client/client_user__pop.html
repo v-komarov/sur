@@ -7,22 +7,27 @@
             <tr class="row"><td class="cell middle">Ф.И.О.</td>
                 <td class="cell secondary">{{ form.full_name }}</td></tr>
             <tr class="row"><td class="cell middle">Должность</td>
-                <td class="cell secondary"><select name="post_id">
-                    <option value="">--</option>
-                    {% for item in dir_user_post_set %}
-                        <option value="{{ item.id }}">{{ item.name }}</option>
-                    {% endfor %}
-                </select></td></tr>
-            {% comment %}
-            <tr class="row"><td class="cell middle">День рождения</td>
-                <td><input name="birthday" class="datepicker" type="text"></td></tr>
-            <tr class="row"><td class="cell middle">Паспорт</td>
-                <td class="cell secondary">{{ form.passport }}</td></tr>
-            {% endcomment %}
-            <tr class="row"><td class="cell middle">Адрес</td>
-                <td class="cell secondary">{{ form.address }}</td></tr>
-            <tr class="row"><td class="cell middle">Комментарий</td>
-                <td class="cell secondary">{{ form.comment }}</td></tr>
+                <td class="cell secondary">
+                    <select name="post">
+                        <option></option>
+                        {% for item in dir_user_post_set %}
+                            <option value="{{ item.id }}">{{ item.name }}</option>
+                        {% endfor %}
+                    </select>
+                </td></tr>
+
+            <tr class="row">
+                <td class="padding_9 text_right">День рождения</td>
+                <td><input class="datepicker" name="birthday" type="text"></td></tr>
+            <tr class="row">
+                <td class="padding_9 text_right">Паспорт</td>
+                <td class="padding_5550">{{ form.passport }}</td></tr>
+            <tr class="row">
+                <td class="padding_9 text_right">Адрес</td>
+                <td class="padding_5550">{{ form.address }}</td></tr>
+            <tr class="row">
+                <td class="padding_9 text_right">Комментарий</td>
+                <td class="padding_5550">{{ form.comment }}</td></tr>
 
             <tr class="row"><td colspan="2">
 

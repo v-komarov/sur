@@ -1,5 +1,6 @@
 $(document).ready(function() {
     client_id = $(".middleBlock").attr('client_id');
+    contract_id = $(".middleBlock").attr('contract_id');
     object_id = $(".middleBlock").attr('object_id');
     client_user_Cancel();
     client_user_Refresh();
@@ -80,10 +81,8 @@ function client_user_Refresh() {
     client_user_Cancel();
     $('.loading').show();
     var client_user_array = {};
-    client_user_array['client_id'] = client_id;
-    if(object_id!='None'){
-        client_user_array['object_id'] = object_id;
-    }
+    client_user_array['client'] = client_id;
+    if(contract_id != 'None') client_user_array['contract'] = contract_id;
     $.ajax({ url:'/system/client/user/ajax/get/', type:'get', dataType:'json', data:client_user_array,
         success: function(data){
             if(data['error']!=null){
@@ -138,8 +137,8 @@ function setTable(data) {
         }
         /* User post */
         var post_div = '';
-        if(item['general']['post_id']){
-            var post_name = $('#pop_user select[name=post_id] option[value='+item['general']['post_id']+']').text().toLowerCase();
+        if(item['general']['post']){
+            var post_name = $('#pop_user select[name=post] option[value='+item['general']['post']+']').text().toLowerCase();
             post_div = ' ('+post_name+')';
         }
         /* Comment */
@@ -154,7 +153,7 @@ function setTable(data) {
             address_div =  '<div class="block"><div class="client" name="address">Адрес: '+item['general']['address']+'</div></div>';
         }
         /* Collect divs */
-        var item_div = '<div class="item" client_user_id="'+item['general']['client_user_id']+'">' +
+        var item_div = '<div class="item" client_user_id="'+item['general']['client_user']+'">' +
             '<div class="title"><div class="padding_85"><b>'+item['general']['full_name']+'</b>'+post_div+'</div></div>' +
             phone_list_div + email_list_div + comment_div + address_div+'</div>';
         $('#client_user_list').append(item_div);
@@ -166,7 +165,7 @@ function client_userAdd() {
     $('#pop_user').attr('client_user_id','new');
     $('#pop_user #client_user_phone_list tr.row').remove();
     $('#pop_user #client_user_emails tr.row').remove();
-    $('#pop_user [name=post_id] :contains(--)').attr('selected', 'selected');
+    $('#pop_user [name=post] :contains(--)').attr('selected', 'selected');
     $('#pop_user input').each(function(){ $(this).val(''); });
     $('#pop_user textarea').each(function(){ $(this).val(''); });
     $('#pop_user [name=full_name]').attr('action', 'input_new_client_user');
@@ -207,11 +206,11 @@ function client_userAdd() {
 
 function client_user_Delete(client_user_id) {
     var client_user_array = {};
-    client_user_array['client_id'] = client_id;
+    client_user_array['client'] = client_id;
     if(object_id!='None'){
-        client_user_array['object_id'] = object_id;
+        client_user_array['object'] = object_id;
     }
-    client_user_array['client_user_id'] = client_user_id;
+    client_user_array['client_user'] = client_user_id;
     $.ajax({ url:'/system/client/user/ajax/delete/', type:'post', dataType:'json', data:client_user_array,
         success: function(data){
             $('.objectsList [client_user_id='+client_user_id+']').remove();
@@ -221,10 +220,10 @@ function client_user_Delete(client_user_id) {
 
 
 function client_user_Edit(client_user_id) {
-    $('#pop_user').attr('client_user_id',client_user_id);
+    $('#pop_user').attr('client_user_id', client_user_id);
     popMenuPosition('#pop_user');
     var post_array = {};
-    post_array['client_user_id'] = client_user_id;
+    post_array['client_user'] = client_user_id;
     $.ajax({ url:'/system/client/user/ajax/get/', type:'get', dataType:'json', data: post_array,
         success: function(data){
             if(data['error']!=null){
@@ -248,14 +247,14 @@ function client_user_Edit(client_user_id) {
                     tr_phone.find('[name=code]').val(client_user_phone[key]['client_user_phone__code']);
                     tr_phone.find('[name=phone]').val(client_user_phone[key]['client_user_phone__phone']);
                     tr_phone.find('[name=comment]').val(client_user_phone[key]['client_user_phone__comment']);
-                    tr_phone.clone().appendTo('#client_user_phone_list').attr('class','row').attr('phone_id',client_user_phone[key]['client_user_phone_id']);
+                    tr_phone.clone().appendTo('#client_user_phone_list').attr('class','row').attr('phone_id',client_user_phone[key]['client_user_phone']);
                     $('#pop_user #client_user_phone_list tr.hide select option').removeAttr('selected');
                     $('#pop_user #client_user_phone_list tr.hide input').val('');
                 }
                 for(var key in client_user_email){
                     var tr_email = $('#pop_user #client_user_emails tr.hide');
                     tr_email.find('[name=email]').val(client_user_email[key]['client_user_email__email']);
-                    tr_email.clone().appendTo('#client_user_emails').attr('class','row').attr('email_id',client_user_email[key]['client_user_email_id']);
+                    tr_email.clone().appendTo('#client_user_emails').attr('class','row').attr('email_id',client_user_email[key]['client_user_email']);
                     $('#pop_user #client_user_emails tr.hide input').val('');
                 }
             }
@@ -265,20 +264,14 @@ function client_user_Edit(client_user_id) {
 
 
 function client_user_Update() {
-    var client_user_array = {};
-    if(object_id!='None'){
-        client_user_array['object_id'] = object_id;
-    } else {
-        client_user_array['client_id'] = client_id;
-    }
-    client_user_array['client_user_id'] = $('#pop_user').attr('client_user_id');
-    client_user_array['full_name'] = $('#pop_user input[name=full_name]').val();
-    client_user_array['post_id'] = $('#pop_user select[name=post_id]').val();
-    client_user_array['post_name'] = $('#pop_user select[name=post_id] :selected').text();
-    client_user_array['birthday'] = $('#pop_user input[name=birthday]').val();
-    client_user_array['passport'] = $('#pop_user textarea[name=passport]').val();
-    client_user_array['address'] = $('#pop_user input[name=address]').val();
+    var client_user_array = get_each_value('#pop_user');
     client_user_array['comment'] = $('#pop_user textarea[name=comment]').val();
+    if(object_id){
+        client_user_array['object'] = object_id;
+    } else {
+        client_user_array['client'] = client_id;
+    }
+    client_user_array['client_user'] = $('#pop_user').attr('client_user_id');
 
     client_user_array['phone_list'] = [];
     client_user_array['phone_list_delete'] = JSON.stringify(phone_list_delete);
@@ -305,14 +298,7 @@ function client_user_Update() {
 
     $.ajax({ url:'/system/client/user/ajax/update/', type:'post', dataType:'json', traditional:true, data:client_user_array,
         success: function(data){
-            if(data['error']!=null){
-                var data_error = data['error'];
-                for(var key in data_error){
-                    console.log(key+': '+data_error[key]);
-                    var tr_title = $('#id_'+key).parents('.row').find('td:eq(0)').text();
-                    alert(tr_title+' '+data_error[key]);
-                }
-            }
+            if(data['errors']) message_Pop_array(data['errors'], 'red');
             else {
                 popMessage('Сохранено','green');
                 client_user_Refresh(client_user_array['client_id'],client_user_array['object_id'])

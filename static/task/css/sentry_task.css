@@ -3,7 +3,7 @@
     min-width: 30px;
     min-height: 29px;
     float: right;
-    background: url("../img/ui/ui_minimal.gif") no-repeat -256px -128px #fff;
+    background: url("../../index/img/ui/ui_minimal.gif") no-repeat -256px -128px #fff;
     border-radius: 3px;
     margin: 5px 5px 5px 0;
     opacity: .4;
@@ -235,11 +235,8 @@ table.list td {
     vertical-align: top;
     padding-top: 5px;
 }
-#task__pop_report div[name=security_squad] {
-    padding-top: 5px;
-}
-#task__pop_report div[name=security_squad] select{
-    margin-left: 5px;
+#task__pop_report select[name=security_squad]{
+    margin: 5px 0 0 5px;
 }
 #task__pop_report div[name=comment],
 #task__pop_log div[name=comment] {

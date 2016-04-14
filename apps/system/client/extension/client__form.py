@@ -59,6 +59,16 @@ class client_user(forms.ModelForm):
             'comment'
         ]
 
+    full_name = forms.CharField(widget=forms.TextInput(
+        attrs={'class': 'wide'}
+    ))
+    address = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'wide'}))
+    #birthday = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'datepicker'}))
+    passport = forms.CharField(required=False, widget=forms.TextInput(attrs={'class': 'wide'}))
+    comment = forms.CharField(required=False, widget=forms.Textarea(
+        attrs={'cols': '50', 'rows': '2', }
+    ))
+
 
 class object_form(forms.ModelForm):
     class Meta:

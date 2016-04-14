@@ -29,6 +29,34 @@ $(document).ready(function() {
         }
     });
 
+    $('#task_add__pop input[name=device]').autocomplete({
+        source: function(request, response) {
+            $.ajax({
+                url: '/system/directory/device/ajax/search/', type:'get', dataType:'json', data: {
+                    name: $('#task_add__pop input[name=device]').val(),
+                    limit: 10 },
+                success: function(data) {
+                    response($.map(data['device_list'], function(item) {
+                        return {
+                            label: item.name,
+                            device_id: item.id
+                        }
+                    }));
+                }
+            });
+        },
+        select: function(event, ui) {
+            if(ui.item) $('#task_add__pop input[name=device]').attr('item_id', ui.item.device_id);
+            else $('#task_add__pop input[name=device]').val('').removeAttr('item_id');
+        },
+        change: function(event, ui) {
+            if(ui.item) $('#task_add__pop input[name=device]').attr('item_id', ui.item.device_id);
+            else $('#task_add__pop input[name=device]').val('').removeAttr('item_id');
+        },
+        minChars: 2, zIndex: 100, deferRequestBy: 200
+    });
+
+
     $('#task_add__pop input[name=initiator]').autocomplete({
         source: function(request, response) {
             $.ajax({ url:'/system/sentry_user/ajax/search/', type:'get', dataType:'json',

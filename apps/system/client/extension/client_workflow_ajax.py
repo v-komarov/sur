@@ -118,10 +118,12 @@ def delete(request,data):
         bind.begin_date = None
         bind.save()
         # При удалении подключения удаляется дата первой стоимости, такое ТЗ...
+        '''
         cost_set = db_sentry.client_bind_cost.objects.filter(client_bind=bind.id, is_active=1).first()
         if cost_set:
             cost_set.begin_date = None
             cost_set.save()
+        '''
 
     elif workflow.workflow_type.label == 'client_object_disconnect':
         db_sentry.client_bind.objects.filter(client_object=workflow.object.id).update(end_date=None)
@@ -146,7 +148,8 @@ def delete(request,data):
         log_date = datetime.datetime.now(),
         client_workflow_id = workflow.id,
         sentry_user_id = authorize.get_sentry_user(request)['id'],
-        comment = 'Delete client_workflow')
+        comment = 'Delete client_workflow'
+    )
 
     data['answer'] = 'done'
     return data

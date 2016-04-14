@@ -27,8 +27,8 @@
         {% endcomment %}
 
         {% if perms.system.client %}
-            <a class="item {% if not object_id and request.path|slice:'-7:' == '/users/' and not contract_id %}selected{% endif %}"
-               href="/system/client/{{ client_id }}/users/">Ответственные лица</a>
+            <a class="item {% if not object_id and request.path|slice:'-6:' == '/user/' and not contract_id %}selected{% endif %}"
+               href="/system/client/{{ client_id }}/user/">Руководители<!--Ответственные лица--></a>
         {% endif %}
 
         {% if perms.system.client %}
@@ -74,8 +74,8 @@
         {% endcomment %}
 
         {% if perms.system.client %}
-            <a class="item {% if request.path|slice:'-7:' == '/users/' and contract_id %}selected{% endif %}"
-               href="/system/client/{{ client_id }}/contract/{{ contract_id }}/users/">Ответственные лица</a>
+            <a class="item {% if request.path|slice:'-6:' == '/user/' and contract_id %}selected{% endif %}"
+               href="/system/client/{{ client_id }}/contract/{{ contract_id }}/user/">Ответственные лица</a>
         {% endif %}
 
         <!-- a class="item {% if request.path|slice:'-10:' == '/security/' %}selected{% endif %}"

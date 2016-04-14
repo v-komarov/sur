@@ -14,14 +14,14 @@ def search(request, data):
     device_set = db_sentry.dir_device.objects.filter(is_active=1)
     if 'name' in request.GET and request.GET['name']:
         device_set = device_set.filter(name__icontains=request.GET['name'])
-    if 'device_console' in request.GET and request.GET['device_console']:
-        device_set = device_set.filter(device_console_id=int(request.GET['device_console']))
-    if 'device_type' in request.GET and request.GET['device_type']:
-        device_set = device_set.filter(device_type_id=int(request.GET['device_type']))
-    if 'series' in request.GET and request.GET['series']:
-        device_set = device_set.filter(series__icontains=request.GET['series'])
     if 'number' in request.GET and request.GET['number']:
         device_set = device_set.filter(number__icontains=int(request.GET['number']))
+    if 'device_type' in request.GET and request.GET['device_type']:
+        device_set = device_set.filter(device_type_id=int(request.GET['device_type']))
+    if 'device_console' in request.GET and request.GET['device_console']:
+        device_set = device_set.filter(device_console_id=int(request.GET['device_console']))
+    if 'series' in request.GET and request.GET['series']:
+        device_set = device_set.filter(series__icontains=request.GET['series'])
     if 'belong' in request.GET and request.GET['belong']:
         device_set = device_set.filter(belong=request.GET['belong'])
     if 'comment' in request.GET and request.GET['comment']:
@@ -42,10 +42,14 @@ def search(request, data):
                 'comment': device.comment,
                 'install': install
             }
-            if device.device_console_id: device_item['device_console__name'] = device.device_console.name
-            else: device_item['device_console__name'] = ''
-            if device.device_type_id: device_item['device_type__name'] = device.device_type.name
-            else: device_item['device_type__name'] = ''
+            if device.device_console_id:
+                device_item['device_console__name'] = device.device_console.name
+            else:
+                device_item['device_console__name'] = ''
+            if device.device_type_id:
+                device_item['device_type__name'] = device.device_type.name
+            else:
+                device_item['device_type__name'] = ''
             data['device_list'].append(device_item)
     else:
         device_set = device_set.values('id','device_console__name','device_type__name','name','series','number','belong','comment')

@@ -17,7 +17,7 @@ function loading(action) {
 }
 
 
-function popMessage(data,color,delay) {
+function popMessage(data, color, delay) {
     if(!delay) delay = 2000;
     $('div#pop_message').text(data);
     $('div#pop_message').removeAttr('style');
@@ -37,7 +37,7 @@ function popMessage(data,color,delay) {
 
 }
 
-function message_Pop_array(data,color) {
+function message_Pop_array(data, color) {
     for(var item in data) {
         popMessage(item+': '+data[item],color, 5000);
     }

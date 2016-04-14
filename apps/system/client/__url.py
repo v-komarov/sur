@@ -36,8 +36,8 @@ urlpatterns = [
     url(r'^(?P<client_id>\d{1,11})/requisite/$', client_requisite.index),
     url(r'^requisite/ajax/(?P<action>\w{1,32})/$', client_requisite.ajax),
     # Client & client_user
-    url(r'^(?P<client_id>\d{1,11})/users/$', client_user.index),
-    url(r'^(?P<client_id>\d{1,11})/contract/(?P<contract_id>\d{1,11})/users/$', client_user.index),
+    url(r'^(?P<client_id>\d{1,11})/user/$', client_user.index),
+    url(r'^(?P<client_id>\d{1,11})/contract/(?P<contract_id>\d{1,11})/user/$', client_user.index),
     url(r'^user/ajax/(?P<action>\w{1,32})/$', client_user.ajax),
     #url(r'^(?P<client_id>\d{1,11})/object/(?P<object_id>\d{1,11})/(?P<client_user_id>\d{1,11})/user/$', client_user.index),
     # Payments

@@ -12,17 +12,18 @@ from apps.toolset import lunchbox
 
 
 def index(request, client_id=None, contract_id=None):
-    request.session['lunchbox'] = lunchbox.get(request)
 
     access = False
-    if client_id and not contract_id and request.user.has_perm('system.client'):
+    client = db_sentry.client.objects.get(id=client_id)
+
+    if client and not contract_id and request.user.has_perm('system.client'):
         access = True
-    elif client_id and contract_id and request.user.has_perm('system.client'):
+    elif contract_id and request.user.has_perm('system.client'):
         access = True
 
     if access:
         title = 'Ответственные лица'
-        client = db_sentry.client.objects.get(id=client_id)
+
         dir_user_post_set = db_sentry.dir_user_post.objects.filter(is_active=1)
         phone_type = ['сотовый'.decode('utf-8'),'городской'.decode('utf-8')]
         form = client__form.client_user()
@@ -44,22 +45,26 @@ def ajax(request, action=None):
             data = client_user_ajax.get(request,data)
         else: data['error'] = 'Доступ запрещен'
 
-    elif 'client_id' in request.POST and action == 'update':
+    elif action == 'update' \
+            and 'client' in request.POST and request.POST['client'] != '':
         if request.user.has_perm('system.client'):
             data = client_user_ajax.update(request,data)
         else: data['error'] = 'Доступ запрещен'
 
-    elif 'object_id' in request.POST and action == 'update':
+    elif action == 'update' \
+            and 'object' in request.POST and request.POST['object'] != '':
         if request.user.has_perm('system.client'):
             data = client_user_ajax.update(request,data)
         else: data['error'] = 'Доступ запрещен'
 
-    elif 'client_id' in request.POST and action == 'delete':
+    elif action == 'delete' \
+            and 'client' in request.POST and request.POST['client'] != '':
         if request.user.has_perm('system.client'):
             data = client_user_ajax.delete(request,data)
         else: data['error'] = 'Доступ запрещен'
 
-    elif 'object_id' in request.POST and action == 'delete':
+    elif action == 'delete' \
+            and 'client' in request.POST and request.POST['client'] != '':
         if request.user.has_perm('system.client'):
             data = client_user_ajax.delete(request,data)
         else: data['error'] = 'Доступ запрещен'
