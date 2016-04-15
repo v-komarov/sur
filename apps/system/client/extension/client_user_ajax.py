@@ -26,123 +26,98 @@ def search(request, data):
 
 
 def get(request, data):
-    client_user_set = None
     data['client_user_list'] = []
+
     if 'client_user' in request.GET and request.GET['client_user'] != '':
-        client_user_set = db_sentry.client_user.objects.filter(id=int(request.GET['client_user']))
-    elif 'object' in request.GET and request.GET['object'] != '':
-        client_user_set = db_sentry.client_object.objects.get(id=int(request.GET['object'])).client_user.get_query_set()
+        client_user = db_sentry.client_user.objects.get(id=int(request.GET['client_user']))
+        data['client_user_list'].append(each_client_user(client_user))
+
+    elif 'contract' in request.GET and request.GET['contract'] != '':
+        for bind in db_sentry.client_bind.objects.filter(client_contract_id=int(request.GET['contract']), is_active=1):
+            object = db_sentry.client_object.objects.get(id=bind.client_object.id)
+            for client_user in object.client_user.all():
+                profile = each_client_user(client_user)
+                profile['object'] = object.id
+                profile['object__name'] = object.name
+                data['client_user_list'].append(profile)
+
     elif 'client' in request.GET and request.GET['client'] != '':
-        client_user_set = db_sentry.client.objects.get(id=int(request.GET['client'])).client_user.all()
+        for client_user in db_sentry.client.objects.get(id=int(request.GET['client'])).client_user.all():
+            data['client_user_list'].append(each_client_user(client_user))
+
     else:
         data['error'] = 'no many no hany'
 
-    if client_user_set:
-        for client_user in client_user_set:
-            profile = {}
-            try: birthday = client_user.birthday.strftime("%d.%m.%Y")
-            except: birthday = None
-            try: post_id = client_user.post.id
-            except: post_id = None
-            profile['general'] = {
-                'client_user': client_user.id,
-                'full_name': client_user.full_name,
-                'priority': client_user.priority,
-                'post': post_id,
-                'birthday': birthday,
-                'passport': client_user.passport,
-                'address': client_user.address,
-                'comment': client_user.comment,
-                }
-
-            profile['phone_list'] = []
-            for phone in client_user.client_user_phone.all():
-                profile['phone_list'].append({
-                    'client_user_phone': phone.id,
-                    'client_user_phone__code': phone.code,
-                    'client_user_phone__phone': phone.phone,
-                    'client_user_phone__phone_type': phone.phone_type,
-                    'client_user_phone__comment': phone.comment
-                })
-
-            profile['email_list'] = []
-            for email in client_user.client_user_email.all():
-                profile['email_list'].append({
-                    'client_user_email': email.id,
-                    'client_user_email__email': email.email
-                })
-            data['client_user_list'].append(profile)
-
     return data
+
+
+def each_client_user(client_user):
+    profile = {}
+    profile['general'] = {
+        'client_user': client_user.id,
+        'full_name': client_user.full_name,
+        'priority': client_user.priority,
+        'passport': client_user.passport,
+        'address': client_user.address,
+        'comment': client_user.comment,
+        }
+    if client_user.birthday:
+        profile['general']['birthday'] = client_user.birthday.strftime("%d.%m.%Y")
+    if client_user.post:
+        profile['general']['post'] = client_user.post.id
+
+    profile['phone_list'] = []
+    for phone in client_user.client_user_phone.all():
+        profile['phone_list'].append({
+            'client_user_phone': phone.id,
+            'client_user_phone__code': phone.code,
+            'client_user_phone__phone': phone.phone,
+            'client_user_phone__phone_type': phone.phone_type,
+            'client_user_phone__comment': phone.comment
+        })
+
+    profile['email_list'] = []
+    for email in client_user.client_user_email.all():
+        profile['email_list'].append({
+            'client_user_email': email.id,
+            'client_user_email__email': email.email
+        })
+    return profile
 
 
 def update(request, data):
     try:
         client_user = db_sentry.client_user.objects.get(id=request.POST['client_user'])
     except:
-        client_user = db_sentry.client_user.objects.create(full_name=int(request.POST['full_name']))
+        client_user = db_sentry.client_user.objects.create(full_name=request.POST['full_name'])
     client_form = client__form.client_user(request.POST, instance=client_user)
 
     if client_form.is_valid():
         client_form.save()
         try:
-            client = db_sentry.client.objects.get(id=int(request.POST['client']))
-            client.client_user.add(client_user.id)
-            client.save()
-        except:
             object = db_sentry.client_object.objects.get(id=int(request.POST['object']))
             object.client_user.add(client_user.id)
             object.save()
+        except:
+            client = db_sentry.client.objects.get(id=int(request.POST['client']))
+            client.client_user.add(client_user.id)
+            client.save()
 
-        for phone in json.loads(request.POST['phone_list_delete']):
-            try: db_sentry.client_user_phone.objects.get( id=int(phone) ).delete()
-            except: pass
-        for email in json.loads(request.POST['emails_deleted']):
-            try: db_sentry.client_user_email.objects.get( id=int(email) ).delete()
-            except: pass
 
-        data['phone_new_list'] = {}
+        client_user.client_user_phone.clear()
         for phone in json.loads(request.POST['phone_list']):
-            try: code = int(phone['code'])
-            except: code = None
-            try: phone_number = int(phone['phone'])
-            except: data['error'] = {"phone": "Номер телефона обязательно цифрами."}
+            phone_set, created = db_sentry.client_user_phone.objects.get_or_create(phone=phone['phone'])
+            phone_set.phone_type = phone['phone_type']
+            phone_set.comment = phone['comment']
+            phone_set.save()
+            client_user.client_user_phone.add(phone_set.id)
 
-            if phone['id'][:3]=='new' and not data['error']:
-                phone_set = db_sentry.client_user_phone.objects.create(
-                    code = code,
-                    phone = phone_number,
-                    phone_type = phone['phone_type'],
-                    comment = phone['comment']
-                )
-                client_user.client_user_phone.add(phone_set.id)
-                data['phone_new_list'][phone['id']]=phone_set.id
-
-            elif not data['error']:
-                db_sentry.client_user_phone.objects.filter(id=int(phone['id'])).update(
-                    code = code,
-                    phone = int(phone['phone']),
-                    phone_type = phone['phone_type'],
-                    comment = phone['comment']
-                )
-
-        data['emails_new'] = {}
+        client_user.client_user_email.clear()
         for email in json.loads(request.POST['emails']):
-            if email['id'][:3]=='new':
-                email_set = db_sentry.client_user_email.objects.create(
-                    email = email['email']
-                )
-                client_user.client_user_email.add(email_set.id)
-                data['emails_new'][email['id']]=email_set.id
-            else:
-                db_sentry.client_user_email.objects.filter(id=int(email['id'])).update(
-                    email = email['email']
-                )
+            email_set, created = db_sentry.client_user_email.objects.get_or_create(email=email['email'])
+            client_user.client_user_email.add(email_set.id)
 
         client_user.save()
-
-        if data['error'] and 'client_user_new_id' in data: client_user.delete() # Костыль
-
     else:
         data['errors'] = form.errors
 

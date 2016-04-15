@@ -14,7 +14,7 @@ $(document).ready(function() {
         }
     });
 
-    $(".tableInfo").on('click', '.ui_remove', function() {
+    $("#client_user_form").on('click', '.ui_remove', function() {
         var delete_tr = $(this).parent().parent();
         var table_id = delete_tr.parent().parent().attr('id');
         if( table_id=='client_user_phone_list' ){
@@ -27,20 +27,21 @@ $(document).ready(function() {
 
     $('body').on('click', '.btn_ui', function() {
         var action = $(this).attr('action');
-        if(action=='reset'){
+        var object_id = $(this).parents('[object_id]').attr('object_id');
+        if(action=='reset') {
             var user_id = $('#pop_user').attr('user_id');
             client_user_Cancel();
             if(user_id=='new'){
                 client_userAdd();
             } else {
-                client_user_Edit( $('#pop_user').attr('client_user_id') );
+                client_user_Edit($('#pop_user').attr('client_user_id'), object_id);
             }
         }
         else if(action=='user_add'){
-            client_userAdd();
+            client_userAdd(object_id);
         }
         else if(action=='list_refresh'){
-            client_user_Refresh();
+            client_user_Refresh(object_id);
         }
         else if(action=='remove'){
             if(confirm('Удалить контакт?')){
@@ -77,28 +78,38 @@ $(document).ready(function() {
 });
 
 
-function client_user_Refresh() {
+function client_user_Refresh(object_id) {
     client_user_Cancel();
-    $('.loading').show();
+    loading('begin');
     var client_user_array = {};
     client_user_array['client'] = client_id;
-    if(contract_id != 'None') client_user_array['contract'] = contract_id;
+    if(contract_id) client_user_array['contract'] = contract_id;
+    if(object_id) client_user_array['object'] = object_id;
     $.ajax({ url:'/system/client/user/ajax/get/', type:'get', dataType:'json', data:client_user_array,
         success: function(data){
+            loading('end');
             if(data['error']!=null){
                 alert(data['error']);
             } else {
-                setTable(data);
+                setTable(data, object_id);
             }
         }
     });
 }
 
 
-function setTable(data) {
-    $('#client_user_list .item').remove();
+function setTable(data, object_id) {
+    if(object_id) {
+        var div_list = $('[object_id='+object_id+'] .objectsList');
+        console.log(object_id);
+    } else {
+        var div_list = $('.objectsList');
+    }
+
+    $('.objectsList .item').remove();
+
     var client_user_list = data['client_user_list'];
-    for(var key in client_user_list){
+    for(var key in client_user_list) {
         var item = client_user_list[key];
         var phone_have = false;
         var email_have = false;
@@ -124,7 +135,7 @@ function setTable(data) {
         }
         /* Email list */
         var email_list_div = '<div class="block"><div class="client" name="email_list">';
-        for(var email in item['email_list']){
+        for(var email in item['email_list']) {
             email_have = true;
             email_list_div += '<p class="contact">' +
             '<a href="mailto:'+item['email_list'][email]['client_user_email__email']+'">' +
@@ -156,13 +167,26 @@ function setTable(data) {
         var item_div = '<div class="item" client_user_id="'+item['general']['client_user']+'">' +
             '<div class="title"><div class="padding_85"><b>'+item['general']['full_name']+'</b>'+post_div+'</div></div>' +
             phone_list_div + email_list_div + comment_div + address_div+'</div>';
-        $('#client_user_list').append(item_div);
+
+
+        if(client_user_list[key]['object']){
+            $('[object_id='+client_user_list[key]['object']+'] .objectsList').append(item_div);
+        } else {
+            div_list.append(item_div);
+        }
+
     }
 }
 
 
-function client_userAdd() {
-    $('#pop_user').attr('client_user_id','new');
+function client_userAdd(object_id) {
+    $('#pop_user').removeAttr('client_user_id');
+    if(object_id) {
+        $('#pop_user').attr('object_id', object_id);
+    } else {
+        $('#pop_user').removeAttr('object_id');
+    }
+
     $('#pop_user #client_user_phone_list tr.row').remove();
     $('#pop_user #client_user_emails tr.row').remove();
     $('#pop_user [name=post] :contains(--)').attr('selected', 'selected');
@@ -186,16 +210,16 @@ function client_userAdd() {
         },
         select: function(event, ui) {
             if(ui.item){
-                client_user_Edit(ui.item.client_user_id)
+                client_user_Edit(ui.item.client_user_id, object_id)
             } else {
-                $('#pop_user').attr('client_user_id','new');
+                $('#pop_user').removeAttr('client_user_id');
             }
         },
         change: function(event, ui) {
             if(ui.item){
-                client_user_Edit(ui.item.client_user_id)
+                client_user_Edit(ui.item.client_user_id, object_id)
             } else {
-                $('#pop_user').attr('client_user_id','new');
+                $('#pop_user').removeAttr('client_user_id');
             }
         },
         minChars: 2, zIndex: 100, deferRequestBy: 200
@@ -207,9 +231,7 @@ function client_userAdd() {
 function client_user_Delete(client_user_id) {
     var client_user_array = {};
     client_user_array['client'] = client_id;
-    if(object_id!='None'){
-        client_user_array['object'] = object_id;
-    }
+    if(object_id) client_user_array['object'] = object_id;
     client_user_array['client_user'] = client_user_id;
     $.ajax({ url:'/system/client/user/ajax/delete/', type:'post', dataType:'json', data:client_user_array,
         success: function(data){
@@ -219,11 +241,17 @@ function client_user_Delete(client_user_id) {
 }
 
 
-function client_user_Edit(client_user_id) {
+function client_user_Edit(client_user_id, object_id) {
+    var post_array = {'client_user': client_user_id};
     $('#pop_user').attr('client_user_id', client_user_id);
+    if(object_id){
+        post_array['object'] = object_id;
+        $('#pop_user').attr('object_id', object_id);
+    } else {
+        $('#pop_user').removeAttr('object_id');
+    }
+
     popMenuPosition('#pop_user');
-    var post_array = {};
-    post_array['client_user'] = client_user_id;
     $.ajax({ url:'/system/client/user/ajax/get/', type:'get', dataType:'json', data: post_array,
         success: function(data){
             if(data['error']!=null){
@@ -265,13 +293,8 @@ function client_user_Edit(client_user_id) {
 
 function client_user_Update() {
     var client_user_array = get_each_value('#pop_user');
+    client_user_array['client'] = client_id;
     client_user_array['comment'] = $('#pop_user textarea[name=comment]').val();
-    if(object_id){
-        client_user_array['object'] = object_id;
-    } else {
-        client_user_array['client'] = client_id;
-    }
-    client_user_array['client_user'] = $('#pop_user').attr('client_user_id');
 
     client_user_array['phone_list'] = [];
     client_user_array['phone_list_delete'] = JSON.stringify(phone_list_delete);

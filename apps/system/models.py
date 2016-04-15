@@ -479,8 +479,8 @@ class dir_weekday(models.Model):
         db_table = 'dir_weekday'
 
 class client_user_phone(models.Model):
-    code = models.CharField(max_length=4)
-    phone = models.CharField(max_length=7)
+    code = models.CharField(max_length=4, blank=True)
+    phone = models.CharField(max_length=13)
     phone_type = models.CharField(max_length=32)
     comment = models.TextField(blank=True)
     def __unicode__(self):
@@ -493,7 +493,7 @@ class client_user_email(models.Model):
     email = models.CharField(max_length=128)
     subscribe = models.CharField(max_length=3, default='да')
     def __unicode__(self):
-        return self.phone
+        return self.email
     class Meta:
         db_table = 'client_user_email'
 

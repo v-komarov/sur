@@ -19,6 +19,10 @@ def index(request, client_id=None, contract_id=None):
     if client and not contract_id and request.user.has_perm('system.client'):
         access = True
     elif contract_id and request.user.has_perm('system.client'):
+        object_list = []
+        for bind in db_sentry.client_bind.objects.filter(client_contract_id=contract_id, client_object__is_active=1, is_active=1):
+            object_list.append(bind.client_object.id)
+        client_object_set = db_sentry.client_object.objects.filter(id__in=object_list)
         access = True
 
     if access:
