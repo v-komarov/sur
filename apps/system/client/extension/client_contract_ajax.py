@@ -55,6 +55,7 @@ def add(request, data=None):
     if contract_form.is_valid():
         contract = contract_form.save()
         contract.client_id = client_id
+        contract.dir_tag = json.loads(request.POST['dir_tag'])
         contract.save()
         data['url'] = '/system/client/'+str(client_id)+'/contract/'+str(contract.id)+'/'
     else:

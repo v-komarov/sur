@@ -130,17 +130,17 @@ def get(request, data):
         data['task']['contract'] = task_set.contract.id
         data['task']['client'] = task_set.contract.client.id
         data['task']['client__name'] = task_set.contract.client.name
+
     if task_set.initiator_id:
         data['task']['initiator'] = task_set.initiator.id
-        data['task']['initiator__name'] = task_set.initiator.full_name
-    if task_set.initiator_other:
+    elif task_set.initiator_other:
         data['task']['initiator_other'] = task_set.initiator_other
-        #if task_set.service_id:
-        #data['task']['service_list'] = task_set.service.object.get_service_list()
-        #data['task']['service_string'] = task_set.service.get_service_string()
-        #data['task']['service_status'] = task_set.service.object.status.label
+    data['task']['initiator_list'] = {}
+    for client_user in task_set.object.client_user.all():
+        data['task']['initiator_list'][client_user.id] = {'full_name': client_user.full_name}
 
-    task_report_set = task_models.task_report.objects.filter(task=task_set.id,is_active=1)
+
+    task_report_set = task_models.task_report.objects.filter(task=task_set.id, is_active=1)
     if task_report_set:
         data['task']['report_list'] = []
         for item in task_report_set:

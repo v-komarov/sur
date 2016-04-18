@@ -28,7 +28,7 @@ def index(request, client_id=None, contract_id=None):
         else:
             title = 'Новый договор'
             position = 'client_contract_add'
-        dir_task_type_set = task_models.task_type.objects.all()
+        dir_task_type_set = task_models.task_type.objects.filter(is_active=1)
         dir_address_1_region_set = db_sentry.dir_address_1_region.objects.all()
         dir_address_placement_type_set = db_sentry.dir_address_placement_type.objects.all()
         dir_device_console_set = db_sentry.dir_device_console.objects.filter(is_active=1)

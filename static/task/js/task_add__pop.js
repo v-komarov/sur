@@ -117,18 +117,24 @@ $(document).ready(function() {
 function contract_task_add_Pop(client_id,contract_id,object_id) {
     console.log('contract_task_add_Pop');
     task_Clean();
-    $.ajax({ url:'/system/client/object/ajax/get_object/?object='+object_id, type:'get', dataType:'json',
+    var ajax_array = {'object':object_id, 'client_user':'true'};
+    $.ajax({ url:'/system/client/object/ajax/get/', data:ajax_array, type:'get', dataType:'json',
         success: function(data){
             var object_title = $('.object__item[object_id='+object_id+'] .object__item__title b.txt').clone();
-            //var service_string = contract_string_set(data['object_list'][0]);
-            //var object_href = '/system/client/'+client_id+'/object/'+object_id+'/';
-            //$('#task_add__pop a.client_object').attr('href',object_href).attr('object_id',object_id);
-            //$('#task_add__pop a.client_object').html('<div class="padding left">'+data['object_list'][0]['name']+'</div>');
             $('#task_add__pop').attr('client_id', client_id);
             $('#task_add__pop').attr('contract_id', contract_id);
             $('#task_add__pop').attr('object_id', object_id);
             $('#task_add__pop a.client_object').html(object_title);
             $('#task_add__pop .address').hide();
+
+
+            $('#task_add__pop select[name=initiator] option').remove();
+            $('#task_add__pop select[name=initiator]').append('<option/>');
+            for(var id in data['object']['client_user_list']){
+                var client_user = data['object']['client_user_list'][id];
+                $('#task_add__pop select[name=initiator]').append('<option value="'+id+'">'+client_user['full_name']+'</option>');
+            }
+
             popMenuPosition('#task_add__pop','single');
         }
     });

@@ -215,7 +215,8 @@ class sentry_user(models.Model):
     email = models.CharField(max_length=256, blank=True)
     passport_series = models.CharField(max_length=4, blank=True, help_text='Серия паспорта')
     passport_number = models.CharField(max_length=6, blank=True, help_text='Номер паспорта')
-    passport_data = models.CharField(max_length=64, blank=True, help_text='Кем и когда выдан')
+    passport_date = models.DateTimeField(null=True, blank=True, help_text='Когда выдан')
+    passport_issued = models.CharField(max_length=256, blank=True, help_text='Кем выдан')
     address = models.CharField(max_length=256, blank=True)
     address2 = models.CharField(max_length=256, blank=True)
     comment = models.TextField(blank=True)
@@ -496,6 +497,7 @@ class client_user_email(models.Model):
         return self.email
     class Meta:
         db_table = 'client_user_email'
+
 
 class client_user(models.Model):
     full_name = models.CharField(max_length=256)

@@ -9,20 +9,22 @@ $(document).ready(function() {
 
     $('.objectsList').on('click', 'div.item', function() {
         if($.inArray('system.client', lunchbox['permissions'])>=0){
+            var object_id = $(this).parents('[object_id]').attr('object_id');
             client_user_Cancel();
-            client_user_Edit( $(this).attr('client_user_id') );
+            client_user_Edit($(this).attr('client_user_id'), object_id);
         }
     });
 
     $("#client_user_form").on('click', '.ui_remove', function() {
         var delete_tr = $(this).parent().parent();
         var table_id = delete_tr.parent().parent().attr('id');
-        if( table_id=='client_user_phone_list' ){
+        if(table_id=='client_user_phone_list'){
             phone_list_delete.push( delete_tr.attr('phone_id') );
-        } else if( table_id=='client_user_emails' ){
+        } else if(table_id=='client_user_emails'){
             delete_emails.push( delete_tr.attr('email_id') );
         }
         delete_tr.remove();
+        client_user_Phone('check');
     });
 
     $('body').on('click', '.btn_ui', function() {
@@ -32,13 +34,13 @@ $(document).ready(function() {
             var user_id = $('#pop_user').attr('user_id');
             client_user_Cancel();
             if(user_id=='new'){
-                client_userAdd();
+                client_user_Add();
             } else {
                 client_user_Edit($('#pop_user').attr('client_user_id'), object_id);
             }
         }
         else if(action=='user_add'){
-            client_userAdd(object_id);
+            client_user_Add(object_id);
         }
         else if(action=='list_refresh'){
             client_user_Refresh(object_id);
@@ -51,8 +53,11 @@ $(document).ready(function() {
         }
         else if(action=='phone'){
             var tr_phone = $('#pop_user #client_user_phone_list tr.hide');
+            tr_phone.find('input[name=phone]').val('');
+            tr_phone.find('input[name=comment]').val('');
             tr_phone.clone().appendTo('#client_user_phone_list').attr('class','row').attr('phone_id','new'+phones_new_cnt);
             phones_new_cnt++;
+            client_user_Phone('check');
         }
         else if(action=='email'){
             var tr_email = $('#pop_user #client_user_emails tr.hide');
@@ -118,10 +123,6 @@ function setTable(data, object_id) {
         for(var phone in item['phone_list']){
             phone_have = true;
             var phone_p = '<p class="contact">'+item['phone_list'][phone]['client_user_phone__phone_type']+': ';
-            if(item['phone_list'][phone]['client_user_phone__code']){
-                phone_p += '+'+item['phone_list'][phone]['client_user_phone__code'].substring(0,1) +
-                '('+item['phone_list'][phone]['client_user_phone__code'].substring(1,4)+') ';
-            }
             phone_p += item['phone_list'][phone]['client_user_phone__phone'];
             if(item['phone_list'][phone]['client_user_phone__comment']){
                 phone_p += ' ('+item['phone_list'][phone]['client_user_phone__comment']+')';
@@ -179,15 +180,15 @@ function setTable(data, object_id) {
 }
 
 
-function client_userAdd(object_id) {
+function client_user_Add(object_id) {
     $('#pop_user').removeAttr('client_user_id');
     if(object_id) {
         $('#pop_user').attr('object_id', object_id);
     } else {
         $('#pop_user').removeAttr('object_id');
     }
-
     $('#pop_user #client_user_phone_list tr.row').remove();
+    client_user_Phone('check');
     $('#pop_user #client_user_emails tr.row').remove();
     $('#pop_user [name=post] :contains(--)').attr('selected', 'selected');
     $('#pop_user input').each(function(){ $(this).val(''); });
@@ -269,16 +270,7 @@ function client_user_Edit(client_user_id, object_id) {
                 }
                 $('#pop_user #client_user_phone_list tr.row').remove();
                 $('#pop_user #client_user_emails tr.row').remove();
-                for(var key in client_user_phone){
-                    var tr_phone = $('#pop_user #client_user_phone_list tr.hide');
-                    tr_phone.find('select[name=phone_type] [value='+client_user_phone[key]['client_user_phone__phone_type']+']').attr("selected", "selected");
-                    tr_phone.find('[name=code]').val(client_user_phone[key]['client_user_phone__code']);
-                    tr_phone.find('[name=phone]').val(client_user_phone[key]['client_user_phone__phone']);
-                    tr_phone.find('[name=comment]').val(client_user_phone[key]['client_user_phone__comment']);
-                    tr_phone.clone().appendTo('#client_user_phone_list').attr('class','row').attr('phone_id',client_user_phone[key]['client_user_phone']);
-                    $('#pop_user #client_user_phone_list tr.hide select option').removeAttr('selected');
-                    $('#pop_user #client_user_phone_list tr.hide input').val('');
-                }
+                client_user_Phone('set', client_user_phone);
                 for(var key in client_user_email){
                     var tr_email = $('#pop_user #client_user_emails tr.hide');
                     tr_email.find('[name=email]').val(client_user_email[key]['client_user_email__email']);
@@ -288,6 +280,32 @@ function client_user_Edit(client_user_id, object_id) {
             }
         }
     });
+}
+
+
+function client_user_Phone(action, client_user_phone) {
+    console.log('client_user_Phone: '+action+', '+client_user_phone);
+    if(action=='set') {
+        for(var key in client_user_phone) {
+            var tr_phone = $('#pop_user #client_user_phone_list tr.hide');
+            tr_phone.find('select[name=phone_type] [value='+client_user_phone[key]['client_user_phone__phone_type']+']').attr("selected", "selected");
+            //tr_phone.find('[name=code]').val(client_user_phone[key]['client_user_phone__code']);
+            tr_phone.find('[name=phone]').val(client_user_phone[key]['client_user_phone__phone']);
+            tr_phone.find('[name=comment]').val(client_user_phone[key]['client_user_phone__comment']);
+            tr_phone.clone().appendTo('#client_user_phone_list').attr('class','row').attr('phone_id',client_user_phone[key]['client_user_phone']);
+            $('#pop_user #client_user_phone_list tr.hide select option').removeAttr('selected');
+            $('#pop_user #client_user_phone_list tr.hide input').val('');
+        }
+    }
+    if(action=='check' || action=='set') {
+        console.log('check');
+        var count = $('#pop_user #client_user_phone_list tbody tr:visible').length;
+        if(count > 0) {
+            $('#pop_user #client_user_phone_list thead').show();
+        } else {
+            $('#pop_user #client_user_phone_list thead').hide();
+        }
+    }
 }
 
 
@@ -302,10 +320,10 @@ function client_user_Update() {
         var phone = {};
         phone['id'] = $(this).attr('phone_id');
         phone['phone_type'] = $(this).find('select[name=phone_type]').val();
-        phone['code'] = $(this).find('input[name=code]').val();
+        //phone['code'] = $(this).find('input[name=code]').val();
         phone['phone'] = $(this).find('input[name=phone]').val();
         phone['comment'] = $(this).find('input[name=comment]').val();
-        client_user_array['phone_list'].push(phone);
+        if(phone['phone']!='') client_user_array['phone_list'].push(phone);
     });
     client_user_array['phone_list'] = JSON.stringify(client_user_array['phone_list']);
 
@@ -381,15 +399,10 @@ function client_user_Validate() {
                 required: false,
                 minlength: 10
             },
-            code: {
-                required: false,
-                minlength: 4,
-                number: true
-            },
             phone: {
                 required: false,
                 minlength: 6,
-                maxlength: 7,
+                maxlength: 13,
                 number: true
             }
         },
@@ -401,13 +414,9 @@ function client_user_Validate() {
             birthday: {
                 minlength: "Некорректный формат, 30.12.1990"
             },
-            code: {
-                minlength: "Минимум 4 знаков",
-                number: "Только цифры"
-            },
             phone: {
                 minlength: "Минимум 6 знаков",
-                maxlength: "Максимум 7 знаков",
+                maxlength: "Максимум 13 знаков",
                 number: "Только цифры"
             }
         }

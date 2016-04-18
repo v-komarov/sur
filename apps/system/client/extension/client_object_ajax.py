@@ -10,10 +10,15 @@ from apps.system import models as db_sentry
 def get(**kwargs):
     data = {}
     object = None
+    client_user_boolean = False
     if 'request' in kwargs:
-        object = db_sentry.client_object.objects.get(id=int(kwargs['request'].GET['object_id']))
-    elif 'object_id' in kwargs:
-        object = db_sentry.client_object.objects.get(id=kwargs['object_id'])
+        object = db_sentry.client_object.objects.get(id=int(kwargs['request'].GET['object']))
+        if 'client_user' in kwargs['request'].GET:
+            client_user_boolean = True
+    elif 'object' in kwargs:
+        object = db_sentry.client_object.objects.get(id=kwargs['object'])
+        if 'client_user' in kwargs:
+            client_user_boolean = True
 
     data['object'] = {}
     if object and object.is_active==1:
@@ -76,6 +81,13 @@ def get(**kwargs):
             data['object']['address']['placement_type__label'] = object.address_placement_type.label
             data['object']['address']['placement_type__name'] = object.address_placement_type.name
 
+        if client_user_boolean:
+            data['object']['client_user_list'] = {}
+            for client_user in object.client_user.all():
+                data['object']['client_user_list'][client_user.id] = {
+                    'full_name': client_user.full_name
+                }
+
     return data
 
 
@@ -87,7 +99,7 @@ def get_object_list(**kwargs):
                 client_contract_id = int(kwargs['contract_id']),
                 client_object__is_active = 1,
                 is_active = 1):
-            data['object_list'][bind.client_object.id] = get(object_id=bind.client_object.id)['object']
+            data['object_list'][bind.client_object.id] = get(object=bind.client_object.id)['object']
 
     return data
 

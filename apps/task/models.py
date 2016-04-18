@@ -7,6 +7,7 @@ from apps.system import models as system_models
 class task_type(models.Model):
     label = models.CharField(max_length=128)
     name = models.CharField(max_length=128)
+    is_active = models.SmallIntegerField(default=1)
 
 
 class task_status(models.Model):

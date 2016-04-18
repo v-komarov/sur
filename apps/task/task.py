@@ -22,7 +22,7 @@ def index(request):
             .filter(post__in=post_list, is_active=1) \
             .values('id','full_name','post')
         task_type_set = task_models.task_type.objects.all()
-        task_status_set = task_models.task_status.objects.all()
+        task_status_set = task_models.task_status.objects.filter(is_active=1)
         dir_locality_set = db_sentry.dir_address_2_locality.objects.all()
         dir_security_squad_set = db_sentry.dir_security_squad.objects.filter(is_active=1)
         dir_security_squad_set = db_sentry.dir_security_squad.objects.filter(is_active=1)
