@@ -1,4 +1,4 @@
- $(document).ready(function() {
+$(document).ready(function() {
     $('#device_install_list').on('click', 'tr.row', function() {
         device_install_Edit( $(this).attr('device_install_id') );
     });
@@ -19,13 +19,10 @@
     $('#device_install_pop [name=device]').autocomplete({
         source: function(request, response) {
             $.ajax({ url:'/system/client/object/device/ajax/search_device/', type:'get', dataType:'json',
-                data:{ name:request.term, limit:7 },
+                data:{ name:request.term, install:true, limit:7 },
                 success: function(data) {
                     response($.map(data['device_list'], function(item) {
-                        return {
-                            label: item.name,
-                            device_id: item.id
-                        }
+                        return { label:item.name, device_id:item.id, install:item.install }
                     }));
                 }
             });
@@ -34,6 +31,7 @@
             if(ui.item){
                 $(this).attr('device_id',ui.item.device_id);
                 $('#device_install_pop .device_link').show();
+                console.log(ui.item.install);
             }
             else {
                 $(this).val('');
@@ -44,6 +42,7 @@
             if(ui.item){
                 $(this).attr('device_id',ui.item.device_id);
                 $('#device_install_pop .device_link').show();
+                console.log(ui.item.install);
             }
             else {
                 $(this).val('');
@@ -51,7 +50,10 @@
             }
         },
         minChars: 2, zIndex: 100, deferRequestBy: 200
-    });
+    }).data("ui-autocomplete")._renderItem = function( ul, item ) {
+        if(item.install=='yes') return $("<li>").append( '<a class="green">' + item.label + "</a>" ).appendTo( ul );
+        else return $("<li>").append( "<a>" + item.label + "</a>" ).appendTo( ul );
+    };
 
     $('.user_right').autocomplete({
         source: function(request, response) {

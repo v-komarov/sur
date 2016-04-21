@@ -1,0 +1,2 @@
+delete from auth_permission;
+delete from django_content_type;

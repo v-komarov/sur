@@ -33,6 +33,14 @@ $(document).ready(function() {
         }
     });
 
+    $('#task__pop').on('change', 'select[name=task_type]', function() {
+        check_task_type_select();
+    });
+
+    $('#task__pop').on('change', 'select[name=initiator]', function() {
+        check_initiator();
+    });
+
     $('#task__pop input[name=initiator]').autocomplete({
         source: function(request, response) {
             $.ajax({ url:'/system/sentry_user/ajax/search/', type:'get', dataType:'json',
@@ -104,6 +112,24 @@ function task_Delete() {
 }
 
 
+function check_task_type_select() {
+    var task_type = $('#task__pop select[name=task_type]').val();
+    if(task_type==2 || task_type ==7 || task_type ==8){
+        $('#task__pop input[name=device]').parents('tr').show();
+    } else {
+        $('#task__pop input[name=device]').parents('tr').hide();
+    }
+}
+
+function check_initiator() {
+    var initiator = $('#task__pop select[name=initiator]').val();
+    if(initiator==''){
+        $('#task__pop input[name=initiator_other]').show();
+    } else {
+        $('#task__pop input[name=initiator_other]').val('').hide();
+    }
+}
+
 function task_Clean() {
     $('#task__pop input, #task__pop textarea').val('');
     $('#task__pop input').removeAttr('item_id');
@@ -124,6 +150,10 @@ function task_Edit(task_id) {
             for(var key in data['task']){
                 $('#task__pop [name='+key+']').val(data['task'][key]);
             }
+            if(task['device']){
+                $('#task__pop [name=device]').val(task['device__name']).attr('item_id',task['device']);
+            }
+
             $('#task__pop [name=create_user]').text(task['create_user']+' ('+task['create_date']+')');
             $('#task__pop [name=complete_date]').parent('tr').attr('task_status',task['status__label']);
             $('#task__pop [name=complete_date] div.text').text(task['complete_date']);
@@ -139,18 +169,23 @@ function task_Edit(task_id) {
             $('#task__pop .address').html(task['address']+' '+task['object_map_yandex']);
 
             /*
-            if(task['initiator_other']){
-                $('#task__pop input[name=initiator]').val(task['initiator_other']);
-            } else if(task['initiator']){
-                $('#task__pop input[name=initiator]').val(task['initiator__full_name'])
-                    .attr('item_id',task['initiator']).attr('disabled','disabled');
-            }
-            */
+             if(task['initiator_other']){
+             $('#task__pop input[name=initiator]').val(task['initiator_other']);
+             } else if(task['initiator']){
+             $('#task__pop input[name=initiator]').val(task['initiator__full_name'])
+             .attr('item_id',task['initiator']).attr('disabled','disabled');
+             }
+             */
 
             $('#task__pop select[name=initiator] option:not([value=""])').remove();
-            for(var id in data['task']['initiator_list']){
-                var initiator = data['task']['initiator_list'][id];
-                $('#task__pop select[name=initiator]').append('<option value="'+id+'">'+initiator['full_name']+'</option>');
+            for(var id in data['task']['client_user_list']){
+                var client_user = data['task']['client_user_list'][id];
+                var option_item = '<option value="'+id+'">'+client_user['full_name'];
+                if(client_user['post']){
+                    option_item += ' ('+client_user['post__name']+')';
+                }
+                option_item += '</option>';
+                $('#task__pop select[name=initiator]').append(option_item);
             }
             $('#task__pop select[name=initiator]').val(data['task']['initiator']);
 
@@ -169,11 +204,12 @@ function task_Edit(task_id) {
                 var report = data['task']['report_list'][key];
                 var doer_string = '';
                 if(report['doer']) {
-                    doer_string = '<div class="title">['+report['create_date']+'] '+report['doer__full_name']+'</div>'
+                    doer_string = '<div class="title">['+report['create_date']+'] '+report['doer__full_name'];
                 }
                 else if(report['security_squad']) {
-                    doer_string = '<div class="title">['+report['create_date']+'] '+report['security_squad__name']+'</div>'
+                    doer_string = '<div class="title">['+report['create_date']+'] '+report['security_squad__name'];
                 }
+                doer_string += '<div class="right">'+report['status__name']+'</div></div>';
                 var report_div = '<div class="item" report_id="'+report['id']+'" time="'+report['time']+'">' +
                     doer_string +
                     '<div class="comment">'+report['comment']+'</div></div>';
@@ -181,6 +217,7 @@ function task_Edit(task_id) {
             }
 
             log_listSort();
+            check_task_type_select();
             popMenuPosition('#task__pop','single');
         }
     });

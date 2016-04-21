@@ -904,6 +904,7 @@ table.wide tr, tbody.wide tr {
 
 .text_right { text-align: right }
 .green { color: #009900; }
+a.green { background-color: #8aed84; }
 .red { color: #d30000; }
 .bg_green { background-color: #abf4ab; }
 .bg_red { background-color: #ffafaf; }

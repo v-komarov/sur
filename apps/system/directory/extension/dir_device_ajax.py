@@ -12,6 +12,14 @@ from apps.toolset import date_convert
 
 def search(request, data):
     device_set = db_sentry.dir_device.objects.filter(is_active=1)
+
+    if 'bind' in request.GET and request.GET['bind']:
+        device_list_id = []
+        object = db_sentry.client_bind.objects.get(id=int(request.GET['bind'])).client_object
+        for install in db_sentry.client_object_dir_device.objects.filter(object=object.id, uninstall_date=None, is_active=1):
+            device_list_id.append(install.device.id)
+        device_set = device_set.filter(id__in=device_list_id)
+
     if 'name' in request.GET and request.GET['name']:
         device_set = device_set.filter(name__icontains=request.GET['name'])
     if 'number' in request.GET and request.GET['number']:
@@ -29,7 +37,7 @@ def search(request, data):
     if 'limit' in request.GET:
         device_set = device_set[:int(request.GET['limit'])]
 
-    if 'communication' in request.GET:
+    if 'install' in request.GET:
         data['device_list'] = []
         for device in device_set:
             install = 'no'
@@ -52,7 +60,11 @@ def search(request, data):
                 device_item['device_type__name'] = ''
             data['device_list'].append(device_item)
     else:
-        device_set = device_set.values('id','device_console__name','device_type__name','name','series','number','belong','comment')
+        device_set = device_set.values(
+            'id', 'device_console__name', 'device_type__name',
+            'name', 'number', 'series',
+            'belong', 'comment'
+        )
         data['device_list'] = [item for item in device_set]
     return data
 

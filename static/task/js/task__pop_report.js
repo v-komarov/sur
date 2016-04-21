@@ -74,6 +74,13 @@ function task_report_Edit(report_id) {
     $('#task__pop #log_list div.hover').attr('class','item');
     $('#task__pop_report input, #task__pop_report textarea').val('');
 
+    var task_type = $('#task__pop select[name=task_type]').val();
+    if(task_type==3){
+        $('#task__pop_report select[name=security_squad]').parent('div').show();
+    } else {
+        $('#task__pop_report select[name=security_squad]').parent('div').hide();
+    }
+
     if(report_id=='new'){
         $('#task__pop_report div.header b').text('Новый отчет');
         $('#task__pop_report td.info').hide();
@@ -127,8 +134,12 @@ function task_report_Update() {
     }
     $.ajax({ url:'/task/ajax/create_report/', type:'post', dataType:'json', data:report_pack,
         success: function(data){
-            task_Search();
-            task_Edit(report_pack['task']);
+            if(data['errors']){
+                popMessage(data['errors'],'red');
+            } else {
+                task_Search();
+                task_Edit(report_pack['task']);
+            }
         }
     });
 }

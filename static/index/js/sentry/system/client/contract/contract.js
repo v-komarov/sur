@@ -51,7 +51,7 @@ function contract_Reset(){
                 for(var object_id in data['contract']['object_list']){
                     var object = data['contract']['object_list'][object_id];
                     var object_item = $('#object_sample').clone();
-                    object_item.removeAttr('id').removeClass('hide').attr('object_id',object_id);
+                    object_item.removeAttr('id').removeClass('hide').attr('object_id',object_id).attr('bind_id',object['bind']);
 
                     for(object_key in object){
                         if(object[object_key+'__name']){

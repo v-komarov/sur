@@ -135,10 +135,28 @@ def get(request, data):
         data['task']['initiator'] = task_set.initiator.id
     elif task_set.initiator_other:
         data['task']['initiator_other'] = task_set.initiator_other
-    data['task']['initiator_list'] = {}
-    for client_user in task_set.object.client_user.all():
-        data['task']['initiator_list'][client_user.id] = {'full_name': client_user.full_name}
+    data['task']['client_user_list'] = {}
 
+    for client_user in task_set.object.client_user.filter(is_active=1):
+        data['task']['client_user_list'][client_user.id] = {
+            'full_name': client_user.full_name
+        }
+        if client_user.post:
+            data['task']['client_user_list'][client_user.id]['post'] = client_user.post.id
+            data['task']['client_user_list'][client_user.id]['post__name'] = client_user.post.name
+
+    for client_user in db_sentry.client_bind.objects.get(client_object=task_set.object.id).client_contract.client.client_user.filter(is_active=1):
+        data['task']['client_user_list'][client_user.id] = {
+            'full_name': client_user.full_name
+        }
+        if client_user.post:
+            data['task']['client_user_list'][client_user.id]['post'] = client_user.post.id
+            data['task']['client_user_list'][client_user.id]['post__name'] = client_user.post.name
+
+
+    if task_set.device:
+        data['task']['device'] = task_set.device.id
+        data['task']['device__name'] = task_set.device.name
 
     task_report_set = task_models.task_report.objects.filter(task=task_set.id, is_active=1)
     if task_report_set:
@@ -147,6 +165,9 @@ def get(request, data):
             report = {
                 'id': item.id,
                 'time': item.create_date.strftime("%Y%m%d%H%M%S"),
+                'status': item.status.id,
+                'status__label': item.status.label,
+                'status__name': item.status.name,
                 'create_date': item.create_date.strftime("%d.%m.%Y %H:%M"),
                 'comment': item.comment
             }
@@ -240,62 +261,86 @@ def get_report(request,data):
 
 def create_report(request, data):
     task_set = task_models.task.objects.get(id=int(request.POST['task']))
-    status_id = int(request.POST['status'])
-    report_set = task_models.task_report.objects.create(
-        task_id = int(request.POST['task']),
-        status_id = status_id,
-        create_date = datetime.datetime.now(),
-        user_id = authorize.get_sentry_user(request)['id'],
-        warden_id = task_set.warden_id,
-        comment = request.POST['comment']
-    )
-    if 'doer' in request.POST and request.POST['doer'] != '':
-        report_set.doer_id = int(request.POST['doer'])
-    elif 'security_squad' in request.POST and request.POST['security_squad'] != '':
-        report_set.security_squad_id = int(request.POST['security_squad'])
-    report_set.save()
-    task_set.status_id = status_id
-    task_set.save()
-
-    if task_set.task_type_id == 2: # Подключение объекта
-        data['task_type'] = 'Подключение объекта'
-        db_sentry.client_workflow.objects.create(
-            contract_id = task_set.contract_id,
-            object_id = task_set.object_id,
-            sentry_user_id = report_set.user_id,
-            workflow_type_id = 6,
-            workflow_date = report_set.create_date,
-            comment = report_set.comment
+    if task_set.status.label == 'done':
+        data['errors'] = 'Эта заявка уже выполнена'
+    else:
+        status_id = int(request.POST['status'])
+        report_set = task_models.task_report.objects.create(
+            task_id = int(request.POST['task']),
+            status_id = status_id,
+            create_date = datetime.datetime.now(),
+            user_id = authorize.get_sentry_user(request)['id'],
+            warden_id = task_set.warden_id,
+            comment = request.POST['comment']
         )
-        if task_set.device:
-            install = db_sentry.client_object_dir_device.objects.create(
-                object_id = task_set.object.id,
-                device_id = task_set.device.id,
-                install_date = task_set.complete_date,
-                install_user_id = task_set.doer.id
-            )
-            install.check_priority()
+        if 'doer' in request.POST and request.POST['doer'] != '':
+            report_set.doer_id = int(request.POST['doer'])
+        elif 'security_squad' in request.POST and request.POST['security_squad'] != '':
+            report_set.security_squad_id = int(request.POST['security_squad'])
+        report_set.save()
+        task_set.status_id = status_id
+        task_set.save()
 
-        if task_set.contract:
-            client_bind = db_sentry.client_bind.objects.filter(client_contract_id=task_set.contract.id, is_active=1).first()
-            client_bind.check_bind_status()
-            #data['contract_status'] = task_set.contract.check_contract_status()
+        if status_id == 3: # Выполнено
 
-    elif task_set.task_type_id == 5: # Снятие объекта
-        data['task_type'] = 'Снятие объекта'
-        db_sentry.client_workflow.objects.create(
-            contract_id = task_set.contract_id,
-            object_id = task_set.object_id,
-            sentry_user_id = report_set.user_id,
-            workflow_type_id = 7,
-            workflow_date = report_set.create_date,
-            comment = report_set.comment
-        )
-        if task_set.contract:
-            data['contract_status'] = task_set.contract.check_contract_status()
+            if task_set.task_type_id == 2: # Подключение объекта
+                data['task_type'] = 'Подключение объекта'
+                db_sentry.client_workflow.objects.create(
+                    contract_id = task_set.contract_id,
+                    object_id = task_set.object_id,
+                    sentry_user_id = report_set.user_id,
+                    workflow_type_id = 6,
+                    workflow_date = report_set.create_date,
+                    comment = report_set.comment
+                )
+                if task_set.device:
+                    install = db_sentry.client_object_dir_device.objects.create(
+                        object_id = task_set.object.id,
+                        device_id = task_set.device.id,
+                        install_date = task_set.complete_date,
+                        install_user_id = task_set.doer.id
+                    )
+                    install.check_priority()
+
+                if task_set.contract:
+                    client_bind = db_sentry.client_bind.objects.filter(client_contract_id=task_set.contract.id, is_active=1).first()
+                    client_bind.check_bind_status()
+                    #data['contract_status'] = task_set.contract.check_contract_status()
+
+            elif task_set.task_type_id == 5: # Отключение
+                data['task_type'] = 'Отключение'
+                db_sentry.client_workflow.objects.create(
+                    contract_id = task_set.contract_id,
+                    object_id = task_set.object_id,
+                    sentry_user_id = report_set.user_id,
+                    workflow_type_id = 7,
+                    workflow_date = report_set.create_date,
+                    comment = report_set.comment
+                )
+                db_sentry.client_object_dir_device.objects.filter(
+                    object_id = task_set.object.id,
+                    uninstall_date = None,
+                    is_active = 1
+                ).update(
+                    uninstall_date = task_set.complete_date
+                )
+                if task_set.contract:
+                    data['contract_status'] = task_set.contract.check_contract_status()
+
+            elif task_set.task_type_id == 8: # Снятие ОУ
+                data['task_type'] = 'Снятие ОУ'
+                db_sentry.client_object_dir_device.objects.filter(
+                    object_id = task_set.object.id,
+                    device_id = task_set.device.id,
+                    uninstall_date = None,
+                    is_active = 1
+                ).update(
+                    uninstall_date = task_set.complete_date
+                )
+        data['answer'] = 'done'
     #object_event_ajax.event_update(request);
 
-    data['answer'] = 'done'
+
     return data
 
 

@@ -156,6 +156,9 @@ def search(request, data=None):
                 'subtype_list': bind.client_contract.get_subtype_list(),
                 'object_list': {}
             }
+            if bind.client_contract.ovd_status:
+                data['client_list'][client_id]['contract_list'][contract_id]['ovd_status'] = bind.client_contract.ovd_status.id
+                data['client_list'][client_id]['contract_list'][contract_id]['ovd_status__label'] = bind.client_contract.ovd_status.label
             if bind.client_contract.begin_date:
                 data['client_list'][client_id]['contract_list'][contract_id]['begin_date'] = bind.client_contract.begin_date.strftime("%d.%m.%Y")
 

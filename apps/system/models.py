@@ -576,6 +576,7 @@ class dir_device(models.Model):
     class Meta:
         verbose_name = 'Объектовое устройство'
         db_table = 'dir_device'
+        ordering = ['name']
         #unique_together = ('name', 'device_type')
 
 

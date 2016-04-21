@@ -166,7 +166,6 @@ function object_Delete(object_id) {
 
 
 function object_Edit(object_id) {
-    //console.log('object_Edit '+object_id);
     object_Cancel();
     popMenuPosition('#object_pop','single');
     var contract_string = $('#contract .service_string').html();
@@ -179,7 +178,7 @@ function object_Edit(object_id) {
     }
     if(!!object_id) {
         $('#object_pop').attr('object_id',object_id);
-        $.ajax({ url:'/system/client/object/ajax/get/?object_id='+object_id, type:'post', dataType:'json',
+        $.ajax({ url:'/system/client/object/ajax/get/?object='+object_id, type:'post', dataType:'json',
             success: function(data){
                 if(data['error']!=null) {
                     popMessage(data['error'],'red');
@@ -221,7 +220,6 @@ function object_Edit(object_id) {
                             }
                         }
                     }
-
                     if('address' in data['object']) {
                         address_locality_Search('set',data['object']['address']);
                     }

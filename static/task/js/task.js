@@ -142,7 +142,7 @@ function setTable(data) {
         $('#task_list tbody').append(day_tr);
     }
 
-    for(var key in data['task_list']){
+    for(var key in data['task_list']) {
         var task = data['task_list'][key];
         if(task['status_id']==0){
             var status = 'bg_red';

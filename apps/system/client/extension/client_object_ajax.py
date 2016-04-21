@@ -83,10 +83,21 @@ def get(**kwargs):
 
         if client_user_boolean:
             data['object']['client_user_list'] = {}
-            for client_user in object.client_user.all():
+            for client_user in object.client_user.filter(is_active=1):
                 data['object']['client_user_list'][client_user.id] = {
                     'full_name': client_user.full_name
                 }
+                if client_user.post:
+                    data['object']['client_user_list'][client_user.id]['post'] = client_user.post.id
+                    data['object']['client_user_list'][client_user.id]['post__name'] = client_user.post.name
+
+            for client_user in db_sentry.client_bind.objects.get(client_object=object.id).client_contract.client.client_user.filter(is_active=1):
+                data['object']['client_user_list'][client_user.id] = {
+                    'full_name': client_user.full_name
+                }
+                if client_user.post:
+                    data['object']['client_user_list'][client_user.id]['post'] = client_user.post.id
+                    data['object']['client_user_list'][client_user.id]['post__name'] = client_user.post.name
 
     return data
 
@@ -100,6 +111,7 @@ def get_object_list(**kwargs):
                 client_object__is_active = 1,
                 is_active = 1):
             data['object_list'][bind.client_object.id] = get(object=bind.client_object.id)['object']
+            data['object_list'][bind.client_object.id]['bind'] = bind.id
 
     return data
 

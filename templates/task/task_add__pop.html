@@ -19,7 +19,10 @@
 
         <tr class="row2">
             <td class="padding_9 text_right">Объектовое устройство</td>
-            <td><input name="device" class="left margin_5" type="text" value=""></td></tr>
+            <td>
+                <select name="device" class="left margin_5"></select><div class="clear"></div>
+                <input name="device" class="left margin_5" type="text" value="">
+            </td></tr>
 
         <tr class="row2">
             <td class="padding_9 text_right">Дата исполнения</td>
@@ -28,8 +31,9 @@
         <tr class="row2">
             <td class="padding_9 text_right">Инициатор</td>
             <td class="cell secondary">
-                <select function="select_client_object_user" name="initiator"><option value=""></option></select>
-                <!--input class="wide" type="text" value="" name="initiator"--></td></tr>
+                <select function="select_client_object_user" name="initiator"><option value=""></option></select><br />
+                <input type="text" value="" name="initiator_other"></td></tr>
+
         <tr class="row2">
             <td class="padding_9 text_right">Ответственный</td>
             <td class="cell secondary">

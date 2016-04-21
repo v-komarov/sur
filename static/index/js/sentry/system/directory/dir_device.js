@@ -101,7 +101,7 @@ function device_Search() {
     device_Cancel();
     loading('begin');
     var ajax_array = get_each_value('#device_list');
-    ajax_array['communication'] = true;
+    ajax_array['install'] = true;
     $.ajax({ url:'/system/directory/device/ajax/search/', type:'get', dataType:'json', data:ajax_array,
         success: function(data) {
             if(data['error']!=null){

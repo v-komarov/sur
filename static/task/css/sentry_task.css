@@ -231,6 +231,15 @@ table.list td {
     padding: 5px;
     text-align: right;
 }
+
+.pop select[name=initiator] {
+    width: 211px;
+}
+.pop input[name=initiator_other] {
+    width: 200px;
+    margin: 5px 0 0 0;
+}
+
 #task__pop_report [name=doer] td.middle {
     vertical-align: top;
     padding-top: 5px;
