@@ -892,21 +892,18 @@ class client_bind(models.Model):
             if self.client_object.client_object_dir_device_set.filter(uninstall_date=None, is_active=1).exists():
                 device_install = True
 
+
             if 'client_object_connect' in workflow_list:
                 if ovd_status == 'connected':
                     status = 'connected'
-                else:
+                elif ovd_status == 'disconnected':
                     status = 'disconnected'
-
-            if 'client_object_disconnect' in workflow_list and ovd_status=='connected' and device_install:
+            elif 'client_object_disconnect' in workflow_list and ovd_status=='connected' and device_install:
                 status = 'disconnected'
             elif 'client_object_disconnect' in workflow_list and device_install:
                 status = 'blue'
             elif 'client_object_disconnect' in workflow_list and ovd_status=='disconnected' and not device_install:
                 status = 'white'
-            else:
-                status = 'disconnected'
-
 
 
             cost = self.client_bind_cost_set.filter(
