@@ -21,7 +21,7 @@ $(document).ready(function() {
     });
 
     $('.tableInfo tbody').on('click', '.row:not(.edit)', function() {
-        //if($.inArray('system.directory_weapon_type_change', lunchbox['permissions'])>=0) {
+        //if($.inArray('main.directory_weapon_type_change', lunchbox['permissions'])>=0) {
             var weapon_type_id = $(this).attr('weapon_type_id');
             weapon_typeCancel();
             weapon_typeEdit(weapon_type_id);
@@ -73,7 +73,7 @@ function weapon_typeEdit(weapon_type_id) {
     tr.attr('class','row edit').find('td').removeClass('cell');
     tr.attr('old_weapon_type',weapon_type_name);
     var div_delete = '';
-    //if($.inArray('system.directory_weapon_type_delete', lunchbox['permissions'])>=0) {
+    //if($.inArray('main.directory_weapon_type_delete', lunchbox['permissions'])>=0) {
         div_delete = '<div class="btn_ui btn_34" action="delete" icon="delete"><div class="icon"></div></div>';
     //}
     var td_eq1 = '<table style="width: 100%"><tr>' +

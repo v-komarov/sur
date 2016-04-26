@@ -9,7 +9,18 @@ $(document).ready(function() {
         authLogin();
     });
 
+
+
+    fucking_center();
 });
+
+
+function fucking_center() {
+    console.log('welcome...');
+    var top = $(window).height()/2 - 75;
+    $('form.login').offset({top:top});
+    console.log(top);
+}
 
 
 function authLogin() {

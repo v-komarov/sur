@@ -127,7 +127,7 @@ class client_object_dir_device_form(forms.ModelForm):
         fields = [
             'object',
             'device',
-            'priority',
+            #'priority',
             'install_date',
             'install_user',
             'uninstall_date',

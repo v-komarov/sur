@@ -20,7 +20,7 @@ $(document).ready(function() {
     });
 
     $('#bank_list').on('click', '.row:not(.edit)', function(){
-        if($.inArray('system.client', lunchbox['permissions'])>=0){
+        if($.inArray('main.client', lunchbox['permissions'])>=0){
             bank_Edit($(this).attr('bank_id'));
         }
     });
@@ -49,7 +49,7 @@ function bank_Edit(bank_id) {
                     $('#pop_bank [name=name]').val(data['bank_list'][0]['name']);
                     $('#pop_bank [name=correspondent_account]').val(data['bank_list'][0]['correspondent_account']);
                     $('#pop_bank [name=locality]').val(data['bank_list'][0]['locality']);
-                    if($.inArray('system.client', lunchbox['permissions'])>=0) {
+                    if($.inArray('main.client', lunchbox['permissions'])>=0) {
                         $('#pop_bank div.ui_remove').show();
                     } else {
                         $('#pop_bank div.ui_remove').hide();

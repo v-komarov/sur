@@ -40,7 +40,7 @@ $(document).ready(function(){
     });
 
     $('#device_list tbody').on('click', '.row:not(.edit)', function(){
-        if($.inArray('system.client', lunchbox['permissions'])>=0) {
+        if($.inArray('main.client', lunchbox['permissions'])>=0) {
             var device_id = $(this).attr('device_id');
             device_Edit(device_id);
         }
@@ -196,7 +196,7 @@ function device_Edit(device_id){
     $('#device_pop .in_pop_sublist .item').remove();
     if(!!device_id){
         $('#device_list tbody tr[device_id='+device_id+']').addClass('hover');
-        if($.inArray('system.client', lunchbox['permissions'])>=0) {
+        if($.inArray('main.client', lunchbox['permissions'])>=0) {
             $('#device_pop div.btn_ui[action=delete]').show();
         } else {
             $('#device_pop div.btn_ui[action=delete]').hide();

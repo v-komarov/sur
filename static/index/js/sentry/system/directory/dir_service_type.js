@@ -32,14 +32,14 @@ $(document).ready(function() {
         service_type_Ajax('search');
     });
     $('#service_type tbody').on('click', '.row:not(.edit)', function(){
-        if($.inArray('system.client', lunchbox['permissions'])>=0){
+        if($.inArray('main.client', lunchbox['permissions'])>=0){
             var service_type_id = $(this).attr('service_type_id');
             service_type_Cancel();
             service_type_Edit(service_type_id);
         }
     });
     $('#service_subtype tbody').on('click', '.row:not(.edit)', function(){
-        if($.inArray('system.client', lunchbox['permissions'])>=0){
+        if($.inArray('main.client', lunchbox['permissions'])>=0){
             var service_subtype_id = $(this).attr('service_subtype_id');
             service_subtype_Cancel();
             service_subtype_Edit(service_subtype_id);
@@ -135,7 +135,7 @@ function service_type_Edit(service_type_id){
     tr.attr('old_type',type_name);
     tr.attr('old_description',description);
     var div_delete = '';
-    if($.inArray('system.client', lunchbox['permissions'])>=0){
+    if($.inArray('main.client', lunchbox['permissions'])>=0){
         div_delete = '<div class="btn_ui btn_34" action="type_delete" icon="delete"><div class="icon"></div></div>';
     }
     var td_eq1 = '<td colspan="3"><table style="width: 100%"><tr>' +
@@ -161,7 +161,7 @@ function service_subtype_Edit(service_subtype_id){
     tr.attr('old_type',type_name);
     tr.attr('old_description',description);
     var div_delete = '';
-    if($.inArray('system.client', lunchbox['permissions'])>=0){
+    if($.inArray('main.client', lunchbox['permissions'])>=0){
         div_delete = '<div class="btn_ui btn_34" action="subtype_delete" icon="delete"><div class="icon"></div></div>';
     }
     var td_eq1 = '<td colspan="3"><table style="width: 100%"><tr>' +

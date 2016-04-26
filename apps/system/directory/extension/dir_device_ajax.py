@@ -177,7 +177,9 @@ def check_priority(device_id):
                 priority += 1
         if priority < 1:
             device_install_set[0].priority = 'primary'
-            device_install_set[0].save()
+        else:
+            device_install_set[0].priority = 'secondary'
+        device_install_set[0].save()
     return 'done'
 
 

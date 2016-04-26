@@ -18,7 +18,7 @@ $(document).ready(function() {
     });
 
     $('.tableInfo tbody').on('click', '.row:not(.edit)', function() {
-        if($.inArray('system.client', lunchbox['permissions'])>=0) {
+        if($.inArray('main.client', lunchbox['permissions'])>=0) {
             var device_console_id = $(this).attr('device_console_id');
             device_console_Cancel();
             device_console_Edit(device_console_id);
@@ -77,7 +77,7 @@ function device_console_Edit(device_console_id) {
     tr.attr('old_device_console',device_console_name);
     tr.attr('old_description',description);
     var div_delete = '';
-    if($.inArray('system.client', lunchbox['permissions'])>=0) {
+    if($.inArray('main.client', lunchbox['permissions'])>=0) {
         div_delete = '<div class="btn_ui btn_34" action="delete" icon="delete"><div class="icon"></div></div>';
     }
     var td_eq1 = '<td colspan="3"><table style="width: 100%"><tr>' +

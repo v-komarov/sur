@@ -73,7 +73,7 @@ $(document).ready(function(){
             cost_Edit( $(this).parents('#contract').attr('service_id'), $(this).parents('#contract').attr('object_cost_id') );
         }
         else if(action=='object_delete'){
-            if($.inArray('system.client', lunchbox['permissions'])>=0){
+            if($.inArray('main.client', lunchbox['permissions'])>=0){
                 if(confirm('Удалить объект?')){ client_object_Delete() }
             }
         }

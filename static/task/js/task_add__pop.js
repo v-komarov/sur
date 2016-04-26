@@ -39,7 +39,7 @@ $(document).ready(function() {
         }
     });
 
-    $('#task_add__pop [name=device]').autocomplete({
+    $('#task_add__pop input[name=device]').autocomplete({
         source: function(request, response) {
             $.ajax({ url:'/system/client/object/device/ajax/search_device/', type:'get', dataType:'json',
                 data:{ name:request.term, install:true, limit:7 },
@@ -54,7 +54,6 @@ $(document).ready(function() {
             if(ui.item){
                 $(this).attr('item_id', ui.item.device_id);
                 $('#device_install_pop .device_link').show();
-                console.log(ui.item.install);
             }
             else {
                 $(this).val('');
@@ -65,7 +64,6 @@ $(document).ready(function() {
             if(ui.item){
                 $(this).attr('item_id', ui.item.device_id);
                 $('#device_install_pop .device_link').show();
-                console.log(ui.item.install);
             }
             else {
                 $(this).val('');
@@ -74,6 +72,7 @@ $(document).ready(function() {
         },
         minChars: 2, zIndex: 100, deferRequestBy: 200
     }).data("ui-autocomplete")._renderItem = function( ul, item ) {
+        console.log(item.install);
         if(item.install=='yes') {
             return $("<li>").append('<a class="green">'+item.label+"</a>").appendTo(ul);
         } else {
@@ -81,58 +80,6 @@ $(document).ready(function() {
         }
     };
 
-
-    $('#task_add__pop input[name=initiator]').autocomplete({
-        source: function(request, response) {
-            $.ajax({ url:'/system/sentry_user/ajax/search/', type:'get', dataType:'json',
-                data:{ full_name:request.term, limit:10 },
-                success: function(data) {
-                    response($.map(data['user_list'], function(item) {
-                        return { label:item.full_name, user_id:item.id }
-                    }));
-                }
-            });
-        },
-        change: function(event, ui) {
-            if(ui.item){
-                var user_id = ui.item.user_id
-            } else {
-                var user_id = 'other';
-            }
-            $(this).attr('user_id', user_id);
-        },
-        //select: function(event, ui) { $('tr#holding__name').attr('holding_id', ui.item.holding_id); },
-        minChars: 2, zIndex: 100, deferRequestBy: 200
-    });
-
-    $('#task_add__pop input[name=warden], #task_add__pop input[name=doer]').autocomplete({
-        source: function(request, response) {
-            $.ajax({ url:'/system/sentry_user/ajax/search/', type:'get', dataType:'json',
-                data: {
-                    full_name:request.term,
-                    limit: 10
-                },
-                success: function(data) {
-                    response($.map(data['user_list'], function(item) {
-                        return {
-                            label:item.full_name, user_id:item.id
-                        }
-                    }));
-                }
-            });
-        },
-        change: function(event, ui) {
-            if(ui.item){
-                var user_id = ui.item.user_id
-            } else {
-                var user_id = 'new';
-                $(this).val('');
-            }
-            $(this).attr('user_id', user_id);
-        },
-        //select: function(event, ui) { $('tr#holding__name').attr('holding_id', ui.item.holding_id); },
-        minChars: 2, zIndex: 100, deferRequestBy: 200
-    });
 
     select_sentry_user();
     task_add_Validate();

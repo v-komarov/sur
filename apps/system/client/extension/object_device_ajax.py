@@ -74,16 +74,19 @@ def get_device_install_list(service_id):
 
 def install_update(request, data):
     object = db_sentry.client_object.objects.get(id=int(request.POST['object']))
-
-    if 'device_install' in request.POST:
+    try:
         install = db_sentry.client_object_dir_device.objects.get(id=int(request.POST['device_install']))
         form = client__form.client_object_dir_device_form(request.POST, instance=install)
-    else:
+    except:
         form = client__form.client_object_dir_device_form(request.POST)
 
     if form.is_valid():
         install = form.save()
         dir_device_ajax.check_priority(install.device_id)
+        data['install.device_id'] = install.device_id
+
+        data['status'] = db_sentry.client_bind.objects.filter(client_object=object.id, is_active=1).first().check_bind_status()
+        #data['status'] = object.client_bind.check_bind_status()
         #data['status'] = object.check_object_status()
         data['answer'] = 'done'
     else:

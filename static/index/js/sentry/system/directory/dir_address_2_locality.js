@@ -21,7 +21,7 @@ $(document).ready(function() {
     });
 
     $('.tableInfo tbody').on('click', '.row:not(.edit)', function() {
-        if($.inArray('system.client', lunchbox['permissions'])>=0){
+        if($.inArray('main.client', lunchbox['permissions'])>=0){
             var locality_id = $(this).attr('locality_id');
             locality_Cancel();
             locality_Edit(locality_id);
@@ -70,7 +70,7 @@ function locality_Edit(locality_id) {
     tr.find('select [value='+region_id+']').attr('selected', 'selected');
     tr.attr('old_region',region_name).attr('old_locality',locality_name);
     var div_delete = '';
-    if($.inArray('system.client', lunchbox['permissions'])>=0){
+    if($.inArray('main.client', lunchbox['permissions'])>=0){
         div_delete = '<div class="btn_ui btn_32" action="locality_delete" icon="delete"><div class="icon"></div></div>';
     }
     var td_eq1 = '<table style="width: 100%"><tr>' +

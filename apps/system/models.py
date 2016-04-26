@@ -660,7 +660,7 @@ class client_contract(models.Model):
         bind_list = []
         ovd_status = 'disconnected'
         ovd_status_list = []
-        for bind in self.client_bind_set.filter(is_active=1):
+        for bind in self.client_bind_set.filter(is_active=1).exclude(status__label='new'):
             bind_list.append(bind.status.label)
             ovd_status_list.append(bind.ovd_status.label)
 
@@ -882,18 +882,32 @@ class client_bind(models.Model):
                     is_active = 1):
                 workflow_list.append(workflow.workflow_type.label)
 
-            if 'client_object_connect' in workflow_list:
-                status = 'connected'
-            if 'client_object_disconnect' in workflow_list and \
-                    self.client_object.client_object_dir_device_set.filter(uninstall_date=None,is_active=1).exists():
-                status = 'disconnecting'
-            elif 'client_object_disconnect' in workflow_list:
-                status = 'disconnected'
 
             if 'client_object_notice_off' in workflow_list:
                 ovd_status = 'disconnected'
             elif 'client_object_notice' in workflow_list:
                 ovd_status = 'connected'
+
+            device_install = False
+            if self.client_object.client_object_dir_device_set.filter(uninstall_date=None, is_active=1).exists():
+                device_install = True
+
+            if 'client_object_connect' in workflow_list:
+                if ovd_status == 'connected':
+                    status = 'connected'
+                else:
+                    status = 'disconnected'
+
+            if 'client_object_disconnect' in workflow_list and ovd_status=='connected' and device_install:
+                status = 'disconnected'
+            elif 'client_object_disconnect' in workflow_list and device_install:
+                status = 'blue'
+            elif 'client_object_disconnect' in workflow_list and ovd_status=='disconnected' and not device_install:
+                status = 'white'
+            else:
+                status = 'disconnected'
+
+
 
             cost = self.client_bind_cost_set.filter(
                 cost_type__label='pause', is_active=1,

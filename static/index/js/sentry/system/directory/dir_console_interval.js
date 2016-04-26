@@ -18,7 +18,7 @@ $(document).ready(function() {
 
 
     $('#console_interval_pop tbody').on('click', '.row:not(.edit)', function() {
-        if($.inArray('system.client', lunchbox['permissions'])>=0) {
+        if($.inArray('main.client', lunchbox['permissions'])>=0) {
             console_interval_Edit($(this).attr('console_interval_id'));
         }
     });
@@ -89,7 +89,7 @@ function console_interval_Edit(interval_id) {
                     $('#console_interval_pop [name=end]').val(interval['end']);
                     $('#console_interval_pop select[name=service_organization]').val(interval['service_organization_id']);
                     $('#console_interval_pop select[name=device_console]').val(interval['device_console_id']);
-                    if($.inArray('system.client', lunchbox['permissions'])>=0) {
+                    if($.inArray('main.client', lunchbox['permissions'])>=0) {
                         $('#console_interval_pop div.ui_remove').show();
                     } else {
                         $('#console_interval_pop div.ui_remove').hide();

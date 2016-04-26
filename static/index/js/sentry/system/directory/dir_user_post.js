@@ -18,7 +18,7 @@ $(document).ready(function() {
     });
 
     $('.tableInfo tbody').on('click', '.row:not(.edit)', function() {
-        //if($.inArray('system.directory_user_post_change', lunchbox['permissions'])>=0) {
+        //if($.inArray('main.directory_user_post_change', lunchbox['permissions'])>=0) {
         var post_id = $(this).attr('post_id');
         postCancel();
         postEdit(post_id);
@@ -72,7 +72,7 @@ function postEdit(post_id) {
     tr.attr('class','row edit').find('td').removeClass('cell');
     tr.attr('old_post',post_name);
     var div_delete = '';
-    //if($.inArray('system.directory_user_post_delete', lunchbox['permissions'])>=0) {
+    //if($.inArray('main.directory_user_post_delete', lunchbox['permissions'])>=0) {
     div_delete = '<div class="btn_ui btn_34" action="delete" icon="delete"><div class="icon"></div></div>';
     //}
     var td_eq1 = '<table style="width: 100%"><tr>' +

@@ -18,7 +18,7 @@ $(document).ready(function() {
     });
 
     $('.tableInfo tbody').on('click', '.row:not(.edit)', function() {
-        if($.inArray('system.client', lunchbox['permissions'])>=0) {
+        if($.inArray('main.client', lunchbox['permissions'])>=0) {
             var security_squad_id = $(this).attr('security_squad_id');
             security_squadCancel();
             security_squad_Edit(security_squad_id);
@@ -73,7 +73,7 @@ function security_squad_Edit(security_squad_id) {
     tr.attr('class','row edit').find('td').removeClass('cell');
     tr.attr('old_security_squad',security_squad_name);
     var div_delete = '';
-    if($.inArray('system.client', lunchbox['permissions'])>=0) {
+    if($.inArray('main.client', lunchbox['permissions'])>=0) {
         div_delete = '<div class="btn_ui btn_34" action="delete" icon="delete"><div class="icon"></div></div>';
     }
     var td_eq1 = '<table style="width: 100%"><tr>' +

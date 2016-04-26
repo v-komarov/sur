@@ -168,7 +168,7 @@ function object_service_Get_list() {
                         '<tr class="row" action="service"><td class="padding_5 text_right border_right">Адрес</td><td class="padding_5" name=address></td></tr>';
                     //'<tr class="row" action="service"><td class="padding_5 text_right border_right">Дата подключения</td><td class="padding_5">'+service['contract_date']+'</td></tr>';
 
-                    if($.inArray('system.client', lunchbox['permissions'])>=0) {
+                    if($.inArray('main.client', lunchbox['permissions'])>=0) {
                         service__item += '<tr class="row" action="cost" service_cost_id="'+service['cost_id']+'">' +
                         '<td class="padding_5 text_right border_right">Стоимость</td><td class="cell">'+service['cost']+' '+service['cost_type']+'</td></tr>' +
                         '<tr class="row" action="cost" service_cost_id="'+service['cost_id']+'">' +

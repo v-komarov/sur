@@ -19,7 +19,7 @@ $(document).ready(function() {
         contract_intervalCancel(); });
 
     $('#interval_list tbody').on('click', '.row:not(.edit)', function() {
-        if($.inArray('system.client', lunchbox['permissions'])>=0) {
+        if($.inArray('main.client', lunchbox['permissions'])>=0) {
             var interval_id = $(this).attr('interval_id');
             contract_intervalCancel();
             contract_intervalEdit(interval_id);
@@ -96,7 +96,7 @@ function contract_intervalEdit(interval_id) {
                         $('#pop_interval [name=end]').val(data[key]['end']);
                         $('#pop_interval [name=prefix]').val(data[key]['prefix']);
                         $('#pop_interval select[name=company] option[value='+data[key]['service_organization_id']+']').attr("selected", "selected");
-                        if($.inArray('system.client', lunchbox['permissions'])>=0) {
+                        if($.inArray('main.client', lunchbox['permissions'])>=0) {
                             $('#pop_interval div.ui_remove').show();
                         } else {
                             $('#pop_interval div.ui_remove').hide();

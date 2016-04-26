@@ -22,7 +22,6 @@ div.button_list {
     padding: 9px 10px;
     display: inline-block;
     font-size: 15px;
-    color: #3379A5;
 }
 
 #object_list .tableInfo {
@@ -38,13 +37,28 @@ div.button_list {
 #object_list .object__item__title {
     background-color: #c2dfeb;
 }
+#object_list .button_list b[status=new] {
+    color: #000;
+    background-color: #ffff00;
+}
+
 #task_add__pop .client_object b.txt[status=connected],
 .object__item b[status=connected] {
     background-color: #abf4ab;
 }
 #task_add__pop .client_object b.txt[status=disconnecting],
+#object_list .button_list b[status=disconnected],
 .object__item b[status=disconnecting] {
+    color: #fff;
     background-color: #e70000;
+}
+.object__item b[status=blue] {
+    color: #fff;
+    background-color: #00a1ff;
+}
+.object__item b[status=white] {
+    color: #000;
+    background-color: #fff;
 }
 #task_add__pop .client_object b.txt[status=discconnected],
 .object__item b[status=discconnected] {

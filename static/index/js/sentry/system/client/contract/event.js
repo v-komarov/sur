@@ -115,80 +115,84 @@ function event_Edit(contract_id,object_id,event_type,event_id) {
         .removeAttr('object_id')
         .removeAttr('event_type_id')
         .removeAttr('event_id');
-    //if($.inArray('system.'+event_type, lunchbox['permissions'])>=0){
-    if($.inArray('system.client', lunchbox['permissions'])>=0){
-        if(!!contract_id){
-            $('#event_pop').attr('contract_id',contract_id);
-            var tr = $('#contract tr[event_type='+event_type+']');
-        } else {
-            $('#event_pop').attr('object_id',object_id);
-            var tr = $('.object__item[object_id='+object_id+'] tr[event_type='+event_type+']');
-        }
+    //if($.inArray('main.'+event_type, lunchbox['permissions'])>=0){
+    /*
+     if($.inArray('main.client', lunchbox['permissions'])>=0){
+     */
+    if(!!contract_id){
+        $('#event_pop').attr('contract_id',contract_id);
+        var tr = $('#contract tr[event_type='+event_type+']');
+    } else {
+        $('#event_pop').attr('object_id',object_id);
+        var tr = $('.object__item[object_id='+object_id+'] tr[event_type='+event_type+']');
+    }
 
-        var event_type_id = tr.attr('event_type_id');
-        $('#event_pop').attr('event_type_id',event_type_id);
-        $('#event_pop .header b').text(tr.find('td[name=event_type]').text());
-        $('#event_pop select[name=sentry_user] option[name=choosen]').remove();
-        if(event_type=='client_object_warden') {
-            $('#event_pop select[name=service]').parents('tr').hide();
-            $('#event_pop select[name=sentry_user]').removeAttr('disabled');
-        } else {
-            $('#event_pop select[name=service]').parents('tr').show();
-            $('#event_pop select[name=sentry_user]').attr('disabled','disabled');
-        }
-        $('#event_pop select[name=bonus_type_id]').parents('tr').hide();
-        $('#event_pop input[name=cost]').attr('disabled','disabled').parents('tr').hide();
-        $('#event_pop input[name=event_date]').val(lunchbox['setting']['today']);
-        $('#event_pop textarea[name=comment]').val('');
+    var event_type_id = tr.attr('event_type_id');
+    $('#event_pop').attr('event_type_id',event_type_id);
+    $('#event_pop .header b').text(tr.find('td[name=event_type]').text());
+    $('#event_pop select[name=sentry_user] option[name=choosen]').remove();
+    if(event_type=='client_object_warden') {
+        $('#event_pop select[name=service]').parents('tr').hide();
+        $('#event_pop select[name=sentry_user]').removeAttr('disabled');
+    } else {
+        $('#event_pop select[name=service]').parents('tr').show();
+        $('#event_pop select[name=sentry_user]').attr('disabled','disabled');
+    }
+    $('#event_pop select[name=bonus_type_id]').parents('tr').hide();
+    $('#event_pop input[name=cost]').attr('disabled','disabled').parents('tr').hide();
+    $('#event_pop input[name=event_date]').val(lunchbox['setting']['today']);
+    $('#event_pop textarea[name=comment]').val('');
 
-        // Договор не зарегистрирован и не вернулся - нельзя подключить обьект вручную
-        if( event_type=='client_object_connect' && !event_id &&
-            $('#contract [event_type=client_contract_register] [name=event_date]').text()=='' &&
-            $('#contract [event_type=client_contract_return] [name=event_date]').text()=='' ){
-            popMessage('Договор должен быть зарегистрирован и вернулся','red');
-        }
-        // Подключение для ПЦН возможно только при установленных ОУ
-        else if( event_type=='client_object_connect' && !event_id &&
-            $('#contract').attr('service_type_id')==1 &&
-            $('.object__item[object_id='+object_id+'] .device_list tbody').children().length<1 ){
-            popMessage('Подлючение объекта ПЦН возможно только установки ОУ','red');
-        }
-        else {
-            if(!!event_id){
-                $('#event_pop').attr('event_id',event_id);
-                $('#event_pop div[action=event_delete]').show();
-                $.ajax({ url:'/system/client/object/ajax/event_get/?event_id='+event_id, type:'get', dataType:'json',
-                    success: function(data){
-                        if(data['error']) {
-                            alert(data['error']);
-                        } else {
-                            for(key in data['event']){
-                                $('#event_pop [name='+key+']').val(data['event'][key]);
-                            }
-                            //console.log('sentry_user:',data['event']['sentry_user_id']);
-                            if( !$('#event_pop select[name=sentry_user] option[value='+data['event']['sentry_user_id']+']').is('option') ){
-                                var item_option = '<option value="'+data['event']['sentry_user_id']+'" name="choosen">'+data['event']['sentry_user_name']+'</option>';
-                                $('#event_pop select[name=sentry_user] option:eq(0)').after(item_option);
-                            }
-                            $('#event_pop select[name=sentry_user]').val(data['event']['sentry_user_id']);
-                        }
-                    }
-                });
-            }
-            else {
-                if( !$('#event_pop select[name=sentry_user] option[value='+lunchbox['setting']['sentry_user_id']+']').is('option') ){
-                    var item_option = '<option value="'+lunchbox['setting']['sentry_user_id']+'" name="choosen">'+lunchbox['setting']['sentry_user_full_name']+'</option>';
-                    $('#event_pop select[name=sentry_user] option:eq(0)').after(item_option);
-                }
-                $('#event_pop select[name=sentry_user]').val(lunchbox['setting']['sentry_user_id']);
-                $('#event_pop div[action=event_delete]').hide();
-            }
-            popMenuPosition('#event_pop','single');
-        }
+    // Договор не зарегистрирован и не вернулся - нельзя подключить обьект вручную
+    if( event_type=='client_object_connect' && !event_id &&
+        $('#contract [event_type=client_contract_register] [name=event_date]').text()=='' &&
+        $('#contract [event_type=client_contract_return] [name=event_date]').text()=='' ){
+        popMessage('Договор должен быть зарегистрирован и вернулся','red');
+    }
+    // Подключение для ПЦН возможно только при установленных ОУ
+    else if( event_type=='client_object_connect' && !event_id &&
+        $('#contract').attr('service_type_id')==1 &&
+        $('.object__item[object_id='+object_id+'] .device_list tbody').children().length<1 ){
+        popMessage('Подлючение объекта ПЦН возможно только установки ОУ','red');
     }
     else {
-        popMessage('Редактирование запрещено','red');
+        if(!!event_id){
+            $('#event_pop').attr('event_id',event_id);
+            $('#event_pop div[action=event_delete]').show();
+            $.ajax({ url:'/system/client/object/ajax/event_get/?event_id='+event_id, type:'get', dataType:'json',
+                success: function(data){
+                    if(data['error']) {
+                        alert(data['error']);
+                    } else {
+                        for(key in data['event']){
+                            $('#event_pop [name='+key+']').val(data['event'][key]);
+                        }
+                        //console.log('sentry_user:',data['event']['sentry_user_id']);
+                        if( !$('#event_pop select[name=sentry_user] option[value='+data['event']['sentry_user_id']+']').is('option') ){
+                            var item_option = '<option value="'+data['event']['sentry_user_id']+'" name="choosen">'+data['event']['sentry_user_name']+'</option>';
+                            $('#event_pop select[name=sentry_user] option:eq(0)').after(item_option);
+                        }
+                        $('#event_pop select[name=sentry_user]').val(data['event']['sentry_user_id']);
+                    }
+                }
+            });
+        }
+        else {
+            if( !$('#event_pop select[name=sentry_user] option[value='+lunchbox['setting']['sentry_user_id']+']').is('option') ){
+                var item_option = '<option value="'+lunchbox['setting']['sentry_user_id']+'" name="choosen">'+lunchbox['setting']['sentry_user_full_name']+'</option>';
+                $('#event_pop select[name=sentry_user] option:eq(0)').after(item_option);
+            }
+            $('#event_pop select[name=sentry_user]').val(lunchbox['setting']['sentry_user_id']);
+            $('#event_pop div[action=event_delete]').hide();
+        }
+        popMenuPosition('#event_pop','single');
     }
+    /*
+     }
+     else {
+     popMessage('Редактирование запрещено','red');
+     }
+     */
 }
 
 

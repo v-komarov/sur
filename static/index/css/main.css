@@ -496,28 +496,37 @@ table.events tr {
     padding: 7px 5px 6px;
 }
 
-*:hover .service_string[status=new], .service_string[status=new],
-*:hover .service_string[status=registered], .service_string[status=registered] {
+*:hover .service_string[status=new],
+.service_string[status=new],
+*:hover .service_string[status=registered],
+.service_string[status=registered],
+.contract__object[status=new] {
     color: #000;
     background-color: #ffff00;
 }
-*:hover .service_string[status=connecting], .service_string[status=connecting] {
+*:hover .service_string[status=connecting],
+.service_string[status=connecting] {
     color: #000;
     background-color: #ffcc33;
 }
-*:hover .service_string[status=connected], .service_string[status=connected] {
+*:hover .service_string[status=connected],
+.service_string[status=connected],
+.contract__object[status=connected] {
     color: #000;
     background-color: #abf4ab;
 }
-*:hover .service_string[status=paused], .service_string[status=paused] {
+*:hover .service_string[status=paused],
+.service_string[status=paused] {
     color: #000;
     background-color: #cc99ff;
 }
-*:hover .service_string[status=disconnecting], .service_string[status=disconnecting] {
+*:hover .service_string[status=disconnecting],
+.service_string[status=disconnecting] {
     color: #fff;
     background-color: #e70000;
 }
-*:hover .service_string[status=disconnected], .service_string[status=disconnected] {
+*:hover .service_string[status=disconnected], .service_string[status=disconnected],
+.contract__object[status=disconnected] {
     background-color: #cc6666;
     color: #fff;
 }

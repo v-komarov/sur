@@ -327,6 +327,17 @@ def create_report(request, data):
                 if task_set.contract:
                     data['contract_status'] = task_set.contract.check_contract_status()
 
+            elif task_set.task_type_id == 7: # Подключение ОУ
+                data['task_type'] = 'Подключение ОУ'
+                if task_set.device:
+                    install = db_sentry.client_object_dir_device.objects.create(
+                        object_id = task_set.object.id,
+                        device_id = task_set.device.id,
+                        install_date = task_set.complete_date,
+                        install_user_id = task_set.doer.id
+                    )
+                    install.check_priority()
+
             elif task_set.task_type_id == 8: # Снятие ОУ
                 data['task_type'] = 'Снятие ОУ'
                 db_sentry.client_object_dir_device.objects.filter(

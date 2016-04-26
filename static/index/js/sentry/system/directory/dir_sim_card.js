@@ -27,7 +27,7 @@ $(document).ready(function(){
 
     $('#sim_card_list tbody').on('click', 'tr', function(){
         //console.log(lunchbox['permissions']);
-        //if($.inArray('system.directory_device_change', lunchbox['permissions'])>=0) {
+        //if($.inArray('main.directory_device_change', lunchbox['permissions'])>=0) {
         var sim_card_id = $(this).attr('sim_card_id');
         device_Edit(sim_card_id);
         //}
@@ -86,7 +86,7 @@ function device_Edit(sim_card_id) {
         $('#sim_card_list tbody tr[sim_card_id='+sim_card_id+']').addClass('hover');
         $('#device_pop div.btn_ui[action=sim_delete]').show();
         /*
-         if($.inArray('system.directory_device_delete', lunchbox['permissions'])>=0) {
+         if($.inArray('main.directory_device_delete', lunchbox['permissions'])>=0) {
          $('#device_pop div.btn_ui[action=sim_delete]').show();
          } else {
          $('#device_pop div.btn_ui[action=sim_delete]').show();

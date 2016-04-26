@@ -8,7 +8,7 @@ $(document).ready(function() {
     $('#pop_user .header').on('click', '.close', function() { client_user_Cancel() });
 
     $('.objectsList').on('click', 'div.item', function() {
-        if($.inArray('system.client', lunchbox['permissions'])>=0){
+        if($.inArray('main.client', lunchbox['permissions'])>=0){
             var object_id = $(this).parents('[object_id]').attr('object_id');
             client_user_Cancel();
             client_user_Edit($(this).attr('client_user_id'), object_id);

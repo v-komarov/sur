@@ -40,7 +40,7 @@ $(document).ready(function(){
     $('.middleBlock').on('click', '.btn_ui', function(){
         var action = $(this).attr('action');
         if(action=='object_delete'){
-            if($.inArray('system.client', lunchbox['permissions'])>=0){
+            if($.inArray('main.client', lunchbox['permissions'])>=0){
                 if(confirm('Удалить объект?')){ client_object_Delete() }
             }
         }

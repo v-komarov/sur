@@ -36,7 +36,7 @@ $(document).ready(function() {
     });
 
     $('#payment_list tbody').on('click', 'tr.row', function(){
-        if($.inArray('system.client', lunchbox['permissions'])>=0) {
+        if($.inArray('main.client', lunchbox['permissions'])>=0) {
             payment_Edit( $(this).attr('payment_id') );
         }
     });

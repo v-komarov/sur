@@ -17,7 +17,7 @@ $(document).ready(function() {
         weaponCancel(); });
 
     $('#weapon_list tbody').on('click', '.row:not(.edit)', function() {
-        //if($.inArray('system.directory_weapon_change', lunchbox['permissions'])>=0) {
+        //if($.inArray('main.directory_weapon_change', lunchbox['permissions'])>=0) {
         var weapon_id = $(this).attr('weapon_id');
         weaponCancel();
         weaponEdit(weapon_id);
@@ -102,7 +102,7 @@ function weaponEdit(weapon_id) {
                         $('#pop_weapon select[name=weapon_type] option[value='+data[key]['weapon_type_id']+']').attr("selected", "selected");
                         $('#pop_weapon select[name=company] option[value='+data[key]['service_organization_id']+']').attr("selected", "selected");
                         $('#pop_weapon [name=comment]').val(data[key]['comment']);
-                        //if($.inArray('system.directory_weapon_delete', lunchbox['permissions'])>=0) {
+                        //if($.inArray('main.directory_weapon_delete', lunchbox['permissions'])>=0) {
                         $('#pop_weapon div.ui_remove').show();
                         //} else {
                         //$('#pop_weapon div.ui_remove').hide();

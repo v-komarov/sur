@@ -10,9 +10,12 @@ function contract_list_draw(block_id,data) {
                 var contract = client['contract_list'][contract_id];
                 var contract_string = get_contract_string(contract);
                 var object_item = '';
+
+                // Object list
+
                 for(var object_id in contract['object_list']) {
                     var object = contract['object_list'][object_id];
-                    object_item += '<div class="padding_5 right">объект: <b>'+object['name']+'</b>';
+                    object_item += '<div class="padding_5 right contract__object" status="'+object['status__label']+'">объект: <b>'+object['name']+'</b>';
                     if(object['console']){
                         object_item += ' ('+object['console']+', №'+object['console_number']+')';
                     }
@@ -21,6 +24,7 @@ function contract_list_draw(block_id,data) {
                     }
                     object_item += '</div><div class="clear" />';
                 }
+
                 var item = '<a class="item" href="/system/client/'+client_id+'/contract/'+contract_id+'/">' +
                     '<div class="left">' +
                     '<div class="service left">'+contract_string+'</div>' +
