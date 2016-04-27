@@ -16,7 +16,7 @@
 
 
 
-<div class="container col-md-12">
+<div class="container col-md-12" border="ok">
 
     <div class="row" style="padding-top:5px;">
 
@@ -25,31 +25,18 @@
             <table class="table table-condensed" style="margin-bottom:0;">
                 <thead>
                     <tr style="background-color: lightgray;">
-                        <th col="1" class="text-left" style="width:5%;">№</th>
-                        <th col="2" class="text-left" style="width:5%;">ID</th>
-                        <th col="3" class="text-left" style="width:10%;">Тип</th>
-                        <th col="4" class="text-left" style="width:30%;">Объект</th>
-                        <th col="5" class="text-left" style="width:30%;">Наименование</th>
-                        <th col="6" class="text-left" style="width:20%;">Телефон</th>
+                        <th col="1" class="text-left" style="width:10%;">№</th>
+                        <th col="2" class="text-left" style="width:5%;">Статус</th>
+                        <th col="3" class="text-left" style="width:25%;">Населенный пункт</th>
+                        <th col="4" class="text-left" style="width:25%;">Адрес</th>
+                        <th col="5" class="text-left" style="width:25%;">Наименование</th>
+                        <th col="6" class="text-left" style="width:10%;">Телефон</th>
                     </tr>
                 </thead>
             </table>
 
             <div  style="height:350px; overflow:scroll;">
                 <table group="1" class="table table-bordered table-condensed" >
-{% comment %}
-
-                    <thead hidden="hidden">
-                        <tr>
-                            <th col="1" style="width:5%;"></th>
-                            <th col="2" style="width:5%;"></th>
-                            <th col="3" style="width:10%;"></th>
-                            <th col="4" style="width:30%;"></th>
-                            <th col="5" style="width:30%;"></th>
-                            <th col="6" style="width:20%;"></th>
-                        </tr>
-                    </thead>
-{% endcomment %}
 
                     <tbody group="1">
                     </tbody>
@@ -61,6 +48,7 @@
         </div>
         <div part="right">
             {% include "monitor/operator/livepannel.html" %}
+            {% include "monitor/operator/phones.html" %}
         </div>
 
         <div class="col-md-2" style="border: solid 1px gray; border-radius:10px; padding:5px;">
@@ -73,7 +61,6 @@
             <button group="1" type="button" class="btn btn-default btn-xs btn-block" style="color: red">Нет теста ()</button>
             <button group="1" type="button" class="btn btn-default btn-xs btn-block" style="color: green">Обслуживание ()</button>
             <button group="1" type="button" class="btn btn-default btn-xs btn-block" style="color: blue">Не обслуживаемые ()</button>
-{#            <button group="1" type="button" class="btn btn-default btn-xs btn-block" style="color: red">Неисправности ()</button> #}
             <button group="1" type="button" class="btn btn-default btn-xs btn-block" style="color: red">Не охраняемые ()</button>
         </div>
     </div>
@@ -97,20 +84,7 @@
 
             <div  style="height:350px; overflow:scroll;">
                 <table group="2" class="table table-bordered table-condensed" >
-{% comment %}
-                    <thead hidden="hidden">
-                        <tr>
-                            <th class="text-center" style="width:5%;"></th>
-                            <th class="text-center" style="width:5%;"></th>
-                            <th class="text-center" style="width:5%;"></th>
-                            <th class="text-center" style="width:20%;"></th>
-                            <th class="text-center" style="width:30%;"></th>
-                            <th class="text-center" style="width:15%;"></th>
-                            <th class="text-center" style="width:20%;"></th>
-                        </tr>
-                    </thead>
-{% endcomment %}
-                    <tbody group="2">
+                    <tbody id="table2" group="2">
                     </tbody>
 
                 </table>
@@ -120,12 +94,12 @@
 
         </div>
         <div class="col-md-2" style="border: solid 1px gray; border-radius:10px; padding:5px;">
-            <button group="2" type="button" class="btn btn-default btn-xs btn-block" style="color: black">Все ()</button>
-            <button group="2" type="button" class="btn btn-default btn-xs btn-block" style="color: red">Тревожные ()</button>
-            <button group="2" type="button" class="btn btn-default btn-xs btn-block" style="color: black">На объекте ()</button>
-            <button group="2" type="button" class="btn btn-default btn-xs btn-block" style="color: red">Неисправности ()</button>
-            <button group="2" type="button" class="btn btn-default btn-xs btn-block" style="color: black">Система ()</button>
-            <button group="2" type="button" class="btn btn-default btn-xs btn-block" style="color: green">На обслуживании ()</button>
+            <button group="2" type="button" class="btn btn-default btn-xs btn-block" style="color: black">Все</button>
+            <button group="2" type="button" class="btn btn-default btn-xs btn-block" style="color: red">Тревожные</button>
+            <button group="2" type="button" class="btn btn-default btn-xs btn-block" style="color: black">На объекте</button>
+            <button group="2" type="button" class="btn btn-default btn-xs btn-block" style="color: red">Неисправности</button>
+            <button group="2" type="button" class="btn btn-default btn-xs btn-block" style="color: black">Система</button>
+            <button group="2" type="button" class="btn btn-default btn-xs btn-block" style="color: green">На обслуживании</button>
 
         </div>
     </div>
