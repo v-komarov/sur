@@ -46,20 +46,24 @@
                href="/monitor/operator/">ПЦН</a>
         {% endif %}
 
-        {% if perms.system.client %}
-            <a class="link {% if request.path|slice:':6' == '/post/' %}selected{% endif %}"
-               href="/post/checkpoint/">Посты</a>
-        {% endif %}
+        {% comment %}
+            {% if perms.system.client %}
+                <a class="link {% if request.path|slice:':6' == '/post/' %}selected{% endif %}"
+                   href="/post/checkpoint/">Посты</a>
+            {% endif %}
+        {% endcomment %}
 
         {% if perms.system.client %}
             <a class="link {% if request.path|slice:':6' == '/task/' %}selected{% endif %}"
                href="/task/">Заявки</a>
         {% endif %}
 
-        {% if perms.system.client %}
-            <a class="link {% if request.path|slice:':16' == '/system/finance/' %}selected{% endif %}"
-               href="/system/finance/">Финансы</a>
-        {% endif %}
+        {% comment %}
+            {% if perms.system.client %}
+                <a class="link {% if request.path|slice:':16' == '/system/finance/' %}selected{% endif %}"
+                   href="/system/finance/">Финансы</a>
+            {% endif %}
+        {% endcomment %}
 
         {% if perms.system.client %}
             <a class="link {% if request.path|slice:':18' == '/system/analytics/' %}selected{% endif %}"
