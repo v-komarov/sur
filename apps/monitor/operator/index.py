@@ -21,13 +21,3 @@ def index(request, client_id=None):
 
 
 
-
-def test(request, client_id=None):
-    title = 'Монитор событий'
-    event_filter = [
-        {'name':'all','description':'Все'},
-        {'name':'alarm','description':'Тревожные'},
-        {'name':'object','description':'На объекте'}
-    ]
-
-    return render_to_response('monitor/operator/test.html', locals(), RequestContext(request))
