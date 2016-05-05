@@ -10,7 +10,7 @@ from django.shortcuts import render_to_response
 
 
 
-def index(request, client_id=None):
+def main(request, client_id=None):
     if request.user.has_perm('sentry.monitor'):
 
 
