@@ -6,6 +6,7 @@ import settings_local
 PROJECT_PATH = os.path.abspath(os.path.dirname(__file__))
 PROJECT_PATH = str(os.path.split(PROJECT_PATH)[0])
 
+
 TEMPLATE_DEBUG = settings_local.DEBUG
 DEBUG = settings_local.DEBUG
 
@@ -66,7 +67,7 @@ ROOT_URL = settings_local.ROOT_URL
 MEDIA_ROOT = os.path.join(PROJECT_PATH, 'media')
 MEDIA_URL = ROOT_URL+'media/'
 STATIC_ROOT = os.path.join(PROJECT_PATH, 'static')
-STATIC_URL = ROOT_URL+'static/' # костыль для static
+STATIC_URL = ROOT_URL # костыль для static
 
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
@@ -141,7 +142,7 @@ INSTALLED_APPS = (
     'apps.post',
     'apps.system',
     'apps.task',
-#    'apps.monitor',
+    'apps.monitor',
 #    'apps.parse',
 #    'apps.profile',
 #    'captcha'
