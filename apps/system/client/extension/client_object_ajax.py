@@ -218,11 +218,13 @@ def update(request, data=None):
     return data
 
 
-def delete(request,data=None):
+def delete(request, data=None):
+    # Not work!!!
     object = db_sentry.client_object.objects.get(id=int(request.GET['service_id']))
-    object.is_active = 0
-    object.save()
+    #object.is_active = 0
+    #object.save()
     object.check_bind_status()
+
 
     data['answer'] = 'done'
     return data

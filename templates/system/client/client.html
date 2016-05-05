@@ -48,6 +48,12 @@
                             <input name="kpp" style="margin: 0; display: inline-block; float: right;" type="text" value="{{ client_set.kpp|default:"" }}">
                         </div>
                     </td></tr>
+                <tr class="row">
+                    <td class="padding_9 text_right">ОГРН</td>
+                    <td class="cell secondary"><input name="ogrn" class="wide" size="40" type="text" value="{{ client_set.ogrn }}"></td></tr>
+                <tr class="row">
+                    <td class="padding_9 text_right">ОГРНИП</td>
+                    <td class="cell secondary"><input name="ogrnip" class="wide" size="40" type="text" value="{{ client_set.ogrnip }}"></td></tr>
 
                 <tr class="row" id="pay">
                     <td class="padding_5 text_right">Баланс</td>
@@ -147,12 +153,6 @@
                 <tr class="row">
                     <td class="padding_9 text_right">Расчетный счет</td>
                     <td class="cell secondary"><input name="bank_account" class="wide" size="40" type="text" value="{{ client_set.bank_account }}"></td></tr>
-                <tr class="row">
-                    <td class="padding_9 text_right">ОГРН</td>
-                    <td class="cell secondary"><input name="ogrn" class="wide" size="40" type="text" value="{{ client_set.ogrn }}"></td></tr>
-                <tr class="row">
-                    <td class="padding_9 text_right">ОГРНИП</td>
-                    <td class="cell secondary"><input name="ogrnip" class="wide" size="40" type="text" value="{{ client_set.ogrnip }}"></td></tr>
 
                 {% if perms.system.client_change %}
                     <tr class="row white"><td colspan="2">

@@ -22,7 +22,7 @@ $(document).ready(function() {
     });
 
     $('#company_list tbody').on('click', '.row:not(.edit)', function() {
-        if($.inArray('main.client', lunchbox['permissions'])>=0) {
+        if(8>0) {
             var company_id = $(this).attr('company_id');
             service_organizationCancel();
             service_organization_Edit(company_id);
@@ -172,7 +172,7 @@ function service_organization_Edit(company_id) {
                     }
                     $('#pop_company [name=bank]').val(organization['bank__name']);
                     $('#pop_company [name=bank]').attr('item_id',organization['bank_id']);
-                    if($.inArray('main.client', lunchbox['permissions'])>=0) {
+                    if(8>0) {
                         $('#pop_company div.ui_remove').show();
                     } else {
                         $('#pop_company div.ui_remove').hide();

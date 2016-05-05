@@ -117,7 +117,7 @@ function event_Edit(contract_id,object_id,event_type,event_id) {
         .removeAttr('event_id');
     //if($.inArray('main.'+event_type, lunchbox['permissions'])>=0){
     /*
-     if($.inArray('main.client', lunchbox['permissions'])>=0){
+     if(8>0){
      */
     if(!!contract_id){
         $('#event_pop').attr('contract_id',contract_id);

@@ -66,7 +66,7 @@ function object_event_Edit(event_type,event_id){
     $('#event_pop').removeAttr('event_id');
     $('#event_pop textarea').val('');
     //if($.inArray('main.'+event_type, lunchbox['permissions'])>=0){
-    if($.inArray('main.client', lunchbox['permissions'])>=0){
+    //if(8>0){
         var tr = $('tr[event_type='+event_type+']');
         var event_type_id = tr.attr('event_type_id');
         $('#event_pop').attr('event_type_id',event_type_id);
@@ -111,9 +111,9 @@ function object_event_Edit(event_type,event_id){
             $('#event_pop div[action=event_delete]').hide();
         }
         popMenuPosition('#event_pop','single');
-    } else {
-        popMessage('Редактирование запрещено','red');
-    }
+    //} else {
+        //popMessage('Редактирование запрещено','red');
+    //}
 }
 
 

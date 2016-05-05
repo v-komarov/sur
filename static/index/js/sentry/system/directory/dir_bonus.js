@@ -22,11 +22,11 @@ $(document).ready(function() {
     });
 
     $('#bonus_list tbody').on('click', '.row:not(.edit)', function() {
-        if($.inArray('main.client', lunchbox['permissions'])>=0) {
+        //if(8>0) {
             var bonus_id = $(this).attr('bonus_id');
             bonus_Cancel();
             bonus_Edit(bonus_id);
-        }
+        //}
     });
 
     $('.tableInfo thead input').bind('change keyup', function( event ){
@@ -83,9 +83,9 @@ function bonus_Edit(bonus_id){
                         $('#bonus_pop select[name=sentry_user]').val(data['bonus']['sentry_user_id']);
                         console.log(data['bonus']['sentry_user_id']);
                     }
-                    if($.inArray('main.client', lunchbox['permissions'])>=0) {
+                    //if(8>0) {
                         $('#bonus_pop .btn_ui[action=bonus_delete]').show();
-                    }
+                    //}
                     popMenuPosition('#bonus_pop','single');
                 }
             }

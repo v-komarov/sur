@@ -73,9 +73,9 @@ $(document).ready(function(){
             cost_Edit( $(this).parents('#contract').attr('service_id'), $(this).parents('#contract').attr('object_cost_id') );
         }
         else if(action=='object_delete'){
-            if($.inArray('main.client', lunchbox['permissions'])>=0){
+            //if(8>0){
                 if(confirm('Удалить объект?')){ client_object_Delete() }
-            }
+            //}
         }
         else if(action=='device_install_add'){
             device_install_Edit($(this).parents('[object_id]').attr('object_id'));

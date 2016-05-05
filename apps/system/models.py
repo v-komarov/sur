@@ -806,6 +806,7 @@ class client_bind(models.Model):
     charge_month_day = models.PositiveSmallIntegerField(null=True, blank=True, help_text='День оплаты')
     charge_month = models.ForeignKey(dir_charge_month, null=True, blank=True, help_text='Месяц оплаты')
     is_active = models.SmallIntegerField(default=1)
+    dir_tag = models.ManyToManyField(dir_tag)
     dir_service_subtype = models.ManyToManyField(dir_service_subtype)
     class Meta:
         db_table = 'client_bind'
@@ -894,16 +895,21 @@ class client_bind(models.Model):
 
 
             if 'client_object_connect' in workflow_list:
-                if ovd_status == 'connected':
+                if ovd_status == 'connected' and device_install:
+                    status = 'connected'
+                elif ovd_status == 'connected':
                     status = 'connected'
                 elif ovd_status == 'disconnected':
                     status = 'disconnected'
-            elif 'client_object_disconnect' in workflow_list and ovd_status=='connected' and device_install:
+
+            if 'client_object_disconnect' in workflow_list:
                 status = 'disconnected'
-            elif 'client_object_disconnect' in workflow_list and device_install:
-                status = 'blue'
-            elif 'client_object_disconnect' in workflow_list and ovd_status=='disconnected' and not device_install:
-                status = 'white'
+                if ovd_status=='connected':
+                    status = 'disconnected'
+                elif ovd_status=='disconnected' and device_install:
+                    status = 'blue'
+                elif ovd_status=='disconnected' and not device_install:
+                    status = 'white'
 
 
             cost = self.client_bind_cost_set.filter(

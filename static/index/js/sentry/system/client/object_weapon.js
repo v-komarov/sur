@@ -14,7 +14,7 @@ $(document).ready(function() {
     });
 
     $('#weapon_list tbody').on('click', 'tr.row', function() {
-        if($.inArray('main.client', lunchbox['permissions'])>=0) {
+        if(8>0) {
             console.log('edit');
             var service_weapon_id = $(this).attr('service_weapon_id');
             weaponEdit(service_weapon_id);
@@ -93,7 +93,7 @@ function weaponEdit(service_weapon_id) {
         var weapon_id = tr.attr('weapon_id');
         var comment = tr.find('td[name=comment]').text();
         $('div#pop_weapon select[name=weapon] [value='+weapon_id+']').attr('selected','selected');
-        if($.inArray('main.client', lunchbox['permissions'])>=0) {
+        if(8>0) {
             $('#pop_weapon span.btn_ui[action=delete]').show();
         } else {
             $('#pop_weapon span.btn_ui[action=delete]').hide();

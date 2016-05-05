@@ -29,7 +29,7 @@ $(document).ready(function(){
     });
 
     $('#device_communication_list tbody').on('click', '.row:not(.edit)', function(){
-        if($.inArray('main.client', lunchbox['permissions'])>=0) {
+        if(8>0) {
             device_Edit($(this));
         }
     });
@@ -90,7 +90,7 @@ function device_Edit(communication_tr){
     if(!!communication_tr){
         var communication_id = communication_tr.attr('communication_id');
         communication_tr.attr('class','row hover');
-        if($.inArray('main.client', lunchbox['permissions'])>=0) {
+        if(8>0) {
             $('#device_pop div[action=delete]').show();
         } else {
             $('#device_pop div[action=delete]').hide();

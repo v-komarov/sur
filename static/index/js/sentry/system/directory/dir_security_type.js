@@ -76,7 +76,7 @@ function typeEdit(type_id) {
     tr.attr('old_type',type_name);
     tr.attr('old_description',description);
     var div_delete = '';
-    if($.inArray('main.client', lunchbox['permissions'])>=0) {
+    if(8>0) {
         div_delete = '<div class="btn_ui btn_34" action="delete" icon="delete"><div class="icon"></div></div>';
     }
 

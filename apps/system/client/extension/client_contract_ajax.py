@@ -83,8 +83,19 @@ def update(request, data=None):
 
 def delete(request, data=None):
     object = db_sentry.client_object.objects.get(id=int(request.GET['object']))
-    object.is_active = 0
-    object.save()
+    bind = db_sentry.client_bind.objects.filter(
+        client_contract__client_id = int(request.GET['client']),
+        client_object_id = object.id,
+        is_active = 1
+    ).first()
+    data['bind'] = bind.id
+
+    if bind.status.label == 'white' or bind.status.label == 'new':
+        bind.is_active = 0
+        bind.save()
+    else:
+        data['error'] = 'Нельзя удалить этот объект'
+
     '''
     for service in db_sentry.client_object_service.objects.filter(contract_id=service_set.id):
         service.is_active = 0
@@ -95,6 +106,7 @@ def delete(request, data=None):
     sentry_log.create(request=request,client_object_id=object_set.id,log_type='object_delete')
     '''
     #data['url'] = '/system/client/'+str(contract.client.id)+'/contract/'
+
     return data
 
 

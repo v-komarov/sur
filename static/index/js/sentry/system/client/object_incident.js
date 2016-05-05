@@ -29,7 +29,7 @@ $(document).ready(function() {
     });
 
     $(".tableInfo tbody.show").on('click', 'tr.row', function() {
-        if($.inArray('main.client', lunchbox['permissions'])>=0) {
+        if(8>0) {
             incident_Edit( $(this).attr('incident_id') );
         }
     });

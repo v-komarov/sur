@@ -504,6 +504,15 @@ table.events tr {
     color: #000;
     background-color: #ffff00;
 }
+*:hover .service_string[status=white],
+.service_string[status=white],
+*:hover .service_string[status=white],
+.service_string[status=white],
+.contract__object[status=white] {
+    color: #000;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px #0090ff inset;
+}
 *:hover .service_string[status=connecting],
 .service_string[status=connecting] {
     color: #000;

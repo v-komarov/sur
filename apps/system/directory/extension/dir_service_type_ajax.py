@@ -81,9 +81,8 @@ def subtype_create(request,data):
 
 def subtype_delete(request,data):
     service_subtype_id = int(request.POST['service_subtype_id'])
-    if db_sentry.client_object_service_dir_service_subtype.objects \
-            .filter(dir_service_subtype=service_subtype_id) \
-            .exists():
+
+    if db_sentry.client_bind.objects.filter(dir_service_subtype=service_subtype_id).exists():
         data['error'] = 'Этот подвид услуг используется'.decode('utf-8')
     else:
         db_sentry.dir_service_subtype.objects.get(id=service_subtype_id).delete()
@@ -129,12 +128,12 @@ def update(request,data):
 
 
 def delete(request,data):
+    """
     if db_sentry.client_object_service.objects \
             .filter(service_type=int(request.GET['service_type_id'])) \
             .exists():
         data['error'] = 'Этот вид услуг используется'.decode('utf-8')
     else:
-        db_sentry.dir_service_type.objects \
-            .get(id=int(request.GET['service_type_id'])) \
-            .delete()
+    """
+    db_sentry.dir_service_type.objects.filter(id=int(request.GET['service_type_id'])).update(is_active=0)
     return data

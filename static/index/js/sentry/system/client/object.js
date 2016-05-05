@@ -40,9 +40,9 @@ $(document).ready(function(){
     $('.middleBlock').on('click', '.btn_ui', function(){
         var action = $(this).attr('action');
         if(action=='object_delete'){
-            if($.inArray('main.client', lunchbox['permissions'])>=0){
+            //if(8>0){
                 if(confirm('Удалить объект?')){ client_object_Delete() }
-            }
+            //}
         }
         else if(action=='object_reset'){
             client_object_Reset();

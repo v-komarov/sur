@@ -157,9 +157,15 @@ function console_number_interval_Set(number) {
 
 
 function object_Delete(object_id) {
-    $.ajax({ url:'/system/client/object/ajax/delete/?object='+object_id, type:'get', dataType:'json',
+    var ajax_array = {};
+    ajax_array['client'] = client_id;
+    ajax_array['object'] = object_id;
+    $.ajax({ url:'/system/client/object/ajax/delete/', type:'get', dataType:'json', data:ajax_array,
         success: function(data) {
-            contract_Reset();
+            if(data['error']!=null) alert(data['error']);
+            else {
+                contract_Reset();
+            }
         }
     });
 }
@@ -321,7 +327,7 @@ function object_Tag(action, object_id, data) {
 
 
 function service_subtype(action, data) {
-    //console.log('service_subtype:',action);
+    console.log('service_subtype:',action);
     $('#object_pop select#subtypes').show();
     $('#object_pop [action=subtype_add]').show();
     if(action=='add') {

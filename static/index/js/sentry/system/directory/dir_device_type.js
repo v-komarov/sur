@@ -31,7 +31,7 @@ $(document).ready(function() {
     $('#device_pop .header').on('click', '.close', function() { device_type_Cancel() });
 
     $('.tableInfo tbody').on('click', '.row:not(.edit)', function() {
-        if($.inArray('main.client', lunchbox['permissions'])>=0) {
+        if(8>0) {
             device_type_Edit($(this));
         }
     });
@@ -86,7 +86,7 @@ function device_type_Edit(device_type_tr) {
     if(!!device_type_tr){
         var device_type_id = device_type_tr.attr('device_type_id');
         device_type_tr.attr('class','row hover');
-        if($.inArray('main.client', lunchbox['permissions'])>=0) {
+        if(8>0) {
             $('#device_pop div[action=delete]').show();
         } else {
             $('#device_pop div[action=delete]').hide();

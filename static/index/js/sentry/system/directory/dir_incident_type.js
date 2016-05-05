@@ -18,7 +18,7 @@ $(document).ready(function() {
     });
 
     $('.tableInfo tbody').on('click', '.row:not(.edit)', function() {
-        if($.inArray('main.client', lunchbox['permissions'])>=0) {
+        if(8>0) {
             var incident_type_id = $(this).attr('incident_type_id');
             incident_typeCancel();
             incident_typeEdit(incident_type_id);
@@ -73,7 +73,7 @@ function incident_typeEdit(incident_type_id) {
     tr.attr('class','row edit').find('td').removeClass('cell');
     tr.attr('old_incident_type',incident_type_name);
     var div_delete = '';
-    if($.inArray('main.client', lunchbox['permissions'])>=0) {
+    if(8>0) {
         div_delete = '<div class="btn_ui btn_34" action="delete" icon="delete"><div class="icon"></div></div>';
     }
     var td_eq1 = '<table style="width: 100%"><tr>' +

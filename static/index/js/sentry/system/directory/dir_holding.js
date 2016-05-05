@@ -18,7 +18,7 @@ $(document).ready(function() {
     });
 
     $('.tableInfo tbody').on('click', '.row:not(.edit)', function() {
-        if($.inArray('main.client', lunchbox['permissions'])>=0) {
+        if(8>0) {
             var holding_id = $(this).attr('holding_id');
             holdingCancel();
             holding_Edit(holding_id);
@@ -74,7 +74,7 @@ function holding_Edit(holding_id) {
     tr.attr('class','row edit').find('td').removeClass('cell');
     tr.attr('old_holding',holding_name);
     var div_delete = '';
-    if($.inArray('main.client', lunchbox['permissions'])>=0) {
+    if(8>0) {
         div_delete = '<div class="btn_ui btn_34" action="delete" icon="delete"><div class="icon"></div></div>';
     }
     var td_eq1 = '<table style="width: 100%"><tr>' +

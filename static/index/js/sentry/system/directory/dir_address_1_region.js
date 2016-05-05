@@ -24,13 +24,13 @@ $(document).ready(function() {
     });
 
     $('.tableInfo tbody').on('click', '.row:not(.edit)', function() {
-        if($.inArray('main.client', lunchbox['permissions'])>=0){
+        //if(8>0){
             var region_id = $(this).attr('region_id');
             region_Edit(region_id);
-        }
-        else {
+        //}
+        //else {
             console.log('no permissions');
-        }
+        //}
     });
 
     $(".tableInfo select[name=region]").on('change', function(){
@@ -71,9 +71,9 @@ function region_Edit(region_id) {
     tr.attr('class','row edit').find('td').removeClass('cell');
     tr.attr('region_old',region_name);
     var div_delete = '';
-    if($.inArray('main.client', lunchbox['permissions'])>=0) {
+    //if(8>0) {
         div_delete = '<div class="btn_ui btn_34" action="region_delete" icon="delete"><div class="icon"></div></div>';
-    }
+    //}
     var td_eq1 = '<table style="width: 100%"><tr>' +
         '<td><input style="margin: 5px 0 0 5px" type="text" value="'+region_name+'"></td>' +
         '<td><div class="btn_ui btn_34" action="region_update" icon="save"><div class="icon"></div></div>' +

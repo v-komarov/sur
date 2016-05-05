@@ -53,8 +53,8 @@ function contract_Reset(){
                     var object_item = $('#object_sample').clone();
                     object_item.removeAttr('id').removeClass('hide').attr('object_id',object_id).attr('bind_id',object['bind']);
 
-                    for(object_key in object){
-                        object_item.find('[name='+object_key+']').attr('status',object[object_key]['status']);
+                    for(var object_key in object){
+                        //object_item.find('[name='+object_key+']').attr('status', object[object_key]['status']);
                         if(object[object_key+'__name']){
                             object_item.find('[name='+object_key+']').html(object[object_key+'__name']);
                         } else {

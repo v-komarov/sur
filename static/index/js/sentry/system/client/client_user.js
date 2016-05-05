@@ -8,11 +8,11 @@ $(document).ready(function() {
     $('#pop_user .header').on('click', '.close', function() { client_user_Cancel() });
 
     $('.objectsList').on('click', 'div.item', function() {
-        if($.inArray('main.client', lunchbox['permissions'])>=0){
+        //if(8>0){
             var object_id = $(this).parents('[object_id]').attr('object_id');
             client_user_Cancel();
             client_user_Edit($(this).attr('client_user_id'), object_id);
-        }
+        //}
     });
 
     $("#client_user_form").on('click', '.ui_remove', function() {
