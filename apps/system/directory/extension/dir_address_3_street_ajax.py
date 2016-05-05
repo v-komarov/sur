@@ -49,7 +49,7 @@ def add(request, data):
 
 def save(request, data):
     if db_sentry.dir_address_3_street.objects.filter(
-            locality_id = int(request.GET['locality_id']),
+            locality_id = int(request.POST['locality_id']),
             name = request.POST['street_name']) \
             .exists():
         data['error'] = 'В этом населенном пункте уже есть такая улица'.decode('utf-8')
