@@ -5,7 +5,6 @@ from apps.system import models as system_models
 
 
 
-
 #### Расшифровка зон
 class dev_zone_info(models.Model):
     device_object = models.ForeignKey(system_models.client_bind) #
@@ -20,21 +19,6 @@ class dev_result_list_start(models.Model):
 
 
 
-
-#### Четырех шаговая обработка тревоги диспетчером
-class dev_status_evt(models.Model):
-    evt = models.OneToOneField(dev_evt_log) #
-    comment = models.CharField(max_length=200) #
-    operator_1_action = models.ForeignKey(dev_result_list_start) #
-    operator_1_datetime = models.DateTimeField() #
-    operator_2_action = models.ForeignKey(system_models.dir_security_squad) #
-    operator_2_datetime = models.DateTimeField() #
-    operator_3_action = models.ForeignKey(system_models.dir_security_squad) #
-    operator_3_datetime = models.DateTimeField() #
-    operator_4_action = models.ForeignKey(dev_result_list_end) #
-    operator_4_datetime = models.DateTimeField() #
-
-
 #### Лог событий с оборудования
 class dev_evt_log(models.Model):
     datetime_evt = models.DateTimeField() #
@@ -45,9 +29,27 @@ class dev_evt_log(models.Model):
     device_type = models.ForeignKey(system_models.dir_device_type) #
 
 
+
 ### Справочник окончательно принятого решения на тревожное событие
 class dev_result_list_end(models.Model):
     name = models.CharField(max_length=50) #
+
+
+
+
+#### Четырех шаговая обработка тревоги диспетчером
+class dev_status_evt(models.Model):
+    evt = models.OneToOneField(dev_evt_log) #
+    comment = models.CharField(max_length=200) #
+    operator_1_action = models.ForeignKey(dev_result_list_start) #
+    operator_1_datetime = models.DateTimeField() #
+#    operator_2_action = models.ForeignKey(system_models.dir_security_squad) #
+    operator_2_datetime = models.DateTimeField() #
+#    operator_3_action = models.ForeignKey(system_models.dir_security_squad) #
+    operator_3_datetime = models.DateTimeField() #
+    operator_4_action = models.ForeignKey(dev_result_list_end) #
+    operator_4_datetime = models.DateTimeField() #
+
 
 
 
@@ -63,7 +65,7 @@ class dev_data_adds(models.Model):
 class dev_evt_list(models.Model):
     alert = models.BooleanField() #
     name = models.CharField(max_length=100) #
-    device_type = models.ForeinKey(system_models.dir_device_type) #
+    device_type = models.ForeignKey(system_models.dir_device_type) #
     evt_id = models.IntegerField() #
 
 
