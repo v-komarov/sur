@@ -1,6 +1,7 @@
 #!coding:utf8
 
 from django.db import models
+from django.contrib.postgres.fields import JSONField
 from apps.system import models as system_models
 
 
@@ -23,8 +24,8 @@ class dev_result_list_start(models.Model):
 class dev_evt_log(models.Model):
     datetime_evt = models.DateTimeField() #
     device_object = models.ForeignKey(system_models.client_bind) #
-    stub = models.IntegerField() #
-    zone = models.IntegerField() #
+    stub = models.IntegerField() # Шлейф
+    zone = models.IntegerField() # Зона
     message_id = models.IntegerField() #
     device_type = models.ForeignKey(system_models.dir_device_type) #
 
@@ -40,6 +41,9 @@ class dev_result_list_end(models.Model):
 #### Четырех шаговая обработка тревоги диспетчером
 class dev_status_evt(models.Model):
     evt = models.OneToOneField(dev_evt_log) #
+    data = JSONField(default={})
+
+    """
     comment = models.CharField(max_length=200) #
     operator_1_action = models.ForeignKey(dev_result_list_start) #
     operator_1_datetime = models.DateTimeField() #
@@ -49,7 +53,7 @@ class dev_status_evt(models.Model):
     operator_3_datetime = models.DateTimeField() #
     operator_4_action = models.ForeignKey(dev_result_list_end) #
     operator_4_datetime = models.DateTimeField() #
-
+    """
 
 
 
