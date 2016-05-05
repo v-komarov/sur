@@ -144,8 +144,7 @@ INSTALLED_APPS = (
 #    'apps.monitor',
 #    'apps.parse',
 #    'apps.profile',
-#    'captcha',
-    'django_extensions'
+#    'captcha'
 )
 
 
