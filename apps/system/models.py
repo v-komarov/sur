@@ -1032,7 +1032,7 @@ class client_bind_post(models.Model):
 class client_object_dir_device(models.Model):
     object = models.ForeignKey(client_object)
     device = models.ForeignKey(dir_device)
-    priority = models.CharField(max_length=32, default='secondary', blank=True)
+    priority = models.CharField(max_length=32, default='primary', blank=True)
     install_date = models.DateTimeField()
     install_user = models.ForeignKey(sentry_user, related_name='client_object_dir_device_install_user')
     uninstall_date = models.DateTimeField(null=True, blank=True)
