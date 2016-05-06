@@ -1,17 +1,15 @@
 $(document).ready(function() {
 
 
-    window.num_p = '';
-
 
     $("button[group=1]:first").addClass("active");
     $("button[group=2]:first").addClass("active");
 
 
-    $("button").on("click",SwitchButton);
+    //$("button").on("click",SwitchButton);
 
-    StartData();
-    setInterval('UpdateData();',5000);
+    //StartData();
+    //setInterval('UpdateData();',5000);
 
 
 });
@@ -99,27 +97,6 @@ function ClickRow(e) {
 
 
 
-function ShowRightPart(e) {
-    var left = $("div[part=left]").removeClass("col-md-10").addClass("col-md-5");
-    var right = $("div[part=right]").addClass("col-md-5");
-    $("div.livepannel").removeAttr("hidden");
-    $("th[col=2]").hide();
-    $("th[col=3]").hide();
-    $("th[col=4]").hide();
-    $("th[col=6]").hide();
-
-    $("tbody[group=1]").children("tr").each(function( index ) {
-
-        $(this).children("td").eq(1).hide();
-        $(this).children("td").eq(2).hide();
-        $(this).children("td").eq(3).hide();
-        $(this).children("td").eq(5).hide();
-
-      //console.log( index + ": " + $( this ) );
-    });
-
-
-}
 
 
 
@@ -128,119 +105,10 @@ function ShowRightPart(e) {
 
 
 
-function HideRightPart(e) {
-    var left = $("div[part=left]").removeClass("col-md-5").addClass("col-md-10");
-    var right = $("div[part=right]").removeClass("col-md-5");
-    $("div.livepannel").attr("hidden","hidden");
-    $("div.phones").attr("hidden","hidden");
-    $("th[col=2]").show();
-    $("th[col=3]").show();
-    $("th[col=4]").show();
-    $("th[col=6]").show();
-
-    $("tbody[group=1]").children("tr").each(function( index ) {
-
-        $(this).children("td").eq(1).show();
-        $(this).children("td").eq(2).show();
-        $(this).children("td").eq(3).show();
-        $(this).children("td").eq(5).show();
-
-      //console.log( index + ": " + $( this ) );
-    });
-
-
-}
 
 
 
 
-
-function ShowPhones(e) {
-
-    var left = $("div[part=left]").removeClass("col-md-10").addClass("col-md-5");
-    var right = $("div[part=right]").addClass("col-md-5");
-    $("div.phones").removeAttr("hidden");
-    $("th[col=2]").hide();
-    $("th[col=3]").hide();
-    $("th[col=4]").hide();
-    $("th[col=6]").hide();
-
-    $("tbody[group=1]").children("tr").each(function( index ) {
-
-        $(this).children("td").eq(1).hide();
-        $(this).children("td").eq(2).hide();
-        $(this).children("td").eq(3).hide();
-        $(this).children("td").eq(5).hide();
-
-      //console.log( index + ": " + $( this ) );
-    });
-
-
-    // Наполнение таблицы телефонов и данными объекта
-    var jqxhr = $.getJSON("/monitor/operator/getdata?phone="+window.num_p,
-    function(data) {
-        $(".phones .container .row").children("p").eq(0).children("b").text(data['num_p']);
-        $(".phones .container .row").children("p").eq(1).children("b").text(data['name']);
-
-        var phones = data['phones'];
-
-        $("tr[group=3]").remove();
-        var t = "";
-        for (item in phones) {
-            ob = phones[item];
-            t = t + "<tr group='3'>"
-            +"<td width='35%'>"+ob['s']+"</td>"
-            +"<td width='35%'>"+ob['f']+"</td>"
-            +"<td width='30%'>"+ob['p']+"</td></tr>";
-        }
-
-        $("tbody[group=3]").append(t);
-
-
-    })
-
-}
-
-
-
-
-
-function HidePhones(e) {
-    var left = $("div[part=left]").removeClass("col-md-5").addClass("col-md-10");
-    var right = $("div[part=right]").removeClass("col-md-5");
-    $("div.phones").attr("hidden","hidden");
-    $("div.livepannel").attr("hidden","hidden");
-    $("th[col=2]").show();
-    $("th[col=3]").show();
-    $("th[col=4]").show();
-    $("th[col=6]").show();
-
-    $("tbody[group=1]").children("tr").each(function( index ) {
-
-        $(this).children("td").eq(1).show();
-        $(this).children("td").eq(2).show();
-        $(this).children("td").eq(3).show();
-        $(this).children("td").eq(5).show();
-
-      //console.log( index + ": " + $( this ) );
-    });
-
-
-}
-
-
-
-
-
-
-function StartData() {
-    var jqxhr = $.getJSON("/monitor/operator/getdata?start=ok",
-    function(data) {
-        //console.log(data);
-
-        ShowStartData(data);
-    })
-}
 
 
 
@@ -253,81 +121,6 @@ function UpdateData() {
         //console.log(data);
         ShowData(data);
     })
-}
-
-
-
-
-
-
-
-// Первоначальная загрузка данных в таблици
-function ShowStartData(data) {
-
-
-    var table1 = data['tablegroup1'];
-    var table2 = data['tablegroup2'];
-
-    // таблица 1
-
-    $("tr[group=1]").remove();
-    var t = "";
-    for (item in table1) {
-        ob = table1[item];
-        t = t + "<tr group='1'>"
-        +"<td width='10%'>"+ob['col1']+"</td>"
-        +"<td width='5%'>"+ob['col2']+"</td>"
-        +"<td width='25%'>"+ob['col3']+"</td>"
-        +"<td width='25%'>"+ob['col4']+"</td>"
-        +"<td width='25%'>"+ob['col5']+"</td>"
-        +"<td width='10%'>"+ob['col6']+"</td></tr>";
-    }
-
-    $("tbody[group=1]").append(t);
-
-
-
-    // Таблица 2
-
-    $("tr[group=2]").remove();
-
-
-    for (item in table2) {
-        ob = table2[item];
-
-        var background = "style=\"background-color:#B0C4DE;\" ";
-
-        if (ob['action'] == 'red') { background = "style=\"background-color:#FA8072;\" "; }
-        if (ob['action'] == 'yellow') { background = "style=\"background-color:#F0E68C;\" "; }
-        if (ob['action'] == 'green') { background = "style=\"background-color:#90EE90;\" "; }
-
-        var t = "<tr group='2' "
-
-        +"row_id=\""+ob["id"]+"\" "
-
-        +"action=\""+ob["action"]+"\" "
-
-        +background
-        +"><td width='10%'>"
-        +ob['col1']+"</td><td width='5%'>"
-        +ob['col2']+"</td><td width='10%'>"
-        +ob['col3']+"</td><td width='25%'>"
-        +ob['col4']+"</td><td width='30%'>"
-        +ob['col5']+"</td><td width='5%'>"
-        +ob['col6']+"</td><td width='5%'>"
-        +ob['col7']+"</td></tr>";
-
-        console.log(t);
-
-        var tr = $(t);
-
-        $("tbody[group=2]").prepend(t);
-    }
-
-
-    $("tr").on("click",ClickRow);
-
-
 }
 
 

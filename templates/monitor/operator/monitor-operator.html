@@ -1,0 +1,122 @@
+{% extends "index.html" %}
+{% block content %}
+
+
+
+
+    <link href="{{ STATIC_URL }}monitor/css/monitor.css" type="text/css" rel="stylesheet">
+
+    {# bootstrap #}
+    <link href="{{ STATIC_URL }}monitor/css/bootstrap.css" type="text/css" rel="stylesheet">
+    <script type="text/javascript" src="{{ STATIC_URL }}monitor/js/bootstrap.js"></script>
+
+    <link href="{{ STATIC_URL }}monitor/css/monitorplus.css" type="text/css" rel="stylesheet">
+
+    <script type="text/javascript" src="{{ STATIC_URL }}monitor/js/operator/monitor.js"></script>
+
+
+
+<div class="container col-md-12" border="ok">
+
+
+
+    {# Список объектов #}
+    <div class="row" style="padding-top:5px;">
+
+         <div class="col-md-6" style="padding-left:0;">
+
+            {# Строка меню #}
+            <div class="row" style="padding-left:20px; padding-bottom:5px;">
+                <ul class="nav nav-pills" group="1">
+                  <li role="presentation" class="active"><a href="#">Все</a></li>
+                  <li role="presentation"><a href="#">Охраняемые</a></li>
+                  <li role="presentation"><a href="#">Не под<br>охраной</a></li>
+                  <li role="presentation"><a href="#">Тревожные</a></li>
+                  <li role="presentation"><a href="#">Нет теста</a></li>
+                  <li role="presentation"><a href="#">Обслуживание</a></li>
+                </ul>
+            </div>
+
+
+            {# Заголовок таблицы #}
+            <div class="row" style="background-color:rgb(24,85,116);color:rgb(255,255,255);padding-bottom:5px;margin-right:10px;">
+                <div class="col-md-4 text-center">Населенный пункт</div>
+                <div class="col-md-4 text-center">Адрес</div>
+                <div class="col-md-4 text-center">Объект</div>
+            </div>
+
+            <div  style="height:320px; overflow:scroll;">
+                <table group="1" class="table table-bordered table-condensed" >
+
+                    <tbody group="1">
+                    </tbody>
+
+
+                </table>
+            </div>
+
+
+
+
+
+
+
+         </div>
+
+
+
+        <div class="col-md-6" style="padding-left:0">
+
+          {% include "monitor/operator/additions.html" %}
+
+        </div>
+
+
+
+    </div>
+
+
+
+
+
+
+    {# Строка меню #}
+    <div class="row" style="padding-top:5px; padding-left:5px;">
+        <ul class="nav nav-pills" group="2">
+          <li role="presentation" class="active"><a href="#">Все</a></li>
+          <li role="presentation"><a href="#">Тревоги</a></li>
+          <li role="presentation"><a href="#">На объекте</a></li>
+        </ul>
+    </div>
+
+    {# Заголовок таблицы #}
+    <div class="row" style="background-color:rgb(24,85,116);color:rgb(255,255,255);margin-top:5px;padding-bottom:5px;">
+        <div class="col-md-1 text-center">Дата</div>
+        <div class="col-md-1 text-center">Время</div>
+        <div class="col-md-1 text-center">Номер на пульте</div>
+        <div class="col-md-5 text-center">Событие</div>
+        <div class="col-md-2 text-center">Раздел</div>
+        <div class="col-md-2 text-center">Шлейф</div>
+    </div>
+
+
+
+    <div class="row" style="padding-top:5px;">
+
+            <div  style="height:350px; overflow:scroll;">
+                <table group="2" class="table table-bordered table-condensed" >
+                    <tbody id="table2" group="2">
+                    </tbody>
+
+                </table>
+            </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+{% endblock %}
