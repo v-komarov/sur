@@ -1,16 +1,10 @@
 $(document).ready(function() {
 
 
+    $("ul li a").bind("click",SwitchButton);
+    $("table[group=1] tbody tr").bind("click",ClickObjectRow);
 
-    $("button[group=1]:first").addClass("active");
-    $("button[group=2]:first").addClass("active");
-
-
-    //$("button").on("click",SwitchButton);
-
-    //StartData();
-    //setInterval('UpdateData();',5000);
-
+    $("table[group=1] tbody tr:first").css("color","#0000FF");
 
 });
 
@@ -18,20 +12,13 @@ $(document).ready(function() {
 
 
 function SwitchButton(e) {
-    //console.log($(this).attr('group'));
-    var mygroup = $(this).attr('group');
-    var group = $("button[group="+mygroup+"]");
+
+    var mygroup = $(this).closest("ul").attr('group');
+    var group = $("ul[group="+mygroup+"]").children("li");
     group.removeClass('active');
-    $(this).addClass('active');
-
-    var clear = $(this).attr("clear");
-    if (clear == "OK") { ClearAlarm(e); }
-
-    var clear = $(this).attr("clear-phones");
-    if (clear == "OK") { HidePhones(e); }
+    $(this).closest("li").addClass('active');
 
 }
-
 
 
 
@@ -56,40 +43,15 @@ function ClearAlarm(e) {
 
 
 
-function ClickRow(e) {
+function ClickObjectRow(e) {
 
 
-    // Реагируем только на красные строки
-    if ($(this).attr("action")=="red") {
 
-        window.num_p = $(this).children("td").eq(2).text();
+        var mytablegroup = $(this).siblings("tr")
 
-        var mytablegroup = $(this).attr('group');
-        var tablegroup = $("tr[group="+mytablegroup+"]");
-        tablegroup.css("color","");
-        if ($(this).attr("group")=="1") {
-            $(this).css("color","#0000FF");
-            HideRightPart(e);
+        mytablegroup.css("color","");
 
-        }
-        else if ($(this).attr("group")=="2") {
-
-            $(this).css("color","#0000FF");
-            HidePhones(e);
-            ShowRightPart(e);
-        }
-
-    }
-
-
-    if ($(this).closest("tbody").attr("group") == 1) {
-
-        window.num_p = $(this).children("td").eq(0).text();
-        //console.log(window.num_p);
-        HideRightPart(e);
-        ShowPhones(e);
-
-    }
+        $(this).css("color","#0000FF");
 
 }
 
