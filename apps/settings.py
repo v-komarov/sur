@@ -138,6 +138,7 @@ INSTALLED_APPS = (
 #    'django.contrib.sites',
 #    'django.contrib.admindocs',
     'apps.cabinet',
+    'apps.parser',
     'apps.post',
     'apps.system',
     'apps.task',

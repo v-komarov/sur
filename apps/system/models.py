@@ -590,7 +590,7 @@ class dir_sim_card(models.Model):
 
 
 class client_contract(models.Model):
-    client = models.ForeignKey(client)
+    client = models.ForeignKey(client, on_delete=models.CASCADE)
     name = models.CharField(max_length=512)
     service_type = models.ForeignKey(dir_service_type, null=True)
     status = models.ForeignKey(dir_object_status, default=1, related_name='client_contract_status')
@@ -690,6 +690,7 @@ class client_object(models.Model):
     address_placement = models.CharField(max_length=128, null=True, blank=True, help_text='Помещение')
     referer_type = models.ForeignKey(dir_referer_type, null=True, blank=True, help_text='Как пришел клиент')
     referer_user = models.ForeignKey(sentry_user, null=True, blank=True, help_text='Кто привел объект')
+    security_previously = models.CharField(max_length=256, blank=True, help_text='Кем охранялся ранее')
     security_squad = models.ForeignKey(dir_security_squad, null=True, blank=True, help_text='ГПБ')
     occupation = models.TextField(blank=True, help_text='Вид деятельности')
     comment = models.TextField(blank=True)
@@ -1092,13 +1093,11 @@ class setting_interface(models.Model):
         db_table = 'setting_interface'
         ordering = ['position']
 
-class debug(models.Model):
+class parser_debug(models.Model):
     date = models.DateTimeField(default=timezone.now)
-    sentry_id = models.IntegerField()
-    security_id = models.IntegerField()
+    sentry_id = models.IntegerField(null=True, blank=True)
+    security_id = models.IntegerField(null=True, blank=True)
     comment = models.TextField()
-    class Meta:
-        db_table = 'parse_debug'
 
 class sentry_log(models.Model):
     #log_type = models.ForeignKey(auth_permission)
