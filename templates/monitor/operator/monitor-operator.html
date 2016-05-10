@@ -49,6 +49,13 @@
                 <table group="1" class="table table-bordered table-condensed" >
 
                     <tbody group="1">
+                        {% for row in data %}
+                            <tr client_bind={{ row.id }} status={{ row.status }} alarm="no" test="no">
+                                <td>{{ row.client_object.address_building.street.locality.name }}</td>
+                                <td>{{ row.client_object.address_building.street.name }} {{ row.client_object.address_building.name }}</td>
+                                <td>{{ row.client_object.name }}</td>
+                            </tr>
+                        {% endfor %}
                     </tbody>
 
 
