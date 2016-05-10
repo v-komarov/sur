@@ -796,9 +796,9 @@ class client_object(models.Model):
 
 
 class client_bind(models.Model):
-    client_contract = models.ForeignKey(client_contract, on_delete=models.PROTECT)
-    client_object = models.ForeignKey(client_object, on_delete=models.PROTECT)
-    console = models.ForeignKey(dir_device_console, null=True, blank=True, on_delete=models.SET_NULL)
+    client_contract = models.ForeignKey(client_contract)
+    client_object = models.ForeignKey(client_object)
+    console = models.ForeignKey(dir_device_console, null=True, blank=True)
     console_number = models.IntegerField(null=True, blank=True)
     status = models.ForeignKey(dir_object_status, default=1, related_name='client_bind_status')
     ovd_status = models.ForeignKey(dir_object_status, default=1, related_name='client_bind_ovd_status')
