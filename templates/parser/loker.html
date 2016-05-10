@@ -1,0 +1,15 @@
+{% extends "index.html" %}
+{% block content %}
+
+    <div class="middleBlock">
+
+        <p>{{ test_list }}</p><br />
+
+        {% for item in objects %}
+            <p>{{ item.name }}</p>
+        {% endfor %}
+
+
+    </div>
+
+{% endblock %}

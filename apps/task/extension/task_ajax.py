@@ -222,6 +222,7 @@ def update(request, data):
         task.contract_id = contract_id
         task.object_id = object_id
         task.save()
+        data['status'] = db_sentry.client_bind.objects.filter(client_object=task.object.id, is_active=1).first().check_bind_status()
         data['answer'] = 'done'
     else:
         data['errors'] = form.errors
@@ -233,6 +234,7 @@ def delete(request, data):
     task = task_models.task.objects.get(id=int(request.GET['task']))
     task.is_active = 0
     task.save()
+    data['status'] = db_sentry.client_bind.objects.filter(client_object=task.object.id, is_active=1).first().check_bind_status()
     data['answer'] = 'done'
     return data
 
@@ -348,6 +350,7 @@ def create_report(request, data):
                 ).update(
                     uninstall_date = task_set.complete_date
                 )
+        data['status'] = db_sentry.client_bind.objects.filter(client_object=task_set.object.id, is_active=1).first().check_bind_status()
         data['answer'] = 'done'
     #object_event_ajax.event_update(request);
 

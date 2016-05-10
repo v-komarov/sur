@@ -1,7 +1,7 @@
 
 function get_contract_string(data){
     var contract_set = lunchbox['setting']['contract_string'];
-    //console.log('get_contract_string', contract_set);
+    console.log('get_contract_string', contract_set);
     var data_labels = [
         'name',
         'begin_date',
@@ -15,6 +15,7 @@ function get_contract_string(data){
         var sign = contract_array[key];
         if(jQuery.inArray(sign, data_labels)>=0 && sign!='' ){
             //console.log(sign);
+
             if(sign=='begin_date'){
                 string += '<span sign="'+sign+'" status="'+data['ovd_status__label']+'">'+data['begin_date']+'</span>';
             }

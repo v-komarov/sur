@@ -127,6 +127,9 @@ span[name=log_date] {
 }
 
 
+.service_string_ [sign=begin_date] {
+    padding: 0 0 0 10px;
+}
 
 .service__item {
 
