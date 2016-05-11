@@ -1,0 +1,21 @@
+[
+  {
+    "model": "system.dir_device_type",
+    "pk": 8,
+    "fields": {
+      "name": "Офицер",
+      "description": "Охранная панель",
+      "is_active":1
+    }
+  },
+
+  {
+    "model": "system.dir_device_type",
+    "pk": 9,
+    "fields": {
+      "name": "Офицер24",
+      "description": "Контролирующее устройство",
+      "is_active":1
+    }
+  }
+]
