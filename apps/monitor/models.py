@@ -28,6 +28,7 @@ class dev_evt_log(models.Model):
     zone = models.IntegerField() # Зона
     message_id = models.IntegerField() #
     device_type = models.ForeignKey(system_models.dir_device_type) #
+    data = JSONField(default={})
 
 
 
@@ -67,9 +68,10 @@ class dev_data_adds(models.Model):
 
 ### Расшифровка событий в зависимости от типа устройства, определение тревожных событий
 class dev_evt_list(models.Model):
-    alert = models.BooleanField() #
-    name = models.CharField(max_length=100) #
-    device_type = models.ForeignKey(system_models.dir_device_type) #
-    evt_id = models.IntegerField() #
+    alert_level = models.IntegerField(default=0) #
+    name = models.CharField(max_length=100,default='') #
+    device_type = models.ForeignKey(system_models.dir_device_type,default=8) #
+    evt_id = models.IntegerField(default=0) #
+
 
 
