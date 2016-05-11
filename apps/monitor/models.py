@@ -22,11 +22,11 @@ class dev_result_list_start(models.Model):
 
 #### Лог событий с оборудования
 class dev_evt_log(models.Model):
-    datetime_evt = models.DateTimeField() #
-    device_object = models.ForeignKey(system_models.client_bind) #
-    stub = models.IntegerField() # Шлейф
-    zone = models.IntegerField() # Зона
-    message_id = models.IntegerField() #
+    datetime_evt = models.DateTimeField(auto_now_add=True) #
+    device_id = models.IntegerField(default=0) #
+    stub = models.IntegerField(default=0) # Шлейф
+    zone = models.IntegerField(default=0) # Зона
+    message_id = models.IntegerField(default=0) #
     device_type = models.ForeignKey(system_models.dir_device_type) #
     data = JSONField(default={})
 
