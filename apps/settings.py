@@ -66,7 +66,7 @@ ROOT_URL = settings_local.ROOT_URL
 MEDIA_ROOT = os.path.join(PROJECT_PATH, 'media')
 MEDIA_URL = ROOT_URL+'media/'
 STATIC_ROOT = os.path.join(PROJECT_PATH, 'static')
-STATIC_URL = ROOT_URL # костыль для static
+STATIC_URL = ROOT_URL+'static/' # костыль для static
 
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
@@ -142,7 +142,7 @@ INSTALLED_APPS = (
     'apps.post',
     'apps.system',
     'apps.task',
-    'apps.monitor',
+#    'apps.monitor',
 #    'apps.parse',
 #    'apps.profile',
 #    'captcha'
@@ -180,6 +180,3 @@ LOGGING = {
         },
     }
 }
-
-
-OPERATOR_EVT_MAX_ROWS = 300
