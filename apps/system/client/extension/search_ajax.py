@@ -7,6 +7,17 @@ from apps.system import models as db_sentry
 
 def search(request, data=None):
     #client_set = None
+    data['client_list'] = {}
+    data['client_count'] = 0
+    data['client_id_list'] = []
+    data['contract_id_list'] = []
+    data['contract_count'] = 0
+    data['object_list'] = {}
+    data['object_id_list'] = []
+    data['object_id_list__'] = []
+    data['object_count'] = 0
+    data['list'] = []
+
     bind_set = db_sentry.client_bind.objects.filter(client_object__is_active=1, is_active=1)
 
     if 'object' in request.GET and request.GET['object'] != '':
@@ -17,6 +28,8 @@ def search(request, data=None):
 
     if 'client' in request.GET and request.GET['client'] != '':
         bind_set = bind_set.filter(client_contract__client_id=int(request.GET['client']))
+        if not bind_set.exists():
+            data['client_id_list'].append(int(request.GET['client']))
 
     if 'address_region' in request.GET and request.GET['address_region'] != '':
         bind_set = bind_set.filter(client_object__address_building__street__locality__region_id=int(request.GET['address_region']))
@@ -118,17 +131,6 @@ def search(request, data=None):
     #bind_set = bind_set.exclude(object__address_building__street__locality_id__in=data['locality_exclude'])
     #bind_set = bind_set.exclude(object__client_object_service__service_organization_id__in=data['service_organization_exclude'])
 
-
-    data['client_list'] = {}
-    data['client_count'] = 0
-    data['client_id_list'] = []
-    data['contract_id_list'] = []
-    data['contract_count'] = 0
-    data['object_list'] = {}
-    data['object_id_list'] = []
-    data['object_id_list__'] = []
-    data['object_count'] = 0
-    data['list'] = []
 
     for bind in bind_set:
         # Client
