@@ -1,13 +1,36 @@
 $(document).ready(function() {
 
-
     $("ul li a").bind("click",SwitchButton);
     $("table[group=1] tbody tr").bind("click",ClickObjectRow);
 
-    $("table[group=1] tbody tr:first").css("color","#0000FF");
+    MarkFirst();
+    MakeColorTable2();
+    GetSettings();
 
 });
 
+
+
+
+
+function MarkFirst() {
+
+    $("table[group=1] tbody tr").css("background-color","");
+    $("table[group=1] tbody tr:first").css("background-color","#FF8C00");
+    $("table[group=1] tbody tr:first").attr("marked","yes");
+    GetAddsData($("table[group=1] tbody tr:first").attr("client_bind"));
+
+}
+
+
+function MakeColorTable2() {
+
+    $("table[group=2] tbody tr[alert_level=3]").css("background-color","yellow");
+    $("table[group=2] tbody tr[alert_level=0]").css("background-color","#98FB98");
+    $("table[group=2] tbody tr[alert_level=1]").css("background-color","#40E0D0");
+    $("table[group=2] tbody tr[alert_level=9]").css("background-color","#FF4500");
+
+}
 
 
 
@@ -17,6 +40,40 @@ function SwitchButton(e) {
     var group = $("ul[group="+mygroup+"]").children("li");
     group.removeClass('active');
     $(this).closest("li").addClass('active');
+
+    if ((mygroup == "1") && ($(this).text() == "Все")) {
+        $("table[group=1] tbody tr").show();
+
+    }
+
+    if ((mygroup == "1") && ($(this).text() == "Охраняемые")) {
+        $("table[group=1] tbody tr[status!=connected]").hide();
+        $("table[group=1] tbody tr[status=connected]").show();
+
+    }
+
+    if ((mygroup == "1") && ($(this).text() == "Не подохраной")) {
+        $("table[group=1] tbody tr[status=connected]").hide();
+        $("table[group=1] tbody tr[status!=connected]").show();
+
+    }
+
+
+    if ((mygroup == "2") && ($(this).text() == "Все")) {
+        $("table[group=2] tbody tr").show();
+
+    }
+
+    if ((mygroup == "2") && ($(this).text() == "Тревоги")) {
+        $("table[group=2] tbody tr[alert_level!=9]").hide();
+        $("table[group=2] tbody tr[alert_level=9]").show();
+    }
+
+    if ((mygroup == "2") && ($(this).text() == "На объекте")) {
+        var client_bind = $("table[group=1] tbody tr[marked=yes]").attr("client_bind");
+        $("table[group=2] tbody tr[client_bind_id!="+client_bind+"]").hide();
+        $("table[group=2] tbody tr[client_bind_id="+client_bind+"]").show();
+    }
 
 }
 
@@ -45,13 +102,21 @@ function ClearAlarm(e) {
 
 function ClickObjectRow(e) {
 
-
-
         var mytablegroup = $(this).siblings("tr")
+        mytablegroup.css("background-color","");
+        $(this).css("background-color","#FF8C00");
+        mytablegroup.attr("marked","no");
+        $(this).attr("marked","yes");
+        GetAddsData($(this).attr("client_bind"));
 
-        mytablegroup.css("color","");
+        //  Для варианта "На объекте"
+        var mybutton = $("ul[group=2]").children("li.active");
+        if (mybutton.text()=="На объекте") {
+            var client_bind = $("table[group=1] tbody tr[marked=yes]").attr("client_bind");
+            $("table[group=2] tbody tr[client_bind_id!="+client_bind+"]").hide();
+            $("table[group=2] tbody tr[client_bind_id="+client_bind+"]").show();
 
-        $(this).css("color","#0000FF");
+        }
 
 }
 
@@ -61,16 +126,32 @@ function ClickObjectRow(e) {
 
 
 
+function GetAddsData(client_bind) {
+
+    var jqxhr = $.getJSON("/monitor/operator/getdata?client_bind="+client_bind,
+    function(data) {
+
+       // console.log(data);
+    })
+
+
+}
 
 
 
 
 
+function GetSettings() {
+
+    var jqxhr = $.getJSON("/monitor/operator/getdata?settings=ok",
+    function(data) {
+
+        window.max_rows=data['max_rows'];
+
+    })
 
 
-
-
-
+}
 
 
 

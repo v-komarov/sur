@@ -91,7 +91,7 @@ $(document).ready(function() {
 
     $.datepicker.setDefaults( $.extend($.datepicker.regional["ru"]) );
 
-    object_select();
+    //object_select();
     charge_Validate();
 });
 
@@ -302,7 +302,7 @@ function charge_Refresh() {
     var pack_ajax = {
         'client_id': client_id,
         'year': $('select.year').val(),
-        'service_id': $('#charge_list select#object_select').val()
+        'bind_id': $('#charge_list select#object_select').val()
     };
     $.ajax({ url:'/system/client/charge/ajax/get/', type:'get', dataType:'json', data:pack_ajax,
         success: function(data){

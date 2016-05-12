@@ -20,9 +20,12 @@ def get(request, data=None):
     if 'year' in request.GET and request.GET['year'] != '':
         year = int(request.GET['year'])
 
+    bind_list = []
+    for bind in db_sentry.client_bind.objects.filter(client_contract__client=client_set.id, is_active=1):
+        bind_list.append(bind.client_object.id)
 
-    charge_set = db_sentry.client_object_charge.objects \
-        .filter(service__object__client=client_set.id, service__object__is_active=1, is_active=1) \
+    charge_set = db_sentry.client_bind_charge.objects \
+        .filter(bind__in=bind_list, is_active=1) \
         .order_by('begin_date')
 
     if charge_set.count() > 0:
@@ -70,10 +73,10 @@ def get(request, data=None):
 
     else:
         data['charge'] = [{
-            'cost_total': 0,
-            'pay_total': 0,
-            'month_name': '',
-        }]
+                              'cost_total': 0,
+                              'pay_total': 0,
+                              'month_name': '',
+                              }]
         data['year_list'].append(datetime.date.today().year)
 
     return data

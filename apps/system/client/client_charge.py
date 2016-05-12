@@ -20,11 +20,8 @@ def index(request, client_id=None):
         title = 'Начисления'
         status_list = ['новый', 'подключен', 'договор зарегистрирован']
         client = db_sentry.client.objects.get(id=client_id)
-        object = db_sentry.client_object.objects.filter(
-            client_contract__client_id = client.id,
-            #status__name__in = status_list,
-            is_active = 1
-        )
+
+        bind_set = db_sentry.client_bind.objects.filter(client_contract__client=client.id, is_active=1)
         years_list = [datetime.date.today().year]
 
         return render_to_response('system/client/client_charge.html', locals(), RequestContext(request))

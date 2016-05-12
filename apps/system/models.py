@@ -993,8 +993,8 @@ class client_object_timetable(models.Model):
         ordering = ['shift']
         default_permissions = ('view', 'add', 'change', 'delete')
 
-class client_object_charge(models.Model):
-    object = models.ForeignKey(client_object)
+class client_bind_charge(models.Model):
+    bind = models.ForeignKey(client_bind)
     charge_type = models.CharField(max_length=128, default='auto', db_index=True)
     begin_date = models.DateTimeField(db_index=True)
     end_date = models.DateTimeField(db_index=True)
@@ -1004,13 +1004,13 @@ class client_object_charge(models.Model):
     warden  = models.ForeignKey(sentry_user, null=True, blank=True, db_index=True)
     is_active = models.SmallIntegerField(default=1, db_index=True)
     class Meta:
-        db_table = 'client_object_charge'
+        db_table = 'client_bind_charge'
         ordering = ['begin_date']
         default_permissions = ('view', 'add', 'change', 'delete')
 
 class client_bind_post(models.Model):
     bind = models.ForeignKey(client_bind)
-    charge = models.ForeignKey(client_object_charge)
+    charge = models.ForeignKey(client_bind_charge)
     sentry_user = models.ForeignKey(sentry_user, null=True, blank=True)
     plan = models.CharField(default='planned', max_length=128)
     planned_begin_date = models.DateTimeField()
@@ -1107,7 +1107,7 @@ class sentry_log(models.Model):
     client_object = models.ForeignKey(client_object, null=True, blank=True)
     client_workflow = models.ForeignKey(client_workflow, on_delete=models.CASCADE, blank=True, null=True)
     cost = models.ForeignKey(client_bind_cost, null=True, blank=True)
-    charge = models.ForeignKey(client_object_charge, null=True, blank=True)
+    charge = models.ForeignKey(client_bind_charge, null=True, blank=True)
     incident = models.ForeignKey(client_object_incident, null=True, blank=True)
     comment = models.TextField()
     noticed = models.IntegerField(default=0)
