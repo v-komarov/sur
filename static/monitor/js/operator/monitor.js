@@ -1,6 +1,7 @@
 $(document).ready(function() {
 
     $("ul li a").bind("click",SwitchButton);
+    $("button[clear=OK]").bind("click",ClearAlarm);
     $("table[group=1] tbody tr").bind("click",ClickObjectRow);
 
     GetAlarmList();
@@ -95,15 +96,19 @@ function SwitchButton(e) {
 
 
 
-// Отмена тревоги общая
+// Отмена тревоги
 function ClearAlarm(e) {
 
+    var client_bind = $("table[group=1] tbody tr[marked=yes]").attr("client_bind");
 
-    var jqxhr = $.getJSON("/monitor/operator/getdata?clear="+window.num_p,
+    var jqxhr = $.getJSON("/monitor/operator/getdata?clearalarm="+client_bind,
     function(data) {
-        //console.log(data);
 
-        HideRightPart(e);
+        if (data['result'] == 'ok') {
+            $(".alarm").hide();
+            $(".noalarm").show();
+        }
+
     })
 }
 
@@ -151,6 +156,12 @@ function GetAlarmList() {
             $("table[group=1] tbody tr[client_bind="+item+"]").css("color","red");
         });
 
+        if (arr.length != 0) {
+            $(".container[border=ok]").css( "border", "13px solid red");
+        }
+        else {
+            $(".container").css( "border", "");
+        }
 
 
     })

@@ -39,7 +39,7 @@
 
 
             {# Заголовок таблицы #}
-            <div class="row" style="background-color:rgb(24,85,116);color:rgb(255,255,255);padding-bottom:5px;margin-right:10px;">
+            <div class="row" style="background-color:rgb(24,85,116);color:rgb(255,255,255);padding-bottom:5px;margin-right:10px;margin-left:0px;">
                 <div class="col-md-4 text-center">Населенный пункт</div>
                 <div class="col-md-4 text-center">Адрес</div>
                 <div class="col-md-4 text-center">Объект</div>
@@ -50,7 +50,7 @@
 
                     <tbody group="1">
                         {% for row in data %}
-                            <tr client_bind={{ row.id }} status={{ row.status }} alarm="no" test="no">
+                            <tr client_bind={{ row.id }} status={{ row.status }} alarm="no" test="no" marked="no">
                                 <td>{{ row.client_object.address_building.street.locality.name }}</td>
                                 <td>{{ row.client_object.address_building.street.name }} {{ row.client_object.address_building.name }}</td>
                                 <td>{{ row.client_object.name }}</td>
@@ -110,9 +110,19 @@
 
     <div class="row" style="padding-top:5px;">
 
-            <div  style="height:350px; overflow:scroll;">
+            <div  style="height:330px; overflow:scroll;">
                 <table group="2" class="table table-bordered table-condensed" >
                     <tbody id="table2" group="2">
+                        {% for row in data_log %}
+                            <tr alert_level="{{ row.data.alert_level }}" client_bind_id="{{ row.data.client_bind_id }}">
+                                <td width="10%">{{ row.data.date_text }}</td>
+                                <td width="10%">{{ row.data.time_text }}</td>
+                                <td width="10%">{{ row.data.device_number }}</td>
+                                <td width="40%">{{ row.data.message_text }}</td>
+                                <td width="15%">{{ row.data.zone_text }}</td>
+                                <td width="15%">{{ row.data.stub_text }}</td>
+                            </tr>
+                        {% endfor %}
                     </tbody>
 
                 </table>
