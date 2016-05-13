@@ -6,6 +6,7 @@ $(document).ready(function() {
     MarkFirst();
     MakeColorTable2();
     GetSettings();
+    GetAlarmList();
 
 });
 
@@ -16,7 +17,7 @@ $(document).ready(function() {
 function MarkFirst() {
 
     $("table[group=1] tbody tr").css("background-color","");
-    $("table[group=1] tbody tr:first").css("background-color","#FF8C00");
+    $("table[group=1] tbody tr:first").css("background-color","#FFD700");
     $("table[group=1] tbody tr:first").attr("marked","yes");
     GetAddsData($("table[group=1] tbody tr:first").attr("client_bind"));
 
@@ -57,6 +58,19 @@ function SwitchButton(e) {
         $("table[group=1] tbody tr[status!=connected]").show();
 
     }
+
+    if ((mygroup == "1") && ($(this).text() == "Тревожные")) {
+        $("table[group=1] tbody tr[alarm=no]").hide();
+        $("table[group=1] tbody tr[alarm=yes]").show();
+
+    }
+
+    if ((mygroup == "1") && ($(this).text() == "Нет теста")) {
+        $("table[group=1] tbody tr[test=yes]").hide();
+        $("table[group=1] tbody tr[test=no]").show();
+
+    }
+
 
 
     if ((mygroup == "2") && ($(this).text() == "Все")) {
@@ -104,7 +118,7 @@ function ClickObjectRow(e) {
 
         var mytablegroup = $(this).siblings("tr")
         mytablegroup.css("background-color","");
-        $(this).css("background-color","#FF8C00");
+        $(this).css("background-color","#FFD700");
         mytablegroup.attr("marked","no");
         $(this).attr("marked","yes");
         GetAddsData($(this).attr("client_bind"));
@@ -123,6 +137,27 @@ function ClickObjectRow(e) {
 
 
 
+function GetAlarmList() {
+
+    var jqxhr = $.getJSON("/monitor/operator/getdata?alarmlist=ok",
+    function(data) {
+
+        $("table[group=1] tbody tr").attr("alarm","no");
+        $("table[group=1] tbody tr").css("color","");
+
+        var arr = data['client_bind_alarm']
+        arr.forEach(function(item,i,arr){
+            $("table[group=1] tbody tr[client_bind="+item+"]").attr("alarm","yes");
+            $("table[group=1] tbody tr[client_bind="+item+"]").css("color","red");
+        });
+
+
+
+    })
+
+}
+
+
 
 
 
@@ -131,7 +166,16 @@ function GetAddsData(client_bind) {
     var jqxhr = $.getJSON("/monitor/operator/getdata?client_bind="+client_bind,
     function(data) {
 
-       // console.log(data);
+        $("client_name").text(data['additions']['client_name']);
+        if ($("table[group=1] tbody tr[client_bind="+client_bind+"]").attr("alarm") == "yes") {
+            $("div .alarm").show();
+            $("div .noalarm").hide();
+        }
+        else {
+            $("div .alarm").hide();
+            $("div .noalarm").show();
+        }
+
     })
 
 
@@ -185,40 +229,6 @@ function ShowData(data) {
     var group1 = $("button[group=1]");
 //    var group2 = $("button[group=2]");
 
-
-    //console.log(button2);
-
-    var table1 = data['tablegroup1'];
-    var table2 = data['tablegroup2'];
-
-    var status = data['status'];
-    var general_status = data['general_status'];
-
-
-    for (var i = 0; i < group1.length; i++) {
-        if (group1[i].textContent.substring(0,3)=='Все') { group1[i].textContent="Все ("+button1['Все']+")"; }
-        if (group1[i].textContent.substring(0,10)=='Охраняемые') { group1[i].textContent="Охраняемые ("+button1['Охраняемые']+")"; }
-        if (group1[i].textContent.substring(0,14)=='Не под охраной') { group1[i].textContent="Не под охраной ("+button1['Не под охраной']+")"; }
-        if (group1[i].textContent.substring(0,9)=='Тревожные') { group1[i].textContent="Тревожные ("+button1['Тревожные']+")"; }
-        if (group1[i].textContent.substring(0,13)=='Неисправности') { group1[i].textContent="Неисправности ("+button1['Неисправности']+")"; }
-        if (group1[i].textContent.substring(0,9)=='Проверить') { group1[i].textContent="Проверить ("+button1['Проверить']+")"; }
-        if (group1[i].textContent.substring(0,9)=='Нет теста') { group1[i].textContent="Нет теста ("+button1['Нет теста']+")"; }
-        if (group1[i].textContent.substring(0,12)=='Обслуживание') { group1[i].textContent="Обслуживание ("+button1['Обслуживание']+")"; }
-        if (group1[i].textContent.substring(0,16)=='Не обслуживаемые') { group1[i].textContent="Не обслуживаемые ("+button1['Не обслуживаемые']+")"; }
-        if (group1[i].textContent.substring(0,13)=='Не охраняемые') { group1[i].textContent="Не охраняемые ("+button1['Не охраняемые']+")"; }
-
-//        var u = "<user>"+data[i]+" </user>";
-//        $("users").append(u);
-    }
-
-//    for (var i = 0; i < group2.length; i++) {
-//        if (group2[i].textContent.substring(0,3)=='Все') { group2[i].textContent="Все ("+button2['Все']+")"; }
-//        if (group2[i].textContent.substring(0,9)=='Тревожные') { group2[i].textContent="Тревожные ("+button2['Тревожные']+")"; }
-//        if (group2[i].textContent.substring(0,10)=='На объекте') { group2[i].textContent="На объекте ("+button2['На объекте']+")"; }
-//        if (group2[i].textContent.substring(0,13)=='Неисправности') { group2[i].textContent="Неисправности ("+button2['Неисправности']+")"; }
-//        if (group2[i].textContent.substring(0,7)=='Система') { group2[i].textContent="Система ("+button2['Система']+")"; }
-//        if (group2[i].textContent.substring(0,15)=='На обслуживании') { group2[i].textContent="На обслуживании ("+button2['На обслуживании']+")"; }
-//    }
 
 
 
