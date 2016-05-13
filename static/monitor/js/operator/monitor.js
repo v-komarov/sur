@@ -3,10 +3,10 @@ $(document).ready(function() {
     $("ul li a").bind("click",SwitchButton);
     $("table[group=1] tbody tr").bind("click",ClickObjectRow);
 
+    GetAlarmList();
     MarkFirst();
     MakeColorTable2();
     GetSettings();
-    GetAlarmList();
 
 });
 
@@ -168,12 +168,12 @@ function GetAddsData(client_bind) {
 
         $("client_name").text(data['additions']['client_name']);
         if ($("table[group=1] tbody tr[client_bind="+client_bind+"]").attr("alarm") == "yes") {
-            $("div .alarm").show();
-            $("div .noalarm").hide();
+            $(".alarm").show();
+            $(".noalarm").hide();
         }
         else {
-            $("div .alarm").hide();
-            $("div .noalarm").show();
+            $(".alarm").hide();
+            $(".noalarm").show();
         }
 
     })
