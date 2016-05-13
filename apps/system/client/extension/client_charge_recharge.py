@@ -14,28 +14,28 @@ from apps.system import models as db_sentry
 
 def re(request, data=None, client_id=None, service_id=None):
     if request.user.has_perm('system.client_object_service_cost_change'):
-        service_set = db_sentry.client_object_service.objects \
-            .filter(object__is_active=1, is_active=1) \
-            .exclude(contract=None)
-        if service_id: service_set = service_set.filter(id=service_id)
-        elif client_id: service_set = service_set.filter(object__client_id=client_id, is_active=1)
+        object_set = db_sentry.client_object.objects.filter(is_active=1)
+        bind_set = None
+        if service_id:
+            bind_set = object_set.filter(id=service_id)
+        elif client_id:
+            bind_set = db_sentry.client_bind.objects.filter(client_contract__client=client_id, is_active=1)
 
         data['debug'] = []
-        data['service_list'] = []
-        data['cost_array'] = {}
-        for service in service_set:
-            data['cost_array'][service.id] = {}
-            data['service_list'].append(service.id)
-            db_sentry.client_object_service_charge.objects \
-                .filter(service_id=service.id, charge_type='auto', is_active=1).delete()
+        data['bind_list'] = []
+        data['bind_array'] = {}
+        for bind in bind_set:
+            data['bind_array'][bind.id] = {}
+            data['bind_list'].append(bind.id)
+            db_sentry.client_bind_charge.objects.filter(id=bind.id, charge_type='auto', is_active=1).delete()
 
             pause_array = []
             list = []
-            for cost in service.client_object_service_cost_set.filter(is_active=1).order_by('begin_date'):
+            for cost in bind.client_bind_cost_set.filter(is_active=1).order_by('begin_date'):
                 if cost.cost_type_id and cost.cost_type.label == 'pause':
                     pass
                     list.append({
-                        'service_id': cost.service_id,
+                        'cost_id': cost.id,
                         'begin_date': cost.begin_date,
                         'end_date': cost.end_date,
                         'cost_type': cost.cost_type.label,
@@ -43,14 +43,14 @@ def re(request, data=None, client_id=None, service_id=None):
                         })
                 else:
                     list.append({
-                        'service_id': cost.service_id,
-                        'cost': cost.cost,
+                        'cost_id': cost.id,
+                        'cost': cost.cost_value,
                         'begin_date': cost.begin_date,
                         'cost_type': cost.cost_type.label,
                         'cost_type_id': cost.cost_type_id,
-                        'charge_month_day': cost.charge_month_day,
-                        'charge_month_id': cost.charge_month_id,
-                        'charge_month': cost.charge_month.name,
+                        'charge_month_day': bind.charge_month_day,
+                        'charge_month_id': bind.charge_month_id,
+                        'charge_month': bind.charge_month.name,
                         })
 
 
@@ -86,7 +86,7 @@ def re(request, data=None, client_id=None, service_id=None):
                     except: pass
                     try: item['cost'] = str(item['cost'])
                     except: pass
-                data['cost_array'][service.id]['list_3'] = list_3
+                data['bind_array'][bind.id]['list_3'] = list_3
 
 
                 #data['cost_array'][service.id]['list'] = list
@@ -184,8 +184,8 @@ def re(request, data=None, client_id=None, service_id=None):
                             txt = '['+str(cost_begin_date)+' - '+str(cost_end)+'] days:'+str(cost_days)+' cost:'+str(cost)+' result:'+str(cost_result)
                             data['debug'].append(txt)
 
-                            db_sentry.client_object_service_charge.objects.create(
-                                service_id = service.id,
+                            db_sentry.client_bind_charge.objects.create(
+                                bind_id = bind.id,
                                 begin_date = cost_begin_date,
                                 end_date = cost_end,
                                 value = cost_result )
@@ -196,8 +196,9 @@ def re(request, data=None, client_id=None, service_id=None):
 
                 # Sum total & balance
                 #db_sentry.debug.objects.create(sentry_id=service.id, comment='charge_sum_total')
-                charge_sum_total(service_id=service.id)
-                client_balance(client_id=service_set[0].object.client_id)
+
+                charge_sum_total(bind_id=bind.id)
+                #client_balance(client_id=charge_set[0].object.client_id)
 
 
         if data:
@@ -211,19 +212,17 @@ def re(request, data=None, client_id=None, service_id=None):
 
 def charge_sum_total(**kwargs):
     total = decimal.Decimal('0.00')
-    charge_set = db_sentry.client_object_service_charge.objects.all().order_by('begin_date')
-    if 'service_id' in kwargs:
-        charge_set = charge_set.filter(service_id=kwargs['service_id'])
-    elif 'object_id' in kwargs:
-        charge_set = charge_set.filter(service__object_id=kwargs['object_id'])
+    charge_set = db_sentry.client_bind_charge.objects.all().order_by('begin_date')
+    if 'bind_id' in kwargs:
+        charge_set = charge_set.filter(bind_id=kwargs['bind_id'])
     elif 'client_id' in kwargs:
         charge_set = charge_set.filter(service__object__client_id=kwargs['client_id'])
     if charge_set:
-        warden_id = charge_set.first().service.object.get_warden()['id']
+        #warden_id = charge_set.first().bind.get_warden()['id']
         for charge in charge_set:
             total += charge.value
             charge.total = total
-            charge.warden_id = warden_id
+            charge.warden_id = 1#warden_id
             charge.save()
     return 'done'
 
@@ -235,8 +234,8 @@ def client_balance(**kwargs):
     for payment in db_sentry.client_payment.objects.filter(client_id=client_id, is_active=1):
         payment_value += payment.value
     charge_value = 0
-    for charge in db_sentry.client_object_service_charge.objects \
-            .filter(service__object__client_id=client_id, value__gt=0, is_active=1):
+    for charge in db_sentry.client_bind_charge.objects \
+            .filter(bind__client_id=client_id, value__gt=0, is_active=1):
         charge_value += charge.value
     balance = payment_value - charge_value
     db_sentry.client.objects.filter(id=client_id).update(balance=balance)
