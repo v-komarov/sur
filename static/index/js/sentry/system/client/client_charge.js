@@ -2,6 +2,8 @@ $(document).ready(function() {
     client_id =  $('.middleBlock').attr('client_id');
     charge_list = '';
     $('.select_year a.next').hide();
+    $('#charge_list select#object_select').clone().appendTo('#charge_pop tr[name=object] td');
+    $('#charge_pop tr[name=object] select#object_select option:eq(0)').remove();
 
     var year = $('.select_year select.year').val();
     if(year){
@@ -91,42 +93,21 @@ $(document).ready(function() {
 
     $.datepicker.setDefaults( $.extend($.datepicker.regional["ru"]) );
 
-    //object_select();
     charge_Validate();
 });
-
-
-function object_select(){
-    $.ajax({ url:'/system/client/object/service/ajax/get_service_list/?client_id='+client_id, type:'get', dataType:'json',
-        success: function(data){
-            if(data['error']!=null) alert(data['error']);
-            else {
-                $('select#object_select option').remove();
-                $('select#object_select').append('<option/>');
-                for(var key in data['service_list']){
-                    var service = data['service_list'][key];
-                    if(service['contract_id']){
-                        $('select#object_select option[value='+service['contract_id']+']').after(
-                            '<option value="'+service['id']+'" level="object">Объект: '+service['object__name']+'</option>'
-                        );
-                    } else {
-                        $('select#object_select').append(
-                            '<option value="'+service['id']+'" level="contract">Договор: '+service['contract_number']+'</option>'
-                        );
-                    }
-                }
-                $('#charge_list select#object_select').clone().appendTo('#charge_pop [name=service] td');
-            }
-        }
-    });
-}
 
 
 function charge_Recharge(){
     $('.middleBlock select').attr('disabled','disabled');
     loading('begin');
     $('#charge_pop').hide();
-    var ajax_array = {'client_id':client_id};
+    var ajax_array = {'client':client_id};
+    var select = $('#charge_list select#object_select option:selected');
+    if(select.attr('level')=='contract'){
+        ajax_array['contract'] = select.val();
+    } else if(select.attr('level')=='bind'){
+        ajax_array['bind'] = select.val();
+    }
     $.ajax({ url:'/system/client/charge/ajax/recharge/', type:'post', dataType:'json', data:ajax_array,
         success: function(data){
             if(data['answer']=='done'){
@@ -178,10 +159,9 @@ function charge_Update(action){
 }
 
 
-function charge_Edit(action,charge_id,month){
-    console.log(action,charge_id,month);
-    var charge_array = charge_list[month];
-    console.log(charge_array);
+function charge_Edit(action, charge_id, month){
+    var charge = charge_list[month]['list'][charge_id];
+    console.log(charge);
     $('#charge_pop .datepicker').datepicker("destroy");
     $('.datepicker').datepicker({
         showOn: "both",
@@ -202,13 +182,13 @@ function charge_Edit(action,charge_id,month){
     if(month=='0') { month = '01' }
     else if(month<10){ month = '0'+month }
     if(charge_id=='add'){
-        var service = $('.selectService select.selectObject option:selected');
+        var service = $('.selectService select#object_select option:selected');
         $('#charge_pop .datepicker').datepicker( "option", "disabled", false );
 
         if( service.attr('level')=='service' ){
             var service_id = service.val();
-            $('#charge_pop select.selectObject option[value='+service_id+'] ').attr("selected", "selected");
-            $('#charge_pop select.selectObject').attr("disabled","disabled");
+            $('#charge_pop select#object_select option[value='+service_id+'] ').attr("selected", "selected");
+            $('#charge_pop select#object_select').attr("disabled","disabled");
         }
         else {
             $('#charge_pop select.selectObject option[value=all]').attr("selected", "selected");
@@ -250,7 +230,6 @@ function charge_Edit(action,charge_id,month){
         }
     }
     else {
-        var charge = charge_array['list'][charge_id];
         if(action=='cost'){
             $('#charge_pop .header b').html('Начисление №'+charge_id);
             $('#charge_pop span[name=begin_date_]').text('Начало периода');
@@ -283,8 +262,8 @@ function charge_Edit(action,charge_id,month){
             $('#charge_pop input[name=end_date]').removeAttr('disabled');
             $('#charge_pop .datepicker').datepicker( "option", "disabled", false );
         }
-        $('#charge_pop select.selectObject option[value='+charge['service_id']+'] ').attr("selected", "selected");
-        $('#charge_pop select.selectObject').attr("disabled","disabled");
+        $('#charge_pop select#object_select option[value='+charge['bind_id']+'] ').attr("selected", "selected");
+        $('#charge_pop select#object_select').attr("disabled","disabled");
         $('#charge_pop [name=begin_date]').val(charge['begin_date']);
         $('#charge_pop [name=end_date]').val(charge['end_date']);
         $('#charge_pop [name=value]').val(charge['value'].replace('-',''));
@@ -299,14 +278,16 @@ function charge_Refresh() {
     $('.middleBlock select').attr('disabled','disabled');
     loading('begin');
     $('#charge_pop').hide();
-    var pack_ajax = {
-        'client_id': client_id,
-        'year': $('select.year').val(),
-        'bind_id': $('#charge_list select#object_select').val()
-    };
-    $.ajax({ url:'/system/client/charge/ajax/get/', type:'get', dataType:'json', data:pack_ajax,
+    var ajax_array = {'client': client_id, 'year': $('select.year').val()};
+    var select = $('#charge_list select#object_select option:selected');
+    if(select.attr('level')=='contract'){
+        ajax_array['contract'] = select.val();
+    } else if(select.attr('level')=='bind'){
+        ajax_array['bind'] = select.val();
+    }
+    $.ajax({ url:'/system/client/charge/ajax/get/', type:'get', dataType:'json', data:ajax_array,
         success: function(data){
-            set_Table(data,pack_ajax['year']);
+            charge_Draw(data, ajax_array['year']);
             loading('end');
         },
         complete: function() {
@@ -319,7 +300,7 @@ function charge_Refresh() {
 }
 
 
-function set_Table(data,year){
+function charge_Draw(data, year){
     charge_list = data['charge'];
     $('table#charge_list div.balance').text('Баланс: '+data['balance']);
     $('table#charge_list tbody tr').remove();
@@ -377,7 +358,7 @@ function set_Table(data,year){
                     var cost_count = 0;
                     total_cost += parseInt(item['value']);
                     cost_count++;
-                    item_p += '<p name="cost" charge_id="'+ item['id'] +'" service_id="'+ item['service_id'] +'">';
+                    item_p += '<p name="cost" charge_id="'+ item['id'] +'" bind_id="'+ item['bind_id'] +'">';
                     if(item['charge_type']=='manual'){
                         var date_range = ' [<span class="interval">';
                         if(item['begin_date']==item['end_date']){

@@ -13,22 +13,20 @@ from apps.system.sentry_user.extension import sentry_log
 
 
 def get(request, data=None):
-    client_set = db_sentry.client.objects.get(id=int(request.GET['client_id']))
-    data['balance'] = str(db_sentry.client.objects.filter(id=client_set.id, is_active=1).first().balance)
+    client = db_sentry.client.objects.get(id=int(request.GET['client']))
+    charge_set = db_sentry.client_bind_charge.objects.filter(bind__client_contract__client=client.id, is_active=1)
+    if 'contract' in request.GET:
+        charge_set = charge_set.filter(bind__client_contract=int(request.GET['contract']))
+    if 'bind' in request.GET:
+        charge_set = charge_set.filter(bind=int(request.GET['bind']))
+
+    data['balance'] = str(db_sentry.client.objects.filter(id=client.id, is_active=1).first().balance)
     data['charge'] = {}
     data['year_list'] = []
     if 'year' in request.GET and request.GET['year'] != '':
         year = int(request.GET['year'])
 
-    bind_list = []
-    for bind in db_sentry.client_bind.objects.filter(client_contract__client=client_set.id, is_active=1):
-        bind_list.append(bind.client_object.id)
-
-    charge_set = db_sentry.client_bind_charge.objects \
-        .filter(bind__in=bind_list, is_active=1) \
-        .order_by('begin_date')
-
-    if charge_set.count() > 0:
+    if charge_set.exists():
         for item in xrange(charge_set.first().begin_date.year, charge_set.last().begin_date.year+1):
             data['year_list'].append(item)
         '''
@@ -57,7 +55,7 @@ def get(request, data=None):
                 data['charge'][charge.begin_date.month]['pay_total'] += charge.value
             data['charge'][charge.begin_date.month]['list'][charge.id] = {
                 'id': charge.id,
-                'service_id': charge.service_id,
+                'bind_id': charge.bind_id,
                 'charge_type': charge.charge_type,
                 'begin_date': charge.begin_date.strftime("%d.%m.%Y"),
                 'end_date': charge.end_date.strftime("%d.%m.%Y"),
@@ -72,11 +70,7 @@ def get(request, data=None):
             data['charge'][key]['pay_total'] = str(data['charge'][key]['pay_total'])
 
     else:
-        data['charge'] = [{
-                              'cost_total': 0,
-                              'pay_total': 0,
-                              'month_name': '',
-                              }]
+        data['charge'] = [{'cost_total': 0, 'pay_total': 0, 'month_name': ''}]
         data['year_list'].append(datetime.date.today().year)
 
     return data
@@ -84,7 +78,7 @@ def get(request, data=None):
 
 def update(request, data=None):
     client_id = int(request.POST['client_id'])
-    service_id = int(request.POST['service_id'])
+    bind_id = int(request.POST['bind_id'])
     form = client__form.client_charge(request.POST)
     if form.is_valid():
         value = decimal.Decimal(request.POST['value'])
@@ -127,7 +121,7 @@ def update(request, data=None):
 
 
 def delete(request, data=None):
-    charge_set = db_sentry.client_object_service_charge.objects.get(id=request.POST['charge_id'])
+    charge_set = db_sentry.client_bind_charge.objects.get(id=request.POST['charge_id'])
     charge_set.is_active = 0
     charge_set.save()
     if charge_set.value < 0:

@@ -9,98 +9,109 @@ from django.template import RequestContext
 from django.shortcuts import render_to_response
 from apps.toolset.month_name import get_month_name
 from apps.toolset import date_convert
-from apps.system import models as db_sentry
+from apps.system import models as sentry_models
 
 
-def re(request, data=None, client_id=None, service_id=None):
+def re(request, data=None):
     if request.user.has_perm('system.client_object_service_cost_change'):
-        object_set = db_sentry.client_object.objects.filter(is_active=1)
-        bind_set = None
-        if service_id:
-            bind_set = object_set.filter(id=service_id)
-        elif client_id:
-            bind_set = db_sentry.client_bind.objects.filter(client_contract__client=client_id, is_active=1)
+        bind_set = sentry_models.client_bind.objects.filter(client_contract__client=int(request.POST['client']), is_active=1)
+        if 'contract' in request.POST:
+            bind_set = bind_set.filter(client_contract=int(request.POST['contract']))
+        if 'bind' in request.POST:
+            bind_set = bind_set.filter(id=int(request.POST['bind']))
 
-        data['debug'] = []
         data['bind_list'] = []
-        data['bind_array'] = {}
         for bind in bind_set:
-            data['bind_array'][bind.id] = {}
+            bind.client_bind_charge_set.filter(charge_type='auto').delete()
             data['bind_list'].append(bind.id)
-            db_sentry.client_bind_charge.objects.filter(id=bind.id, charge_type='auto', is_active=1).delete()
-
-            pause_array = []
-            list = []
+            cost_list = []
+            index = 0
             for cost in bind.client_bind_cost_set.filter(is_active=1).order_by('begin_date'):
-                if cost.cost_type_id and cost.cost_type.label == 'pause':
-                    pass
-                    list.append({
-                        'cost_id': cost.id,
-                        'begin_date': cost.begin_date,
-                        'end_date': cost.end_date,
-                        'cost_type': cost.cost_type.label,
-                        'cost_type_id': cost.cost_type_id,
-                        })
+                cost_item = {
+                    'id': cost.id,
+                    'begin_date': cost.begin_date.strftime('%d.%m.%Y'),
+                    'cost_type': cost.cost_type_id,
+                    'cost_type__label': cost.cost_type.label,
+                    'charge_month': bind.charge_month_id,
+                    'charge_month_day': bind.charge_month_day,
+                    'charge_month__name': bind.charge_month.name,
+                    }
+                if cost.cost_type.label == 'pause':
+                    cost_item['end_date'] = cost.end_date.strftime('%d.%m.%Y')
                 else:
-                    list.append({
-                        'cost_id': cost.id,
-                        'cost': cost.cost_value,
-                        'begin_date': cost.begin_date,
-                        'cost_type': cost.cost_type.label,
-                        'cost_type_id': cost.cost_type_id,
-                        'charge_month_day': bind.charge_month_day,
-                        'charge_month_id': bind.charge_month_id,
-                        'charge_month': bind.charge_month.name,
-                        })
+                    cost_item['cost'] = str(cost.cost_value)
+
+                cost_list.append(cost_item)
+                if index > 0:
+                    cost_list[index-1]['end_date'] = (cost.begin_date - datetime.timedelta(days=1)).strftime('%d.%m.%Y')
+                    if cost.cost_type.label == 'pause':
+                        prev_cost = {
+                            'id': cost_list[-2]['id'],
+                            'begin_date': (cost.end_date + datetime.timedelta(days=1)).strftime('%d.%m.%Y'),
+                            'cost_type': cost_list[-2]['cost_type'],
+                            'cost_type__label': cost_list[-2]['cost_type__label'],
+                            'charge_month': cost_list[-2]['charge_month'],
+                            'charge_month_day': cost_list[-2]['charge_month_day'],
+                            'cost': cost_list[-2]['cost'],
+                            }
+                        cost_list.append(prev_cost)
+                        index += 1
+                index += 1
+
+            if not 'end_date' in cost_list[-1]:
+                cost_list[-1]['end_date'] = datetime.datetime.now().strftime('%d.%m.%Y')
+
+            data['cost_list'] = cost_list
 
 
-            list_2 = []
-            if len(list)>0:
-                for cost in list:
-                    index = list.index(cost)
-                    if index == 0:
-                        list_2.append(cost)
-                    else:
-                        list_2[index-1]['end_date'] = cost['begin_date'] - datetime.timedelta(days=1)
-                        if cost['cost_type'] != 'pause':
-                            list_2.append(cost)
-                        else:
-                            item = list[index-1]
-                            item['end_date'] = cost['begin_date'] - datetime.timedelta(days=1)
-                            item = list[index]
-                            item['begin_date'] = cost['end_date'] + datetime.timedelta(days=1)
-                            item['cost'] = list[index-1]['cost']
-                            item['charge_month_id'] = list[index-1]['charge_month_id']
-                            item['charge_month_day'] = list[index-1]['charge_month_day']
-                            item['charge_month'] = list[index-1]['charge_month']
-                            list_2.append(item)
+            if len(cost_list) > 0:
 
-                list_2[-1]['end_date'] = datetime.datetime.now()
+                # руб./месяц
+                for cost_item in cost_list:
+                    if cost_item['cost_type__label'] != 'pause':
+                        cost_begin_date = datetime.datetime.strptime(cost_item['begin_date'], '%d.%m.%Y')
+                        cost_end_date = datetime.datetime.strptime(cost_item['end_date'], '%d.%m.%Y')
+                        cost_end_variable = cost_end_date
+                        cost = cost_item['cost']
+                        cost_days = 0
+                        cost_result = 0
+                        today = get_charge_day(cost_item['charge_month'])
+
+                        while cost_begin_date.replace(day=cost_item['charge_month_day']) <= today \
+                                and cost_begin_date <= cost_end_date:
+                            month_days = calendar.monthrange(cost_begin_date.year, cost_begin_date.month)[1]
+                            if cost_end_variable <= cost_end_date:
+                                if cost_begin_date.replace(day=1) == cost_end_date.replace(day=1):
+                                    cost_days = cost_end_date.day - cost_begin_date.day
+                                    cost_end_variable = cost_end_date
+                                else:
+                                    cost_days = month_days - cost_begin_date.day
+                                    cost_end_variable = cost_begin_date + datetime.timedelta(cost_days)
+                                cost_days += 1
+                                cost_result = round((float(cost)/month_days*cost_days), 2)*-1
+
+                            sentry_models.client_bind_charge.objects.create(
+                                bind_id = bind.id,
+                                begin_date = cost_begin_date, end_date = cost_end_variable,
+                                value = cost_result
+                            )
+
+                            cost_begin_date += datetime.timedelta(cost_days)
+                            #except:
+                            #    data['debug'].append(cost_begin_date)
 
 
-                list_3 = list_2
-                for item in list_3:
-                    try: item['begin_date'] = item['begin_date'].strftime('%d.%m.%Y')
-                    except: pass
-                    try: item['end_date'] = item['end_date'].strftime('%d.%m.%Y')
-                    except: pass
-                    try: item['cost'] = str(item['cost'])
-                    except: pass
-                data['bind_array'][bind.id]['list_3'] = list_3
+                # Sum total & balance
+                #sentry_models.debug.objects.create(sentry_id=service.id, comment='charge_sum_total')
 
-
-                #data['cost_array'][service.id]['list'] = list
-
-
-                #if len(cost_array_after) > 0:
-                #cost_array_after[len(cost_array_after)-1]['end_date'] = today.strftime('%d.%m.%Y')
-
+                charge_sum_total(bind_id=bind.id)
+                #client_balance(client_id=charge_set[0].object.client_id)
 
                 '''
                 # Post
-                service_salary_set = db_sentry.client_object_service_salary.objects.filter(service_id=service.id, is_active=1).order_by('-begin_date')
+                service_salary_set = sentry_models.client_object_service_salary.objects.filter(service_id=service.id, is_active=1).order_by('-begin_date')
                 post_count = 0
-                for post in db_sentry.client_object_service_post.objects.filter(service_id=service.id):
+                for post in sentry_models.client_object_service_post.objects.filter(service_id=service.id):
                     post_cost = 0
                     post_salary = 0
 
@@ -126,12 +137,12 @@ def re(request, data=None, client_id=None, service_id=None):
                         charge_begin_date = post.completed_begin_date.replace(day=1,hour=0,minute=0,second=0)
                         charge_end_date = charge_begin_date.replace(day=calendar.monthrange(charge_begin_date.year, charge_begin_date.month)[1],hour=23,minute=59,second=59)
 
-                        #if not db_sentry.client_object_service_charge.objects.filter( # Проверяем нет ли такой же записи с типом 'manual'
+                        #if not sentry_models.client_object_service_charge.objects.filter( # Проверяем нет ли такой же записи с типом 'manual'
                         #        service_id = service.id, charge_type='manual',
                         #        begin_date = charge_begin_date, end_date = charge_end_date ).exists():
 
                         try:
-                            charge_set = db_sentry.client_object_service_charge.objects.get(
+                            charge_set = sentry_models.client_object_service_charge.objects.get(
                                 service_id = service.id,
                                 charge_type='post',
                                 begin_date = charge_begin_date,
@@ -140,7 +151,7 @@ def re(request, data=None, client_id=None, service_id=None):
                             post_count += 1
                             #post_list.append({post.cost:post.completed_begin_date})
                         except:
-                            charge_set = db_sentry.client_object_service_charge.objects.create(
+                            charge_set = sentry_models.client_object_service_charge.objects.create(
                                 service_id = service.id,
                                 begin_date = charge_begin_date, end_date = charge_end_date,
                                 charge_type = 'post',
@@ -158,49 +169,6 @@ def re(request, data=None, client_id=None, service_id=None):
                     post.save()
                 '''
 
-                # руб./месяц
-                for cost_item in list_2:
-                    if cost_item['cost_type'] != 'pause':
-                        cost_begin_date = datetime.datetime.strptime(cost_item['begin_date'], '%d.%m.%Y')
-                        cost_end_date = datetime.datetime.strptime(cost_item['end_date'], '%d.%m.%Y')
-                        cost_end = cost_end_date
-                        cost = cost_item['cost']
-                        cost_days = 0
-                        cost_result = 0
-                        today = get_charge_day(cost_item['charge_month_id'])
-
-                        while cost_begin_date.replace(day=cost_item['charge_month_day'])<=today and cost_begin_date<=cost_end_date:
-                            month_days = calendar.monthrange(cost_begin_date.year, cost_begin_date.month)[1]
-                            if cost_end <= cost_end_date:
-                                if cost_begin_date.replace(day=1)==cost_end_date.replace(day=1) and cost_end.day<=month_days:
-                                    cost_days = cost_end_date.day - cost_begin_date.day
-                                    cost_end = cost_end_date
-                                else:
-                                    cost_days = month_days - cost_begin_date.day
-                                    cost_end = cost_begin_date + datetime.timedelta(cost_days)
-                                cost_days += 1
-                                cost_result = round( (float(cost)/month_days*cost_days),2 )*-1
-
-                            txt = '['+str(cost_begin_date)+' - '+str(cost_end)+'] days:'+str(cost_days)+' cost:'+str(cost)+' result:'+str(cost_result)
-                            data['debug'].append(txt)
-
-                            db_sentry.client_bind_charge.objects.create(
-                                bind_id = bind.id,
-                                begin_date = cost_begin_date,
-                                end_date = cost_end,
-                                value = cost_result )
-
-                            cost_begin_date += datetime.timedelta(cost_days)
-                        #except:
-                        #    data['debug'].append(cost_begin_date)
-
-                # Sum total & balance
-                #db_sentry.debug.objects.create(sentry_id=service.id, comment='charge_sum_total')
-
-                charge_sum_total(bind_id=bind.id)
-                #client_balance(client_id=charge_set[0].object.client_id)
-
-
         if data:
             data['answer'] = 'done'
             return data
@@ -212,17 +180,17 @@ def re(request, data=None, client_id=None, service_id=None):
 
 def charge_sum_total(**kwargs):
     total = decimal.Decimal('0.00')
-    charge_set = db_sentry.client_bind_charge.objects.all().order_by('begin_date')
+    charge_set = sentry_models.client_bind_charge.objects.all().order_by('begin_date')
     if 'bind_id' in kwargs:
         charge_set = charge_set.filter(bind_id=kwargs['bind_id'])
     elif 'client_id' in kwargs:
         charge_set = charge_set.filter(service__object__client_id=kwargs['client_id'])
     if charge_set:
-        #warden_id = charge_set.first().bind.get_warden()['id']
+        warden_id = charge_set.first().bind.client_object.get_warden()['id']
         for charge in charge_set:
             total += charge.value
             charge.total = total
-            charge.warden_id = 1#warden_id
+            charge.warden_id = warden_id
             charge.save()
     return 'done'
 
@@ -231,14 +199,14 @@ def client_balance(**kwargs):
     client_id = int(kwargs['client_id'])
     data = {}
     payment_value = 0
-    for payment in db_sentry.client_payment.objects.filter(client_id=client_id, is_active=1):
+    for payment in sentry_models.client_payment.objects.filter(client_id=client_id, is_active=1):
         payment_value += payment.value
     charge_value = 0
-    for charge in db_sentry.client_bind_charge.objects \
+    for charge in sentry_models.client_bind_charge.objects \
             .filter(bind__client_id=client_id, value__gt=0, is_active=1):
         charge_value += charge.value
     balance = payment_value - charge_value
-    db_sentry.client.objects.filter(id=client_id).update(balance=balance)
+    sentry_models.client.objects.filter(id=client_id).update(balance=balance)
     data['payments'] = str(payment_value)
     data['charges'] = str(charge_value)
     data['balance'] = str(balance)

@@ -21,6 +21,7 @@ def index(request, client_id=None):
         status_list = ['новый', 'подключен', 'договор зарегистрирован']
         client = db_sentry.client.objects.get(id=client_id)
 
+        contract_set = db_sentry.client_contract.objects.filter(client=client.id, is_active=1)
         bind_set = db_sentry.client_bind.objects.filter(client_contract__client=client.id, is_active=1)
         years_list = [datetime.date.today().year]
 
@@ -45,7 +46,7 @@ def ajax(request,action=None):
 
     elif action == 'recharge':
         if request.user.has_perm('system.client'):
-            data = client_charge_recharge.re(request, data, int(request.POST['client_id']))
+            data = client_charge_recharge.re(request, data)
         else: data['error'] = 'Доступ запрещен'
 
     elif action == 'delete':

@@ -38,14 +38,14 @@ def get_list(request, data):
 
 
 def cost_null(request, data):
-    service_set = db_sentry.client_object_service.objects.get(id=int(request.POST['service_id']))
+    bind_set = db_sentry.client_bind.objects.get(id=int(request.POST['service_id']))
     data['service_cost'] = {
-        'service_type': service_set.service_type.name,
-        'object__name': service_set.object.name,
+        'service_type': bind_set.service_type.name,
+        'object__name': bind_set.object.name,
         }
-    try: data['service_cost']['begin_date'] = service_set.begin_date.strftime("%d.%m.%Y")
+    try: data['service_cost']['begin_date'] = bind_set.begin_date.strftime("%d.%m.%Y")
     except: data['service_cost']['begin_date'] = ''
-    contract_cost_set = db_sentry.client_object_service_cost.objects.filter(id=service_set.contract_id,is_active=1).first()
+    contract_cost_set = db_sentry.bind_set_cost.objects.filter(id=bind_set.contract_id,is_active=1).first()
     try:
         data['service_cost']['charge_month_day'] = contract_cost_set.charge_month_day
         data['service_cost']['charge_month_id'] = contract_cost_set.charge_month_id
@@ -95,7 +95,8 @@ def update(request, data):
         cost_set = db_sentry.client_bind_cost.objects.get(id=int(request.POST['client_object_cost']))
     except:
         cost_set = db_sentry.client_bind_cost.objects.create(
-            client_bind_id = int(request.POST['client_bind'])
+            client_bind_id = int(request.POST['client_bind']),
+            cost_type_id = int(request.POST['cost_type'])
         )
         data['new_cost_id'] = cost_set.id
 

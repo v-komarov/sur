@@ -13,10 +13,15 @@
             <tr>
                 <td colspan="3">
                     <select id="object_select">
-                        {% for item in bind_set %}
-                            <option class="item" value="{{ item.id }}">{{ item.name }}</option>
+                        <option class="item" value="">Все</option>
+                        {% for contract in contract_set %}
+                            <option class="item" value="{{ contract.id }}" level="contract">Договор: {{ contract.name }}</option>
+                            {% for bind in contract.client_bind_set.all %}
+                                <option class="item" value="{{ bind.id }}" level="bind">Объект: {{ bind.client_object.name }}</option>
+                            {% endfor %}
                         {% endfor %}
                     </select>
+
                     <div class="btn_ui bg right" action="recharge" icon="calculator" style="margin:-2px 0 0 5px"><div class="icon"></div><div class="txt">Пересчитать</div></div>
                     <div class="btn_ui bg" action="charge_refresh" icon="reset" style="margin:-2px 0 0 5px"><div class="icon"></div></div>
                 </td>

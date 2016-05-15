@@ -788,9 +788,9 @@ class client_object(models.Model):
         return tag_list
 
     def get_warden(self):
-        event_set = self.client_object_event_set.filter(event_type=1, is_active=1)
-        if event_set.exists():
-            return {'id': event_set[0].sentry_user.id, 'full_name': event_set[0].sentry_user.full_name}
+        workflow_set = self.client_workflow_set.filter(workflow_type=1, is_active=1)
+        if workflow_set.exists():
+            return {'id': workflow_set[0].sentry_user.id, 'full_name': workflow_set[0].sentry_user.full_name}
         else:
             return {'id': None, 'full_name': None}
 
