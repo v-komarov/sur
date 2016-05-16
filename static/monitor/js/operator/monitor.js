@@ -3,11 +3,15 @@ $(document).ready(function() {
     $("ul li a").bind("click",SwitchButton);
     $("button[clear=OK]").bind("click",ClearAlarm);
     $("table[group=1] tbody tr").bind("click",ClickObjectRow);
+    $("first-step button").bind("click",FirstStep);
+    $("second-step button").bind("click",SecondStep);
+    $("third-step button").bind("click",ThirdStep);
+    $("fourth-step button").bind("click",FourthStep);
 
-    GetAlarmList();
-    MarkFirst();
     MakeColorTable2();
     GetSettings();
+    GetAlarmList();
+    MarkFirst();
 
 });
 
@@ -181,6 +185,31 @@ function GetAddsData(client_bind) {
         if ($("table[group=1] tbody tr[client_bind="+client_bind+"]").attr("alarm") == "yes") {
             $(".alarm").show();
             $(".noalarm").hide();
+
+
+            $("time_begin").text(data['actions']['time_begin'])
+            $("from_begin").text(data['actions']['from_begin'])
+            $("time_way").text(data['actions']['time_way'])
+            $("time_text_2").text(data['actions']['time_text_2'])
+
+            if ( data['actions']['action_1'] != '') {
+                $("first-step select").css("background-color","#185574");
+                $("first-step select").find("option:contains("+ data['actions']['action_1']  +")").attr("selected", "selected");
+            }
+            if ( data['actions']['action_2'] != '') {
+                $("second-step select").css("background-color","#185574");
+                $("second-step select").find("option:contains("+ data['actions']['action_2']  +")").attr("selected", "selected");
+            }
+            if ( data['actions']['action_3'] != '') {
+                $("third-step select").css("background-color","#185574");
+                $("third-step select").find("option:contains("+ data['actions']['action_3']  +")").attr("selected", "selected");
+            }
+            if ( data['actions']['action_4'] != '') {
+                $("fourth-step select").css("background-color","#185574");
+                $("fourth-step select").find("option:contains("+ data['actions']['action_4']  +")").attr("selected", "selected");
+            }
+
+
         }
         else {
             $(".alarm").hide();
@@ -207,6 +236,69 @@ function GetSettings() {
 
 
 }
+
+
+
+function FirstStep(e) {
+    var uyuy = $("first-step select option:selected").text();
+    var client_bind = $("table[group=1] tbody tr[marked=yes]").attr("client_bind");
+
+    var jqxhr = $.getJSON("/monitor/operator/getdata?first-step="+uyuy+"&client_bind="+client_bind,
+    function(data) {
+        if (data['result'] == 'ok') {
+            GetAddsData(client_bind);
+        }
+    })
+}
+
+
+
+function SecondStep(e) {
+    var uyuy = $("second-step select option:selected").text();
+    var client_bind = $("table[group=1] tbody tr[marked=yes]").attr("client_bind");
+
+    var jqxhr = $.getJSON("/monitor/operator/getdata?second-step="+uyuy+"&client_bind="+client_bind,
+    function(data) {
+        if (data['result'] == 'ok') {
+            GetAddsData(client_bind);
+        }
+    })
+
+}
+
+
+
+
+function ThirdStep(e) {
+    var uyuy = $("third-step select option:selected").text();
+    var client_bind = $("table[group=1] tbody tr[marked=yes]").attr("client_bind");
+
+    var jqxhr = $.getJSON("/monitor/operator/getdata?third-step="+uyuy+"&client_bind="+client_bind,
+    function(data) {
+        if (data['result'] == 'ok') {
+            GetAddsData(client_bind);
+        }
+    })
+
+}
+
+
+
+
+function FourthStep(e) {
+    var uyuy = $("fourth-step select option:selected").text();
+    var client_bind = $("table[group=1] tbody tr[marked=yes]").attr("client_bind");
+
+    var jqxhr = $.getJSON("/monitor/operator/getdata?fourth-step="+uyuy+"&client_bind="+client_bind,
+    function(data) {
+        if (data['result'] == 'ok') {
+            GetAddsData(client_bind);
+        }
+    })
+
+}
+
+
 
 
 
