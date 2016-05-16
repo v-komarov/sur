@@ -4,10 +4,10 @@
 <div class="alarm">
 
     <div class="row">
-        <small>Время поступления тревоги: Тест</small><small>от начала тревоги: Тест</small>
+        <small>Время поступления тревоги: </small><time_begin></time_begin> <small>от начала тревоги: </small><from_begin></from_begin>
     </div>
     <div class="row">
-        <small>Время следования экипажа: Тест Прибытие: Тест</small>
+        <small>Время следования экипажа: </small><time_way></time_way><small> Прибытие: </small><time_text_2></time_text_2>
     </div>
 
     <div class="row" style="padding:10px;">
@@ -20,16 +20,8 @@
     </div>
 
     <div class="row">
-        <div class="col-xs-5" style="padding-right:2px;">
-            <select class="col-xs-12">
-                {% for item in start_list %}
-                    <option value="{{ item }}">{{ item }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="col-xs-1" style="padding-left:2px;">
-            <button type="button" class="btn btn-primary btn-xs">Y</button>
-        </div>
+
+    <first-step>
         <div class="col-xs-5" style="padding-right:2px;">
             <select class="col-xs-12">
                 {% for item in gbr_list %}
@@ -40,7 +32,19 @@
         <div class="col-xs-1" style="padding-left:2px;">
             <button type="button" class="btn btn-primary btn-xs">Y</button>
         </div>
-
+    </first-step>
+    <second-step>
+        <div class="col-xs-5" style="padding-right:2px;">
+            <select class="col-xs-12">
+                {% for item in gbr_list %}
+                    <option value="{{ item }}">{{ item }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="col-xs-1" style="padding-left:2px;">
+            <button type="button" class="btn btn-primary btn-xs">Y</button>
+        </div>
+    </second-step>
     </div>
 
 
@@ -55,9 +59,11 @@
     </div>
 
     <div class="row">
+
+    <third-step>
         <div class="col-xs-5" style="padding-right:2px;">
             <select class="col-xs-12">
-                {% for item in gbr_list %}
+                {% for item in start_list %}
                     <option value="{{ item }}">{{ item }}</option>
                 {% endfor %}
 
@@ -66,6 +72,8 @@
         <div class="col-xs-1" style="padding-left:2px;">
             <button type="button" class="btn btn-primary btn-xs">Y</button>
         </div>
+    </third-step>
+    <fourth-step>
         <div class="col-xs-5" style="padding-right:2px;">
             <select class="col-xs-12">
                 {% for item in start_list %}
@@ -76,7 +84,7 @@
         <div class="col-xs-1" style="padding-left:2px;">
             <button type="button" class="btn btn-primary btn-xs">Y</button>
         </div>
-
+    </fourth-step>
     </div>
 
 
