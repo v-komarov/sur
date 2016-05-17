@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.db import connections
 from apps.system.models  import client_bind
 from apps.system.models  import client_object_timetable
-from apps.monitor.models import dev_status_evt
+from apps.monitor.models import dev_status_evt,dev_evt_log
 import apps.settings
 import time
 
@@ -197,6 +197,30 @@ def GetOperatorData(request):
         evt.save()
 
         response_data['result'] = 'ok'
+
+
+
+    if r.has_key("update") and rg("update") != '':
+
+        data_log = dev_evt_log.objects.order_by('-datetime_evt')[0:apps.settings.OPERATOR_EVT_UPDATE_ROWS]
+        data = []
+        for row in data_log:
+            print row.data
+            data.append(
+                {'row_id':row.id,
+                 'alert_level':row.data['alert_level'],
+                 'client_bind_id':row.data['client_bind_id'],
+                 'date_text':row.data['date_text'],
+                 'time_text':row.data['time_text'],
+                 'device_number':row.data['device_number'],
+                 'message_text':row.data['message_text'],
+                 'zone_text':row.data['zone_text'],
+                 'stub_text':row.data['stub_text']
+                 }
+            )
+        response_data['update'] = data
+
+
 
 
 
