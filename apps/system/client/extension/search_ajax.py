@@ -18,6 +18,8 @@ def search(request, data=None):
     data['object_count'] = 0
     data['list'] = []
 
+    show_list = ['client', 'contract', 'object']
+
     bind_set = db_sentry.client_bind.objects.filter(client_object__is_active=1, is_active=1)
 
     if 'object' in request.GET and request.GET['object'] != '':
@@ -62,9 +64,10 @@ def search(request, data=None):
     #    bind_set = bind_set.filter(console_id=int(request.GET['device_console']))
 
     if 'contract_number' in request.GET and request.GET['contract_number'] != '':
-        regexp = '^'+request.GET['contract_number']+'[^0-9]' # http://wiki.dieg.info/regexp
-        bind_set = bind_set.filter(Q(contract_number__iregex=regexp) |
-                                   Q(contract_number=request.GET['contract_number']))
+        show_list.remove('client')
+        show_list.remove('contract')
+        #regexp = '^'+request.GET['contract_number']+'[^0-9]' # http://wiki.dieg.info/regexp
+        bind_set = bind_set.filter(client_contract__name__startswith=request.GET['contract_number'])
 
     '''
     if 'device_type' in request.GET and request.GET['device_type'] != '':
@@ -190,36 +193,38 @@ def search(request, data=None):
             data['object_id_list__'].append(object_id)
 
 
-    for contract in db_sentry.client_contract.objects \
-            .filter(client_id__in=data['client_id_list'], is_active=1) \
-            .exclude(id__in=data['contract_id_list']):
-        if not data['client_list'].has_key(contract.client.id):
+    if 'contract' in show_list:
+        for contract in db_sentry.client_contract.objects \
+                .filter(client_id__in=data['client_id_list'], is_active=1) \
+                .exclude(id__in=data['contract_id_list']):
             if not data['client_list'].has_key(contract.client.id):
-                # Client
-                data['client_list'][contract.client.id] = {
-                    'name': contract.client.name,
-                    'contract_list': {}
-                }
-        # Contract
-        data['contract_count'] += 1
-        data['client_list'][contract.client.id]['contract_list'][contract.id] = {
-            'name': contract.name,
-            #'status': contract.status.id,
-            #'status__label': contract.status.label,
-            'service_type': contract.service_type.id,
-            'service_type__name': contract.service_type.name,
-            'object_list': {}
-        }
-        if contract.begin_date:
-            data['client_list'][contract.client.id]['contract_list'][contract.id]['begin_date'] = contract.begin_date.strftime("%d.%m.%Y")
+                if not data['client_list'].has_key(contract.client.id):
+                    # Client
+                    data['client_list'][contract.client.id] = {
+                        'name': contract.client.name,
+                        'contract_list': {}
+                    }
+            # Contract
+            data['contract_count'] += 1
+            data['client_list'][contract.client.id]['contract_list'][contract.id] = {
+                'name': contract.name,
+                #'status': contract.status.id,
+                #'status__label': contract.status.label,
+                'service_type': contract.service_type.id,
+                'service_type__name': contract.service_type.name,
+                'object_list': {}
+            }
+            if contract.begin_date:
+                data['client_list'][contract.client.id]['contract_list'][contract.id]['begin_date'] = contract.begin_date.strftime("%d.%m.%Y")
 
     # Client list
-    if 'client' not in request.GET or request.GET['client'] == '':
-        for client in db_sentry.client.objects.filter(is_active=1).exclude(id__in=data['client_id_list']):
-            data['client_count'] += 1
-            data['client_list'][client.id] = {
-                'name': client.name,
-                }
+    if 'client' in show_list:
+        if 'client' not in request.GET or request.GET['client'] == '':
+            for client in db_sentry.client.objects.filter(is_active=1).exclude(id__in=data['client_id_list']):
+                data['client_count'] += 1
+                data['client_list'][client.id] = {
+                    'name': client.name,
+                    }
 
 
     return data

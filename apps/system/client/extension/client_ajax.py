@@ -37,7 +37,7 @@ def update(request, data):
             if not 'address_actual_building__text' in request.POST:
                 client_address_actual_building, created = db_sentry.dir_address_4_building.objects.get_or_create(
                     street_id = int(request.POST['address_actual_street']),
-                    name = request.POST['address_actual_building']
+                    name = request.POST['address_postal_building']
                 )
                 address_actual_building_id = client_address_actual_building.id
             else:
@@ -46,10 +46,10 @@ def update(request, data):
 
         address_legal_building_id = None
         if request.POST['address_legal_building'] != '':
-            if 'address_legal_building__text' in request.POST:
+            if not 'address_legal_building__text' in request.POST:
                 client_address_legal_building, created = db_sentry.dir_address_4_building.objects.get_or_create(
                     street_id = int(request.POST['address_legal_street']),
-                    name = request.POST['address_legal_building']
+                    name = request.POST['address_postal_building']
                 )
                 address_legal_building_id = client_address_legal_building.id
             else:
@@ -58,7 +58,7 @@ def update(request, data):
 
         address_postal_building_id = None
         if request.POST['address_postal_building'] != '':
-            if 'address_postal_building__text' in request.POST:
+            if not 'address_postal_building__text' in request.POST:
                 client_address_postal_building, created = db_sentry.dir_address_4_building.objects.get_or_create(
                     street_id = int(request.POST['address_postal_street']),
                     name = request.POST['address_postal_building']
