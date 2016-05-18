@@ -12,6 +12,7 @@ $(document).ready(function() {
     GetSettings();
     GetAlarmList();
     MarkFirst();
+    setInterval('UpdateData();',5000);
 
 });
 
@@ -322,81 +323,45 @@ function UpdateData() {
 
 
 function ShowData(data) {
-    //$("user").remove();
-
-    var button1 = data['buttongroup1'];
-//    var button2 = data['buttongroup2'];
-
-    var general_status = data['general_status'];
-
-    var group1 = $("button[group=1]");
-//    var group2 = $("button[group=2]");
 
 
+    data['update'].forEach(function(item,i,arr){
 
+        var t = "<tr "
 
+        +"row_id=\""+item["row_id"]+"\" "
 
-    // Таблица 2
+        +"alert_level=\""+item["alert_level"]+"\" "
 
-    for (item in table2) {
-        ob = table2[item];
+        +"client_bind_idl=\""+item["client_bind_id"]+"\" "
 
-        var background = "style=\"background-color:#B0C4DE;\" ";
-
-        if (ob['action'] == 'red') { background = "style=\"background-color:#FA8072;\" "; }
-        if (ob['action'] == 'yellow') { background = "style=\"background-color:#F0E68C;\" "; }
-        if (ob['action'] == 'green') { background = "style=\"background-color:#90EE90;\" "; }
-
-
-        var t = "<tr group='2' "
-
-        +"row_id=\""+ob["id"]+"\" "
-
-        +"action=\""+ob["action"]+"\" "
-
-        +background
         +"><td width='10%'>"
-        +ob['col1']+"</td><td width='5%'>"
-        +ob['col2']+"</td><td width='10%'>"
-        +ob['col3']+"</td><td width='25%'>"
-        +ob['col4']+"</td><td width='30%'>"
-        +ob['col5']+"</td><td width='5%'>"
-        +ob['col6']+"</td><td width='5%'>"
-        +ob['col7']+"</td></tr>";
-
-        var tr = $(t);
-
-        //console.log($("tbody[group=2] tr:first").attr("row_id"));
+        +item['date_text']+"</td><td width='10%'>"
+        +item['time_text']+"</td><td width='10%'>"
+        +item['device_number']+"</td><td width='40%'>"
+        +item['message_text']+"</td><td width='15%'>"
+        +item['zone_text']+"</td><td width='15%'>"
+        +item['stub_text']+"</td></tr>";
 
         var first = $("tbody[group=2] tr:first").attr("row_id");
 
-        //console.log(Number(ob['id']),Number(first)+Number(1));
+        if (Number(item['row_id']) == (Number(1)+Number(first))) {
 
-        if (Number(ob['id']) == (Number(1)+Number(first))) {$("tbody[group=2]").prepend(t);}
+            $("tbody[group=2]").prepend(t);
 
+            if ( $("table[group=2] tr:first").attr("alert_level") == 0 ) {$("tbody[group=2] tr:first").css("background-color","#98FB98");}
+            if ( $("tbody[group=2] tr:first").attr("alert_level") == 1 ) {$("tbody[group=2] tr:first").css("background-color","#40E0D0");}
+            if ( $("tbody[group=2] tr:first").attr("alert_level") == 3 ) {$("tbody[group=2] tr:first").css("background-color","yellow");}
+            if ( $("tbody[group=2] tr:first").attr("alert_level") == 9 ) {$("tbody[group=2] tr:first").css("background-color","#FF4500");}
 
-    }
+            // Проверка нужно строку показывать ли нет
+            if (($("ul[group=2] li.active").text() == "На объекте") && ( $("table[group=1] tr[marked=yes]").attr("client_bind") != item["client_bind_id"] )) {$("table[group=2] tr:first").hide();}
 
+        }
 
-
-    for (i in status) {
-        s = status[i];
-
-        $("tr[group=1]").each(function( index ) {
-
-            if ($(this).children("td").eq(0).text() == i && s == "red") { $(this).css("background-color","red"); $(this).children("td").eq(1).text("!"); }
-            if ($(this).children("td").eq(0).text() == i && s == "green") { $(this).css("background-color",""); $(this).children("td").eq(1).text(""); }
-
-        });
-
-    }
-
-
+    });
 
     // Рамка
-    if (general_status['status'] == "red") { $(".container[border=ok]").css( "border", "13px solid red"); } else {$(".container").css( "border", "");}
-
-    $("tr").on("click",ClickRow);
-
+    //if (general_status['status'] == "red") { $(".container[border=ok]").css( "border", "13px solid red"); } else {$(".container").css( "border", "");}
 }
 
