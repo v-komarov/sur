@@ -27,7 +27,7 @@ class dev_evt_log(models.Model):
     stub = models.IntegerField(default=0) # Шлейф
     zone = models.IntegerField(default=0) # Зона
     message_id = models.IntegerField(default=0) #
-    device_type = models.ForeignKey(system_models.dir_device_type) #
+    device_console = models.ForeignKey(system_models.dir_device_console) #
     data = JSONField(default={})
 
 
@@ -44,18 +44,6 @@ class dev_status_evt(models.Model):
     evt = models.OneToOneField(dev_evt_log) #
     data = JSONField(default={})
 
-    """
-    comment = models.CharField(max_length=200) #
-    operator_1_action = models.ForeignKey(dev_result_list_start) #
-    operator_1_datetime = models.DateTimeField() #
-#    operator_2_action = models.ForeignKey(system_models.dir_security_squad) #
-    operator_2_datetime = models.DateTimeField() #
-#    operator_3_action = models.ForeignKey(system_models.dir_security_squad) #
-    operator_3_datetime = models.DateTimeField() #
-    operator_4_action = models.ForeignKey(dev_result_list_end) #
-    operator_4_datetime = models.DateTimeField() #
-    """
-
 
 
 ### Название шлейфов
@@ -70,8 +58,16 @@ class dev_data_adds(models.Model):
 class dev_evt_list(models.Model):
     alert_level = models.IntegerField(default=0) #
     name = models.CharField(max_length=100,default='') #
-    device_type = models.ForeignKey(system_models.dir_device_type,default=8) #
+    device_console = models.ForeignKey(system_models.dir_device_console,default=3) #
     evt_id = models.IntegerField(default=0) #
 
 
+
+### Обслуживание
+class dev_service_device(models.Model):
+    datetime_service = models.DateTimeField(auto_now_add=True)
+    status = models.BooleanField(default=True)
+    history = models.BooleanField(default=True)
+    comment = models.TextField(default='')
+    client_bind = models.ForeignKey(system_models.client_bind,default=None,null=True)
 
