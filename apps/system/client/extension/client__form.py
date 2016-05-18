@@ -5,7 +5,7 @@ from apps.system import models as db_sentry
 
 
 class client_charge(forms.Form):
-    service_id = forms.IntegerField(required=True)
+    bind_id = forms.IntegerField(required=True)
     begin_date = forms.DateField(required=True)
     end_date = forms.DateField(required=True)
     value = forms.DecimalField(max_digits=20, decimal_places=2)

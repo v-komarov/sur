@@ -97,22 +97,22 @@ def update(request, data=None):
                 client_set.balance = client_set.balance - value
                 client_set.save()
 
-            charge_set = db_sentry.client_object_charge.objects.create(
-                service_id = service_id,
+            charge_set = db_sentry.client_bind_charge.objects.create(
+                bind_id = bind_id,
                 charge_type = 'manual',
                 begin_date = date_convert.convert(request.POST['end_date']),
                 end_date = date_convert.convert(request.POST['end_date']),
                 value = value)
         else:
-            charge_set = db_sentry.client_object_charge.objects.get(id=request.POST['charge_id'])
-        charge_set.service_id = service_id
+            charge_set = db_sentry.client_bind_charge.objects.get(id=request.POST['charge_id'])
+        charge_set.bind_id = bind_id
         charge_set.charge_type = 'manual'
         charge_set.begin_date = date_convert.convert(request.POST['begin_date'])
         charge_set.end_date = date_convert.convert(request.POST['end_date'])
         charge_set.value = value
         if 'comment' in request.POST: charge_set.comment = request.POST['comment']
         charge_set.save()
-        sentry_log.create(request=request, client_object_id=charge_set.service.object.id, charge_id=charge_set.id, log_type=log_type)
+        #sentry_log.create(request=request, client_object_id=charge_set.service.object.id, charge_id=charge_set.id, log_type=log_type)
         data['answer'] = 'done'
         #client_charge_recharge.charge_sum_total(service_id=service_id)
     else:
@@ -131,7 +131,7 @@ def delete(request, data=None):
         client_set = db_sentry.client.objects.get(id=request.POST['client_id'])
         client_set.balance = client_set.balance + charge_set.value
         client_set.save()
-    sentry_log.create(request=request, client_object_id=charge_set.service.object.id, charge_id=charge_set.id, log_type=log_type)
+    #sentry_log.create(request=request, client_object_id=charge_set.service.object.id, charge_id=charge_set.id, log_type=log_type)
     #client_charge_recharge.charge_sum_total(service_id=charge_set.service_id)
     data['answer'] = 'done'
 

@@ -133,6 +133,7 @@ def update(request, data):
 
         if auth_user:
             auth_user.is_active = int(request.POST['auth_is_active'])
+            auth_user.is_superuser = 1
             auth_user.is_staff = 1
             auth_user.username = request.POST['username']
             auth_user.groups = json.loads(request.POST['group_list'])

@@ -63,12 +63,12 @@
                 <a class="link {% if request.path|slice:':16' == '/system/finance/' %}selected{% endif %}"
                    href="/system/finance/">Финансы</a>
             {% endif %}
-        {% endcomment %}
 
         {% if perms.system.client %}
             <a class="link {% if request.path|slice:':18' == '/system/analytics/' %}selected{% endif %}"
                href="/system/analytics/">Аналитика</a>
         {% endif %}
+        {% endcomment %}
 
         {% if perms.system.client %}
             <a class="link {% if request.path|slice:':20' == '/system/sentry_user/' %}selected{% endif %}"

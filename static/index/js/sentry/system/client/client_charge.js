@@ -130,11 +130,12 @@ function charge_Update(action){
         ajax_array['charge_id'] = 'add';
     }
     if(action=='update'){
-        if($('#charge_pop select.selectObject option:selected').attr('level')!='service'){
+        console.log( $('#charge_pop select#object_select option:selected').attr('level') );
+        if($('#charge_pop select#object_select option:selected').attr('level')!='bind'){
             alert('Выберите услугу');
             error = 'true';
         } else {
-            ajax_array['service_id'] = $('#charge_pop select.selectObject option:selected').val();
+            ajax_array['bind_id'] = $('#charge_pop select#object_select').val();
         }
     }
     $('#charge_pop input, #charge_pop select, #charge_pop textarea').each(function(){

@@ -1,0 +1,27 @@
+
+select#object_select option[status=new] {
+    color: #000;
+    background-color: #ffff00;
+}
+select#object_select option[status=connected] {
+    background-color: #abf4ab;
+}
+select#object_select option[status=disconnecting] {
+    color: #fff;
+    background-color: #e70000;
+}
+select#object_select option[status=blue] {
+    color: #fff;
+    background-color: #00a1ff;
+}
+select#object_select option[status=white] {
+    color: #000;
+    background-color: #fff;
+    box-shadow: 0 0 0 3px #0090ff inset;
+}
+select#object_select option[status=disconnected] {
+    background-color: #ccc;
+}
+select#object_select option[status=paused] {
+    background-color: #cc99ff;
+}

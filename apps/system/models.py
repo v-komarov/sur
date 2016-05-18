@@ -115,6 +115,7 @@ class dir_charge_month(models.Model):
         db_table = 'dir_charge_month'
 
 class dir_device_console(models.Model):
+    hard_id = models.IntegerField(null=True, blank=True)
     name = models.CharField(max_length=128)
     description = models.CharField(max_length=256)
     is_active = models.SmallIntegerField(default=1)

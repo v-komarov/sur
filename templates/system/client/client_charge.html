@@ -2,6 +2,7 @@
 {% block content %}
     {% include "system/client/__left_block.html" %}
 
+    <link href="{{ STATIC_URL }}index/css/client_charge.css" type="text/css" rel="stylesheet">
     <script type="text/javascript" src="{{ STATIC_URL }}index/js/pop_menu.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/client/client_charge.js"></script>
 
@@ -15,9 +16,9 @@
                     <select id="object_select">
                         <option class="item" value="">Все</option>
                         {% for contract in contract_set %}
-                            <option class="item" value="{{ contract.id }}" level="contract">Договор: {{ contract.name }}</option>
+                            <option class="item" value="{{ contract.id }}" level="contract" status="{{ contract.status }}">Договор: {{ contract.name }}</option>
                             {% for bind in contract.client_bind_set.all %}
-                                <option class="item" value="{{ bind.id }}" level="bind">Объект: {{ bind.client_object.name }}</option>
+                                <option class="item" value="{{ bind.id }}" level="bind" status="{{ bind.status }}">Объект: {{ bind.client_object.name }}</option>
                             {% endfor %}
                         {% endfor %}
                     </select>
