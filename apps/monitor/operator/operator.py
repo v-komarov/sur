@@ -113,9 +113,11 @@ def GetOperatorData(request):
         alarm_list = []
 
         data = dev_status_evt.objects.filter(data__status='opened')
+
         for item in data:
             alarm_list.append(item.data['client_bind_id'])
 
+        print alarm_list
 
         response_data['client_bind_alarm'] = alarm_list
 
@@ -205,7 +207,7 @@ def GetOperatorData(request):
         data_log = dev_evt_log.objects.order_by('-datetime_evt')[0:apps.settings.OPERATOR_EVT_UPDATE_ROWS]
         data = []
         for row in data_log:
-            print row.data
+
             data.append(
                 {'row_id':row.id,
                  'alert_level':row.data['alert_level'],
