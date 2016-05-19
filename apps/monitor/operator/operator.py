@@ -253,6 +253,7 @@ def GetOperatorData(request):
     if r.has_key("service_status") and rg("service_status") != '':
         client_bind_id = int(request.GET["service_status"],10)
         cb = client_bind.objects.get(pk=client_bind_id)
+        comment = request.GET["comment"]
         try:
             status_now = dev_service_device.objects.get(history=False,client_bind=cb).status
         except:
@@ -260,14 +261,17 @@ def GetOperatorData(request):
 
         if request.GET["status"] == 'true' and status_now == False:
             dev_service_device.objects.filter(client_bind=cb,history=False).update(history=True)
-            dev_service_device.objects.create(status=True)
+            dev_service_device.objects.create(status=True,history=False,client_bind=cb,comment=comment)
 
         if request.GET["status"] == 'false' and status_now == True:
             dev_service_device.objects.filter(client_bind=cb,history=False).update(history=True)
-            dev_service_device.objects.create(status=False)
+            dev_service_device.objects.create(status=False,history=False,client_bind=cb,comment=comment)
+
+
 
         response_data['result'] = 'ok'
 
+    ### Установка статуса обслуживания конец
 
 
 
