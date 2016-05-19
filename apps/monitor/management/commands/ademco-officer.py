@@ -2,7 +2,7 @@
 
 from django.core.management.base import BaseCommand, CommandError
 
-from apps.monitor.models    import  dev_evt_log,dev_evt_list,dev_status_evt
+from apps.monitor.models    import  dev_evt_log,dev_evt_list,dev_status_evt,dev_service_device
 from apps.system.models import dir_device_console,client_bind
 import time
 import datetime
@@ -53,7 +53,7 @@ class Command(BaseCommand):
 
 
                 ### Генарация тревоги
-                if rec.alert_level == 9:
+                if rec.alert_level == 9 and dev_service_device.objects.filter(status=True,history=False,client_bind__id=client_bind_id).count()==0:
                     s = dev_status_evt.objects.filter(data__status='opened',data__client_bind_id=client_bind_id).count()
                     if s == 0:
                         dev_status_evt.objects.create(evt=n,data={
