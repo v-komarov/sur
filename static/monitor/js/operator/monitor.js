@@ -201,21 +201,28 @@ function GetAddsData(client_bind) {
                 $("first-step select").css("color","#FFFFFF");
                 $("first-step select").find("option:contains("+ data['actions']['action_1']  +")").attr("selected", "selected");
             }
+            else {$("first-step select").css("background-color",""); $("first-step select").css("color","");}
+
             if ( data['actions']['action_2'] != '') {
                 $("second-step select").css("background-color","#185574");
                 $("second-step select").css("color","#FFFFFF");
                 $("second-step select").find("option:contains("+ data['actions']['action_2']  +")").attr("selected", "selected");
             }
+            else {$("second-step select").css("background-color",""); $("second-step select").css("color","");}
+
             if ( data['actions']['action_3'] != '') {
                 $("third-step select").css("background-color","#185574");
                 $("third-step select").css("color","#FFFFFF");
                 $("third-step select").find("option:contains("+ data['actions']['action_3']  +")").attr("selected", "selected");
             }
+            else {$("third-step select").css("background-color","");$("third-step select").css("color","");}
+
             if ( data['actions']['action_4'] != '') {
                 $("fourth-step select").css("background-color","#185574");
                 $("fourth-step select").css("color","#FFFFFF");
                 $("fourth-step select").find("option:contains("+ data['actions']['action_4']  +")").attr("selected", "selected");
             }
+            else {$("fourth-step select").css("background-color",""); $("fourth-step select").css("color","");}
 
 
         }
