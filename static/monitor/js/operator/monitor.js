@@ -12,6 +12,7 @@ $(document).ready(function() {
     MakeColorTable2();
     GetSettings();
     GetAlarmList();
+    GetServiceList();
     MarkFirst();
     setInterval('UpdateData();',5000);
 
@@ -78,6 +79,11 @@ function SwitchButton(e) {
 
     }
 
+    if ((mygroup == "1") && ($(this).text() == "Обслуживание")) {
+        $("table[group=1] tbody tr[service=no]").hide();
+        $("table[group=1] tbody tr[service=yes]").show();
+
+    }
 
 
     if ((mygroup == "2") && ($(this).text() == "Все")) {
@@ -153,8 +159,8 @@ function GetAlarmList() {
     var jqxhr = $.getJSON("/monitor/operator/getdata?alarmlist=ok",
     function(data) {
 
-        $("table[group=1] tbody tr").attr("alarm","no");
-        $("table[group=1] tbody tr").css("color","");
+        $("table[group=1] tbody tr[service=no]").attr("alarm","no");
+        $("table[group=1] tbody tr[service=no]").css("color","");
 
 
 
@@ -176,6 +182,31 @@ function GetAlarmList() {
     })
 
 }
+
+
+
+
+
+function GetServiceList() {
+
+    var jqxhr = $.getJSON("/monitor/operator/getdata?servicelist=ok",
+    function(data) {
+
+        $("table[group=1] tbody tr[service=yes]").css("color","");
+        $("table[group=1] tbody tr[service=yes]").attr("service","no");
+
+
+
+        var arr = data['client_bind_service']
+        arr.forEach(function(item,i,arr){
+            $("table[group=1] tbody tr[client_bind="+item+"]").attr("service","yes");
+            $("table[group=1] tbody tr[client_bind="+item+"]").css("color","green");
+        });
+
+    })
+
+}
+
 
 
 
@@ -366,6 +397,7 @@ function UpdateData() {
         //console.log(data);
         ShowData(data);
         GetAlarmList();
+        GetServiceList();
     })
 }
 
