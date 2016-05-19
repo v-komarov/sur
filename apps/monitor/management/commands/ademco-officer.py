@@ -3,7 +3,7 @@
 from django.core.management.base import BaseCommand, CommandError
 
 from apps.monitor.models    import  dev_evt_log,dev_evt_list,dev_status_evt
-from apps.system.models import dir_device_type,client_bind
+from apps.system.models import dir_device_console,client_bind
 import time
 import datetime
 
@@ -17,7 +17,7 @@ class Command(BaseCommand):
 
     def handle(self, *args, **options):
 
-        device = dir_device_type.objects.get(pk=8)
+        device = dir_device_console.objects.get(pk=3)
 
 
         for mes in args:
@@ -35,10 +35,10 @@ class Command(BaseCommand):
                 except:
                     client_bind_id = 0
 
-                rec = dev_evt_list.objects.get(device_type=device,evt_id=kod)
+                rec = dev_evt_list.objects.get(device_console=device,evt_id=kod)
 
 
-                n = dev_evt_log.objects.create(device_id=panel,stub=src,zone=obj,message_id=kod,device_type=device,data={
+                n = dev_evt_log.objects.create(device_id=panel,stub=src,zone=obj,message_id=kod,device_console=device,data={
                     'message':mes,
                     'device_number':panel,
                     'datetime': time.time(),
