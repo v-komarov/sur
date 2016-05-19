@@ -7,6 +7,7 @@ $(document).ready(function() {
     $("second-step button").bind("click",SecondStep);
     $("third-step button").bind("click",ThirdStep);
     $("fourth-step button").bind("click",FourthStep);
+    $("button[service=ok]").bind("click",SetStatusService);
 
     MakeColorTable2();
     GetSettings();
@@ -180,6 +181,33 @@ function GetAlarmList() {
 
 
 
+
+// Установка статуса обслуживания
+function SetStatusService() {
+
+    var client_bind = $("table[group=1] tbody tr[marked=yes]").attr("client_bind");
+    var status = $('input[service=ok]:checkbox').prop('checked');
+    var comment = $('input[service=ok]:text').val();
+
+    var jqxhr = $.getJSON("/monitor/operator/getdata?service_status="+client_bind+"&status="+status+"&comment="+comment,
+    function(data) {
+
+
+
+    })
+
+}
+
+
+
+
+
+
+
+
+
+
+// Информация по объекту
 function GetAddsData(client_bind) {
 
     var jqxhr = $.getJSON("/monitor/operator/getdata?client_bind="+client_bind,
@@ -230,6 +258,18 @@ function GetAddsData(client_bind) {
             $(".alarm").hide();
             $(".noalarm").show();
         }
+
+        // Информация о обслуживании
+
+        if (data['additions']['service_status']) {
+            $('input[service=ok]:checkbox').prop('checked', "checked");
+        }
+        else {
+            $('input[service=ok]:checkbox').prop('checked', "");
+        }
+        $('input[service=ok]:text').val(data['additions']['service_comment']);
+        //console.log(data['addisions']['service_history']);
+
 
     })
 
