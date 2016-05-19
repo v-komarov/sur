@@ -155,12 +155,15 @@ function GetAlarmList() {
         $("table[group=1] tbody tr").attr("alarm","no");
         $("table[group=1] tbody tr").css("color","");
 
+        console.log(arr);
+
         var arr = data['client_bind_alarm']
         arr.forEach(function(item,i,arr){
             $("table[group=1] tbody tr[client_bind="+item+"]").attr("alarm","yes");
             $("table[group=1] tbody tr[client_bind="+item+"]").css("color","red");
         });
 
+        // Красная рамка
         if (arr.length != 0) {
             $(".container[border=ok]").css( "border", "13px solid red");
         }
@@ -311,6 +314,7 @@ function UpdateData() {
 
         //console.log(data);
         ShowData(data);
+        GetAlarmList();
     })
 }
 
@@ -361,7 +365,5 @@ function ShowData(data) {
 
     });
 
-    // Рамка
-    //if (general_status['status'] == "red") { $(".container[border=ok]").css( "border", "13px solid red"); } else {$(".container").css( "border", "");}
 }
 
