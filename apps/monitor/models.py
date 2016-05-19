@@ -14,9 +14,10 @@ class dev_zone_info(models.Model):
 
 
 
-#### Первый статус события
-class dev_result_list_start(models.Model):
+#### Справочник принимаемых решений
+class dev_result_list(models.Model):
     name = models.CharField(max_length=50) #
+    result_type = models.IntegerField(default=0)
 
 
 
@@ -29,13 +30,6 @@ class dev_evt_log(models.Model):
     message_id = models.IntegerField(default=0) #
     device_console = models.ForeignKey(system_models.dir_device_console) #
     data = JSONField(default={})
-
-
-
-### Справочник окончательно принятого решения на тревожное событие
-class dev_result_list_end(models.Model):
-    name = models.CharField(max_length=50) #
-
 
 
 
