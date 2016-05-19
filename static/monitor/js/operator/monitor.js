@@ -7,11 +7,14 @@ $(document).ready(function() {
     $("second-step button").bind("click",SecondStep);
     $("third-step button").bind("click",ThirdStep);
     $("fourth-step button").bind("click",FourthStep);
+    $("button[service=ok]").bind("click",SetStatusService);
 
     MakeColorTable2();
     GetSettings();
     GetAlarmList();
+    GetServiceList();
     MarkFirst();
+    setInterval('UpdateData();',5000);
 
 });
 
@@ -76,6 +79,11 @@ function SwitchButton(e) {
 
     }
 
+    if ((mygroup == "1") && ($(this).text() == "Обслуживание")) {
+        $("table[group=1] tbody tr[service=no]").hide();
+        $("table[group=1] tbody tr[service=yes]").show();
+
+    }
 
 
     if ((mygroup == "2") && ($(this).text() == "Все")) {
@@ -151,8 +159,10 @@ function GetAlarmList() {
     var jqxhr = $.getJSON("/monitor/operator/getdata?alarmlist=ok",
     function(data) {
 
-        $("table[group=1] tbody tr").attr("alarm","no");
-        $("table[group=1] tbody tr").css("color","");
+        $("table[group=1] tbody tr[service=no]").attr("alarm","no");
+        $("table[group=1] tbody tr[service=no]").css("color","");
+
+
 
         var arr = data['client_bind_alarm']
         arr.forEach(function(item,i,arr){
@@ -160,6 +170,7 @@ function GetAlarmList() {
             $("table[group=1] tbody tr[client_bind="+item+"]").css("color","red");
         });
 
+        // Красная рамка
         if (arr.length != 0) {
             $(".container[border=ok]").css( "border", "13px solid red");
         }
@@ -176,6 +187,58 @@ function GetAlarmList() {
 
 
 
+function GetServiceList() {
+
+    var jqxhr = $.getJSON("/monitor/operator/getdata?servicelist=ok",
+    function(data) {
+
+        $("table[group=1] tbody tr[service=yes]").css("color","");
+        $("table[group=1] tbody tr[service=yes]").attr("service","no");
+
+
+
+        var arr = data['client_bind_service']
+        arr.forEach(function(item,i,arr){
+            $("table[group=1] tbody tr[client_bind="+item+"]").attr("service","yes");
+            $("table[group=1] tbody tr[client_bind="+item+"]").css("color","green");
+        });
+
+    })
+
+}
+
+
+
+
+
+
+
+// Установка статуса обслуживания
+function SetStatusService() {
+
+    var client_bind = $("table[group=1] tbody tr[marked=yes]").attr("client_bind");
+    var status = $('input[service=ok]:checkbox').prop('checked');
+    var comment = $('input[service=ok]:text').val();
+
+    var jqxhr = $.getJSON("/monitor/operator/getdata?service_status="+client_bind+"&status="+status+"&comment="+comment,
+    function(data) {
+
+
+
+    })
+
+}
+
+
+
+
+
+
+
+
+
+
+// Информация по объекту
 function GetAddsData(client_bind) {
 
     var jqxhr = $.getJSON("/monitor/operator/getdata?client_bind="+client_bind,
@@ -194,20 +257,31 @@ function GetAddsData(client_bind) {
 
             if ( data['actions']['action_1'] != '') {
                 $("first-step select").css("background-color","#185574");
+                $("first-step select").css("color","#FFFFFF");
                 $("first-step select").find("option:contains("+ data['actions']['action_1']  +")").attr("selected", "selected");
             }
+            else {$("first-step select").css("background-color",""); $("first-step select").css("color","");}
+
             if ( data['actions']['action_2'] != '') {
                 $("second-step select").css("background-color","#185574");
+                $("second-step select").css("color","#FFFFFF");
                 $("second-step select").find("option:contains("+ data['actions']['action_2']  +")").attr("selected", "selected");
             }
+            else {$("second-step select").css("background-color",""); $("second-step select").css("color","");}
+
             if ( data['actions']['action_3'] != '') {
                 $("third-step select").css("background-color","#185574");
+                $("third-step select").css("color","#FFFFFF");
                 $("third-step select").find("option:contains("+ data['actions']['action_3']  +")").attr("selected", "selected");
             }
+            else {$("third-step select").css("background-color","");$("third-step select").css("color","");}
+
             if ( data['actions']['action_4'] != '') {
                 $("fourth-step select").css("background-color","#185574");
+                $("fourth-step select").css("color","#FFFFFF");
                 $("fourth-step select").find("option:contains("+ data['actions']['action_4']  +")").attr("selected", "selected");
             }
+            else {$("fourth-step select").css("background-color",""); $("fourth-step select").css("color","");}
 
 
         }
@@ -215,6 +289,18 @@ function GetAddsData(client_bind) {
             $(".alarm").hide();
             $(".noalarm").show();
         }
+
+        // Информация о обслуживании
+
+        if (data['additions']['service_status']) {
+            $('input[service=ok]:checkbox').prop('checked', "checked");
+        }
+        else {
+            $('input[service=ok]:checkbox').prop('checked', "");
+        }
+        $('input[service=ok]:text').val(data['additions']['service_comment']);
+        //console.log(data['addisions']['service_history']);
+
 
     })
 
@@ -310,6 +396,8 @@ function UpdateData() {
 
         //console.log(data);
         ShowData(data);
+        GetAlarmList();
+        GetServiceList();
     })
 }
 
@@ -322,81 +410,43 @@ function UpdateData() {
 
 
 function ShowData(data) {
-    //$("user").remove();
-
-    var button1 = data['buttongroup1'];
-//    var button2 = data['buttongroup2'];
-
-    var general_status = data['general_status'];
-
-    var group1 = $("button[group=1]");
-//    var group2 = $("button[group=2]");
 
 
+    data['update'].forEach(function(item,i,arr){
 
+        var t = "<tr "
 
+        +"row_id=\""+item["row_id"]+"\" "
 
-    // Таблица 2
+        +"alert_level=\""+item["alert_level"]+"\" "
 
-    for (item in table2) {
-        ob = table2[item];
+        +"client_bind_idl=\""+item["client_bind_id"]+"\" "
 
-        var background = "style=\"background-color:#B0C4DE;\" ";
-
-        if (ob['action'] == 'red') { background = "style=\"background-color:#FA8072;\" "; }
-        if (ob['action'] == 'yellow') { background = "style=\"background-color:#F0E68C;\" "; }
-        if (ob['action'] == 'green') { background = "style=\"background-color:#90EE90;\" "; }
-
-
-        var t = "<tr group='2' "
-
-        +"row_id=\""+ob["id"]+"\" "
-
-        +"action=\""+ob["action"]+"\" "
-
-        +background
         +"><td width='10%'>"
-        +ob['col1']+"</td><td width='5%'>"
-        +ob['col2']+"</td><td width='10%'>"
-        +ob['col3']+"</td><td width='25%'>"
-        +ob['col4']+"</td><td width='30%'>"
-        +ob['col5']+"</td><td width='5%'>"
-        +ob['col6']+"</td><td width='5%'>"
-        +ob['col7']+"</td></tr>";
-
-        var tr = $(t);
-
-        //console.log($("tbody[group=2] tr:first").attr("row_id"));
+        +item['date_text']+"</td><td width='10%'>"
+        +item['time_text']+"</td><td width='10%'>"
+        +item['device_number']+"</td><td width='40%'>"
+        +item['message_text']+"</td><td width='15%'>"
+        +item['zone_text']+"</td><td width='15%'>"
+        +item['stub_text']+"</td></tr>";
 
         var first = $("tbody[group=2] tr:first").attr("row_id");
 
-        //console.log(Number(ob['id']),Number(first)+Number(1));
+        if (Number(item['row_id']) == (Number(1)+Number(first))) {
 
-        if (Number(ob['id']) == (Number(1)+Number(first))) {$("tbody[group=2]").prepend(t);}
+            $("tbody[group=2]").prepend(t);
 
+            if ( $("table[group=2] tr:first").attr("alert_level") == 0 ) {$("tbody[group=2] tr:first").css("background-color","#98FB98");}
+            if ( $("tbody[group=2] tr:first").attr("alert_level") == 1 ) {$("tbody[group=2] tr:first").css("background-color","#40E0D0");}
+            if ( $("tbody[group=2] tr:first").attr("alert_level") == 3 ) {$("tbody[group=2] tr:first").css("background-color","yellow");}
+            if ( $("tbody[group=2] tr:first").attr("alert_level") == 9 ) {$("tbody[group=2] tr:first").css("background-color","#FF4500");}
 
-    }
+            // Проверка нужно строку показывать ли нет
+            if (($("ul[group=2] li.active").text() == "На объекте") && ( $("table[group=1] tr[marked=yes]").attr("client_bind") != item["client_bind_id"] )) {$("table[group=2] tr:first").hide();}
 
+        }
 
-
-    for (i in status) {
-        s = status[i];
-
-        $("tr[group=1]").each(function( index ) {
-
-            if ($(this).children("td").eq(0).text() == i && s == "red") { $(this).css("background-color","red"); $(this).children("td").eq(1).text("!"); }
-            if ($(this).children("td").eq(0).text() == i && s == "green") { $(this).css("background-color",""); $(this).children("td").eq(1).text(""); }
-
-        });
-
-    }
-
-
-
-    // Рамка
-    if (general_status['status'] == "red") { $(".container[border=ok]").css( "border", "13px solid red"); } else {$(".container").css( "border", "");}
-
-    $("tr").on("click",ClickRow);
+    });
 
 }
 

@@ -6,7 +6,7 @@ from django.http import HttpResponse
 from django.db import connections
 from apps.system.models  import client_bind
 from apps.system.models  import client_object_timetable
-from apps.monitor.models import dev_status_evt,dev_evt_log
+from apps.monitor.models import dev_status_evt,dev_evt_log,dev_service_device
 import apps.settings
 import time
 
@@ -59,6 +59,31 @@ def GetOperatorData(request):
         response_data['docs'] = {}
         response_data['timetable'] = {}
         response_data['additions'] = {u'client_name': client_bind.objects.get(pk=client_bind_id).client_contract.client.name}
+
+        ### Обслуживание
+        try:
+            cb = client_bind.objects.get(pk=client_bind_id)
+            a = dev_service_device.objects.get(client_bind=cb,history=False)
+            response_data['additions']['service_status'] = a.status
+            response_data['additions']['service_comment'] = a.comment
+        except:
+            response_data['additions']['service_status'] = False
+            response_data['additions']['service_comment'] = ""
+        """
+        service_history = []
+        for item in dev_service_device.objects.get(client_bind=cb,history=True).order_by('-datetime_service'):
+            service_history.append({
+                'datetime':item.datetime_service,
+                'date_text':item.datetime_service,
+                'time_text':item.datetime_service,
+                'status':item.status,
+                'comment':item.comment
+            })
+
+        response_data['additions']['service_history'] = service_history
+        """
+
+        #### Обслуживание окончание
 
         if dev_status_evt.objects.filter(data__client_bind_id=int(client_bind_id,10),data__status='opened').count() != 0:
             g = dev_status_evt.objects.get(data__client_bind_id=int(client_bind_id,10),data__status='opened')
@@ -113,11 +138,29 @@ def GetOperatorData(request):
         alarm_list = []
 
         data = dev_status_evt.objects.filter(data__status='opened')
+
         for item in data:
             alarm_list.append(item.data['client_bind_id'])
 
 
         response_data['client_bind_alarm'] = alarm_list
+
+
+
+
+
+    if r.has_key("servicelist") and rg("servicelist") != '':
+
+        service_list = []
+
+        data = dev_service_device.objects.filter(status=True,history=False)
+
+        for item in data:
+            service_list.append(item.client_bind.id)
+
+
+        response_data['client_bind_service'] = service_list
+
 
 
 
@@ -205,7 +248,7 @@ def GetOperatorData(request):
         data_log = dev_evt_log.objects.order_by('-datetime_evt')[0:apps.settings.OPERATOR_EVT_UPDATE_ROWS]
         data = []
         for row in data_log:
-            print row.data
+
             data.append(
                 {'row_id':row.id,
                  'alert_level':row.data['alert_level'],
@@ -220,6 +263,31 @@ def GetOperatorData(request):
             )
         response_data['update'] = data
 
+
+
+    ### Установка статуса обслуживания
+    if r.has_key("service_status") and rg("service_status") != '':
+        client_bind_id = int(request.GET["service_status"],10)
+        cb = client_bind.objects.get(pk=client_bind_id)
+        comment = request.GET["comment"]
+        try:
+            status_now = dev_service_device.objects.get(history=False,client_bind=cb).status
+        except:
+            status_now = False
+
+        if request.GET["status"] == 'true' and status_now == False:
+            dev_service_device.objects.filter(client_bind=cb,history=False).update(history=True)
+            dev_service_device.objects.create(status=True,history=False,client_bind=cb,comment=comment)
+
+        if request.GET["status"] == 'false' and status_now == True:
+            dev_service_device.objects.filter(client_bind=cb,history=False).update(history=True)
+            dev_service_device.objects.create(status=False,history=False,client_bind=cb,comment=comment)
+
+
+
+        response_data['result'] = 'ok'
+
+    ### Установка статуса обслуживания конец
 
 
 
