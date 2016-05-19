@@ -142,9 +142,25 @@ def GetOperatorData(request):
         for item in data:
             alarm_list.append(item.data['client_bind_id'])
 
-        print alarm_list
 
         response_data['client_bind_alarm'] = alarm_list
+
+
+
+
+
+    if r.has_key("servicelist") and rg("servicelist") != '':
+
+        service_list = []
+
+        data = dev_service_device.objects.filter(status=True,history=False)
+
+        for item in data:
+            service_list.append(item.client_bind.id)
+
+
+        response_data['client_bind_service'] = service_list
+
 
 
 
