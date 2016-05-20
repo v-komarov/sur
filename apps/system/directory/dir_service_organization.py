@@ -16,7 +16,7 @@ def index(request):
 
     if request.user.has_perm('system.client'):
         title = 'Список организаций'
-        post_list = ['Руководитель','Администратор']
+        post_list = ['Руководитель', 'Директор', 'Администратор']
         director_set = db_sentry.sentry_user.objects.filter(post__name__in=post_list, is_active=1)
         return render_to_response('system/directory/dir_service_organization.html', locals(), RequestContext(request))
     else:

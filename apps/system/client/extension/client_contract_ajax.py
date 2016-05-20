@@ -162,7 +162,7 @@ def get_contract_interval(request, data=None):
     for contract in db_sentry.dir_contract_interval.objects.filter(
             service_organization = int(request.GET['service_organization_id']),
             is_active = 1 ):
-        end = 700
+        end = 4000
         for number in range(contract.begin,contract.end):
             if end > 0:
                 data['all'] += 1
