@@ -2,6 +2,7 @@ $(document).ready(function() {
 
     $("ul li a").bind("click",SwitchButton);
     $("button[clear=OK]").bind("click",ClearAlarm);
+    $("button[create_alarm=OK]").bind("click",CreateAlarm);
     $("table[group=1] tbody tr").bind("click",ClickObjectRow);
     $("first-step button").bind("click",FirstStep);
     $("second-step button").bind("click",SecondStep);
@@ -103,6 +104,29 @@ function SwitchButton(e) {
     }
 
 }
+
+
+
+
+
+
+// Создание тревоги
+function CreateAlarm(e) {
+    var client_bind = $("table[group=1] tbody tr[marked=yes]").attr("client_bind");
+
+    var jqxhr = $.getJSON("/monitor/operator/getdata?createalarm="+client_bind,
+    function(data) {
+
+        if (data['result'] == 'ok') {
+            $(".alarm").show();
+            $(".noalarm").hide();
+        }
+
+    })
+
+}
+
+
 
 
 
