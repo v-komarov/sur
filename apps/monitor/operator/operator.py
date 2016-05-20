@@ -288,8 +288,26 @@ def GetOperatorData(request):
 
     ### Установка статуса обслуживания конец
 
+    ### Создание тревоги вручную
+    if r.has_key("createalarm") and rg("createalarm") != '':
+        client_bind_id = int(request.GET["createalarm"],10)
+        cb = client_bind.objects.get(pk=client_bind_id)
+        ### Проверка на обслуживании объект или нет
+        if dev_service_device.objects.filter(status=True,history=False,client_bind=cb).count() == 0:
 
+            dev_status_evt.objects.create(data={
+                'status':'opened',
+                'client_bind_id':client_bind_id,
+                'datetime_begin': time.time(),
+                'date_text':datetime.datetime.now().strftime('%d.%m.%Y'),
+                'time_text':datetime.datetime.now().strftime('%H:%M'),
+                'message_text':"Тревога создана оператором"
+            })
 
+            response_data['result'] = 'ok'
+        else:
+            response_data['result'] = 'no'
+    ### Создание тревоги вручную конец
 
 
     response = HttpResponse(json.dumps(response_data), content_type="application/json")
