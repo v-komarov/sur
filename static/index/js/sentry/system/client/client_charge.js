@@ -97,7 +97,7 @@ $(document).ready(function() {
 });
 
 
-function charge_Recharge(){
+function charge_Recharge() {
     $('.middleBlock select').attr('disabled','disabled');
     loading('begin');
     $('#charge_pop').hide();
@@ -121,7 +121,7 @@ function charge_Recharge(){
 }
 
 
-function charge_Update(action){
+function charge_Update(action) {
     var error = 'null';
     var ajax_array = {'client_id':client_id};
     ajax_array['charge_id'] = $('#charge_list p.hover').attr('charge_id');
@@ -160,7 +160,7 @@ function charge_Update(action){
 }
 
 
-function charge_Edit(action, charge_id, month){
+function charge_Edit(action, charge_id, month) {
     var charge = charge_list[month]['list'][charge_id];
     console.log(charge);
     $('#charge_pop .datepicker').datepicker("destroy");
@@ -359,7 +359,7 @@ function charge_Draw(data, year){
                     var cost_count = 0;
                     total_cost += parseInt(item['value']);
                     cost_count++;
-                    item_p += '<p name="cost" charge_id="'+ item['id'] +'" bind_id="'+ item['bind_id'] +'">';
+                    item_p += '<p name="cost" charge_id="'+ item['id'] +'" bind_id="'+ item['bind_id'] +'">Объект: ' + item['object__name'] + ' ';
                     if(item['charge_type']=='manual'){
                         var date_range = ' [<span class="interval">';
                         if(item['begin_date']==item['end_date']){

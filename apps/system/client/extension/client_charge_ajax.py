@@ -12,7 +12,7 @@ from apps.system.client.extension import client__form
 from apps.system.sentry_user.extension import sentry_log
 
 
-def get(request, data=None):
+def search(request, data=None):
     client = db_sentry.client.objects.get(id=int(request.GET['client']))
     charge_set = db_sentry.client_bind_charge.objects.filter(bind__client_contract__client=client.id, is_active=1)
     if 'contract' in request.GET:
@@ -56,6 +56,8 @@ def get(request, data=None):
             data['charge'][charge.begin_date.month]['list'][charge.id] = {
                 'id': charge.id,
                 'bind_id': charge.bind_id,
+                'contract__name': charge.bind.client_contract.name,
+                'object__name': charge.bind.client_object.name,
                 'charge_type': charge.charge_type,
                 'begin_date': charge.begin_date.strftime("%d.%m.%Y"),
                 'end_date': charge.end_date.strftime("%d.%m.%Y"),
