@@ -36,7 +36,7 @@ def ajax(request,action=None):
 
     if action == 'get':
         if request.user.has_perm('system.client'):
-            data = client_charge_ajax.get(request, data)
+            data = client_charge_ajax.search(request, data)
         else: data['error'] = 'Доступ запрещен'
 
     elif action == 'update':

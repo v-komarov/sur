@@ -100,10 +100,6 @@ h2 {
 .site_navigation .link:hover,
 .site_navigation .authenticated:hover,
 .site_navigation .cabinet:hover,
-.footer .navigation a:hover {
-    background-color: #2a98ed;
-    box-shadow: 0 0 12px 1px #0c2a66 inset;
-}
 .top_left .user {
 
 }
@@ -785,47 +781,6 @@ ul.number {
 
 }
 
-/*   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   .footer   */
-
-.footer {
-    background: #254379; /* for non-css3 browsers */
-    /* Для WebKit (Safari, Google Chrome и т.д.) */
-    background: -webkit-gradient(linear, left top, left bottom, from(#2A64A8), to(#254379), color-stop(1, #254379));
-    /* Для Mozilla/Gecko (Firefox и т.д.) */
-    background: -moz-linear-gradient(top, #2A64A8, #254379 100%);
-    /* Для Internet Explorer 5.5 - 7 */
-    filter: progid:DXImageTransform.Microsoft.gradient(startColorStr=#2A64A8, endColorStr=#254379, GradientType=0);
-
-    box-shadow: 0 0 16px -8px #000000;
-    clear: left;
-    color: #FFFFFF;
-    height: 130px;
-    margin: 30px 0 20px;
-    width: 100%;
-}
-.footer .navigation {
-    border-bottom: 1px solid #819dd5;
-    margin: 0 13px;
-    font-size: 0;
-}
-.footer .navigation a {
-    border-right: 1px solid #819dd5;
-    color: #FFFFFF;
-    display: inline-block;
-    font-size: 13px;
-    margin: 7px 0 5px;
-    padding: 7px 13px 6px;
-    text-decoration: none;
-}
-.footer .copyright {
-    float: left;
-    padding: 32px 0 0 23px;
-}
-.footer .counters {
-    float: right;
-    padding: 20px 13px;
-}
-
 /*   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   .actions .articles   */
 
 .content div.actions {
@@ -950,6 +905,9 @@ ul.number {
 
 }
 
+.footer {
+    padding: 20px 15px;
+}
 /*   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   ---   Overlord interface */
 
 .overlord_input {
