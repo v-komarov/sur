@@ -299,13 +299,42 @@ function GetAddsData(client_bind) {
             $('input[service=ok]:checkbox').prop('checked', "");
         }
         $('input[service=ok]:text').val(data['additions']['service_comment']);
-        //console.log(data['addisions']['service_history']);
+        ShowServiceHistory(client_bind,(data['additions']['service_history']).reverse());
 
 
     })
 
 
 }
+
+
+
+
+
+function ShowServiceHistory(client_bind,data) {
+
+
+    $("tbody[group=3]").empty();
+
+    var status = '';
+
+    data.forEach(function(item,i,arr){
+
+        if (item['status']) {status = "Обслуживание";} else {status = "Работа";}
+
+        var t = "<tr "
+
+            +"><td width='15%'>"
+            +item['date_text']+"</td><td width='15%'>"
+            +item['time_text']+"</td><td width='20%'>"
+            +status+"</td><td width='50%'>"
+            +item['comment']+"</td></tr>";
+
+            $("tbody[group=3]").prepend(t);
+
+    });
+}
+
 
 
 
