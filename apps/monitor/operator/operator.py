@@ -69,19 +69,18 @@ def GetOperatorData(request):
         except:
             response_data['additions']['service_status'] = False
             response_data['additions']['service_comment'] = ""
-        """
+
         service_history = []
-        for item in dev_service_device.objects.get(client_bind=cb,history=True).order_by('-datetime_service'):
+        for item in dev_service_device.objects.filter(client_bind=cb).order_by('-datetime_service'):
             service_history.append({
-                'datetime':item.datetime_service,
-                'date_text':item.datetime_service,
-                'time_text':item.datetime_service,
+                'datetime':time.mktime(item.datetime_service.timetuple()),
+                'date_text':(item.datetime_service).strftime("%d.%m.%Y"),
+                'time_text':(item.datetime_service).strftime("%H:%M"),
                 'status':item.status,
                 'comment':item.comment
             })
 
         response_data['additions']['service_history'] = service_history
-        """
 
         #### Обслуживание окончание
 
