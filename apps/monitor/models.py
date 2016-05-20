@@ -35,7 +35,7 @@ class dev_evt_log(models.Model):
 
 #### Четырех шаговая обработка тревоги диспетчером
 class dev_status_evt(models.Model):
-    evt = models.OneToOneField(dev_evt_log) #
+    evt = models.OneToOneField(dev_evt_log,null=True) #
     data = JSONField(default={})
 
 
