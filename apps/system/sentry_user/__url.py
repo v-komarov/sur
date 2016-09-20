@@ -10,6 +10,7 @@ import permission
 
 urlpatterns = [
     url(r'^$', sentry_user.index),
+
     url(r'^ajax/(?P<action>\w{1,32})/$', sentry_user.ajax),
     url(r'^group/$', sentry_user_group.index),
     url(r'^group/ajax/(?P<action>\w{1,32})/$', sentry_user_group.ajax),

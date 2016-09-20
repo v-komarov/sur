@@ -45,10 +45,11 @@ def update(request, data):
         workflow = workflow_form.save()
 
         data['event_set.event_type.label'] = workflow.workflow_type.label
-        workflow.save()
 
         if workflow.contract_id and not workflow.object_id:
-            client_contract = db_sentry.client_contract.objects.get(id = workflow.contract.id)
+            client_contract = db_sentry.client_contract.objects.get(id=workflow.contract.id)
+            if workflow.workflow_type.label == 'client_contract_close':
+                client_contract.end_date = workflow.workflow_date
             data['status'] = client_contract.check_contract_status()
 
         elif workflow.contract_id and workflow.object_id:
@@ -62,12 +63,33 @@ def update(request, data):
                 if object_cost:
                     object_cost.begin_date = workflow.workflow_date
                     object_cost.save()
+
+                try:
+                    db_sentry.client_bind_cost.objects \
+                        .filter(client_bind=client_bind.id, cost_type__label='client_object_connect') \
+                        .update(begin_date=workflow.workflow_date)
+                except:
+                    pass
+
             elif workflow.workflow_type.label == 'client_object_disconnect':
                 client_bind.end_date = workflow.workflow_date
 
-            data['status'] = client_bind.check_bind_status()
             client_bind.save()
 
+        if workflow.workflow_date.replace(hour=0, minute=0, second=0) >= datetime.datetime.now().replace(hour=0, minute=0, second=0):
+            workflow.done = False
+            data['workflow_date'] = 'future'
+        else:
+            workflow.done = True
+            data['workflow_date'] = str(workflow.workflow_date)
+        workflow.save()
+
+        try:
+            data['status'] = client_bind.check_bind_status()
+            data['status__'] = 'client_bind'
+        except:
+            data['status'] = workflow.contract.check_contract_status()
+            data['status__'] = 'contract'
 
         sentry_log.create(
             request,
@@ -110,6 +132,7 @@ def update(request, data):
     return data
 
 
+
 def delete(request,data):
     workflow = db_sentry.client_workflow.objects.get(id=int(request.POST['workflow']))
 
@@ -133,6 +156,8 @@ def delete(request,data):
 
     if workflow.contract_id and not workflow.object_id:
         client_contract = db_sentry.client_contract.objects.get(id = workflow.contract.id)
+        if workflow.workflow_type.label == 'client_contract_close':
+            client_contract.end_date = None
         data['status'] = client_contract.check_contract_status()
 
     elif workflow.contract_id and workflow.object_id:

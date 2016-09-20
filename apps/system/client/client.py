@@ -46,6 +46,11 @@ def add(request, client_id=None):
 def ajax(request, action=None):
     data = {'error':None}
 
+    if action == 'search':
+        if request.user.has_perm('system.client'):
+            data = client_ajax.search(request, data)
+        else: data['error'] = 'Доступ запрещен'
+
     if action=='create':
         if request.user.has_perm('system.client'):
             data = client_ajax.create(request,data)

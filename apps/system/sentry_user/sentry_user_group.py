@@ -12,7 +12,7 @@ from apps.system.sentry_user.extension import sentry_user_group_ajax
 def index(request,client_id=None):
     title = 'Группы пользователей'
     if request.user.has_perm('system.client'):
-        groups_set = Group.objects.all()
+        groups_set = Group.objects.all().order_by('name')
 
         return render_to_response('system/sentry_user/sentry_user_group.html', locals(), RequestContext(request))
     else:

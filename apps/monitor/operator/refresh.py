@@ -10,7 +10,7 @@ from sentry.models import db_security, db_sentry
 
 
 def events(request):
-    if request.user.has_perm('sentry.monitor'):
+    if request.user.has_perm('monitor.monitor'):
         data = {}
         data['time'] = datetime.datetime.now().strftime("%H:%M:%S")#%Y-%m-%d
         time_delta = datetime.datetime.now() - datetime.timedelta(days=5)#hours=72)
@@ -130,7 +130,7 @@ def events(request):
 
 
 def objects(request):
-    if request.user.has_perm('sentry.monitor'):
+    if request.user.has_perm('monitor.monitor'):
         object_filter = request.POST['object_filter']
         data = {}
         if request.POST['action'] == 'new':

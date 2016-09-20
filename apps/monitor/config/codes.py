@@ -10,7 +10,7 @@ from apps.system import models as db_sentry
 
 
 def index(request, client_id=None):
-    if request.user.has_perm('sentry.objects'):
+    if request.user.has_perm('monitor.monitor'):
         title = 'Список кодов'
         codes_set = db_sentry.dir_code.objects.all()
         group_set = db_sentry.dir_event_group.objects.all()
@@ -21,7 +21,7 @@ def index(request, client_id=None):
         return render_to_response('404.html', RequestContext(request))
 
 def save(request):
-    if request.user.has_perm('sentry.objects'):
+    if request.user.has_perm('monitor.monitor'):
         data = {}
         dir_event_id = int(request.POST['dir_event_id'])
         if request.POST['code_id'] == 'new':

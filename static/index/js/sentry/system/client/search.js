@@ -20,40 +20,23 @@ $(document).ready(function(){
         } else if(action=='expand' || action=='hide'){
             search_expand(action);
         } else if(action=='reset') {
-            $('.search input, .search select').each(function(){
+            $('table.search input, table.search select').val('');
+            $('.result_count').html('');
+            $('#object_list a.item').remove();
+            $('.search input, .search select').each(function() {
                 if( $(this).is(':visible') ) {
                     $(this).find(":first").attr("selected", "selected");
                     $(this).val('');
                 }
             });
-
         }
     });
-    /*
-     $('.search input').keyup(function () {
-     client_object_Search();
-     });
 
-     $('.search:not(.expand) input').focus(function(){
-     var focus_name = $(this).attr('name');
-     $('.search:not(.expand) input').each(function(){
-     if(focus_name!=$(this).attr('name')){
-     $(this).val('');
-     }
-     });
-     });
-
-     $('.objectsList').delegate("a.item", "mouseenter", function(){
-     console.log('mouseenter');
-     $(this).focus();
-     });
-     */
-
-    $(".search select[name=service_type]").on('change', function(){
+    $(".search select[name=service_type]").on('change', function() {
         service_type_Change($(this).val());
     });
 
-    $('body').on('change', 'select[name=address_region]', function(){
+    $('body').on('change', 'select[name=address_region]', function() {
 
         address_locality_Search( $(this).val() );
     });
@@ -186,7 +169,7 @@ function client_object_Search() {
     var ajax_array = get_each_value('.search__view');
     //console.log(ajax_array);
     $.ajax({
-        url: '/system/client/search/ajax/search/', type: 'get', dataType: 'json', data: ajax_array,
+        url: '/system/client/search/ajax/search/', type:'get', dataType:'json', data:ajax_array, timeout:30000,
         success: function (data) {
             contract_list_draw('#object_list',data);
             loading('end');

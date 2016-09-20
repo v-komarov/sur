@@ -33,74 +33,95 @@
     {% if perms.system.client and request.path|slice:':8' == '/system/' %}
 {% endcomment %}
 
-{% if perms.system.client %}
-    <div class="margin_left">
 
+
+
+<div class="margin_left menu">
+
+    {% if perms.system.client %}
+        <a class="link {% if request.path|slice:':15' == '/system/client/' %}selected{% endif %}"
+           href="/system/client/search/">Объекты</a>
+    {% endif %}
+
+    {% if perms.monitor.monitor %}
+        <ul class="top_menu">
+            <li>
+                <a class="link {% if request.path|slice:':9' == '/monitor/' %}selected{% endif %}"
+                   href="/monitor/operator/">ПЦН</a>
+                <ul class="inside">
+                    <li class="sub"><a class="link" href="/monitor/archive/">Архив событий</a></li>
+                    <li class="sub"><a class="link" href="/monitor/manager">Менеджер объектов</a></li>
+                    <li class="sub"><a class="link" href="/monitor/maps/">Карта</a></li>
+                </ul>
+            </li>
+        </ul>
+
+    {% endif %}
+
+    {% comment %}
         {% if perms.system.client %}
-            <a class="link {% if request.path|slice:':15' == '/system/client/' %}selected{% endif %}"
-               href="/system/client/search/">Объекты</a>
+            <a class="link {% if request.path|slice:':6' == '/post/' %}selected{% endif %}"
+               href="/post/checkpoint/">Посты</a>
         {% endif %}
+    {% endcomment %}
 
-        {% if perms.system.client %}
-            <a class="link {% if request.path|slice:':9' == '/monitor/' %}selected{% endif %}"
-               href="/monitor/operator/">ПЦН</a>
-        {% endif %}
+    {% if perms.task.task %}
+        <a class="link {% if request.path|slice:':6' == '/task/' %}selected{% endif %}"
+           href="/task/">Заявки</a>
+    {% endif %}
 
-        {% comment %}
-            {% if perms.system.client %}
-                <a class="link {% if request.path|slice:':6' == '/post/' %}selected{% endif %}"
-                   href="/post/checkpoint/">Посты</a>
-            {% endif %}
-        {% endcomment %}
 
-        {% if perms.system.client %}
-            <a class="link {% if request.path|slice:':6' == '/task/' %}selected{% endif %}"
-               href="/task/">Заявки</a>
-        {% endif %}
+    {% if perms.system.finance %}
+        <a class="link {% if request.path|slice:':16' == '/system/finance/' %}selected{% endif %}"
+           href="/system/finance/">Финансы</a>
+    {% endif %}
 
-        {% comment %}
-            {% if perms.system.client %}
-                <a class="link {% if request.path|slice:':16' == '/system/finance/' %}selected{% endif %}"
-                   href="/system/finance/">Финансы</a>
-            {% endif %}
 
+    {% comment %}
         {% if perms.system.client %}
             <a class="link {% if request.path|slice:':18' == '/system/analytics/' %}selected{% endif %}"
                href="/system/analytics/">Аналитика</a>
         {% endif %}
-        {% endcomment %}
+    {% endcomment %}
 
+    {% if perms.system.sentry_user %}
+        <a class="link {% if request.path|slice:':20' == '/system/sentry_user/' %}selected{% endif %}"
+           href="/system/sentry_user/">Пользователи</a>
+    {% endif %}
+
+    {% if perms.system.directory %}
+        <a class="link {% if request.path|slice:':18' == '/system/directory/' %}selected{% endif %}"
+           href="/system/directory/locality/">Справочники</a>
+    {% endif %}
+
+    {% if perms.system.setting %}
+        <a class="link {% if request.path|slice:':16' == '/system/setting/' %}selected{% endif %}"
+           href="/system/setting/general/">Настройки</a>
+    {% endif %}
+
+    {% comment %}
         {% if perms.system.client %}
-            <a class="link {% if request.path|slice:':20' == '/system/sentry_user/' %}selected{% endif %}"
-               href="/system/sentry_user/">Пользователи</a>
+            <a class="link {% if request.path == '/system/roadside/' %}selected{% endif %}"
+               href="/system/roadside/">Помощь на дороге</a>
         {% endif %}
-
-        {% if perms.system.client %}
-            <a class="link {% if request.path|slice:':18' == '/system/directory/' %}selected{% endif %}"
-               href="/system/directory/locality/">Справочники</a>
-        {% endif %}
-
-        {% if perms.system.client %}
-            <a class="link {% if request.path|slice:':16' == '/system/setting/' %}selected{% endif %}"
-               href="/system/setting/general/">Настройки</a>
-        {% endif %}
-
-        {% comment %}
-            {% if perms.system.client %}
-                <a class="link {% if request.path == '/system/roadside/' %}selected{% endif %}"
-                   href="/system/roadside/">Помощь на дороге</a>
-            {% endif %}
-        {% endcomment %}
+    {% endcomment %}
 
 
-        <div class="cage"><a class="cage__init">{{ user.username }}</a>
-            <div class="cage__float">
-                <a class="link" href="/cabinet/logout/">Выход</a>
-            </div>
+    <div class="cage"><a class="cage__init">{{ user.username }}</a>
+        <div class="cage__float">
+            <a class="link" href="/cabinet/logout/">Выход</a>
         </div>
-
     </div>
-{% endif %}
+
+
+    <div class="cage" style="margin-left:50px;position:absolute;top:0;"><h3><span id="doc_time"></span></h3></div>
+
+
+
+</div>
+
+
+
 
 
 {% comment %}

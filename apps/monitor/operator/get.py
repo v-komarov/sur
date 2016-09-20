@@ -11,7 +11,7 @@ from sentry.models import db_security, db_sentry
 
 
 def event(request):
-    if request.user.has_perm('sentry.monitor'):
+    if request.user.has_perm('monitor.monitor'):
         data = {}
         alarm_list = ['alarm','alarm_action','alarm_completed']
         if 'id' in request.GET:
@@ -80,7 +80,7 @@ def event(request):
 
 
 def object(request):
-    if request.user.has_perm('sentry.monitor'):
+    if request.user.has_perm('monitor.monitor'):
         if 'id' in request.GET:
             object_id = int(request.GET['id'])
             data = {}
@@ -137,7 +137,7 @@ def object(request):
 
 
 def search_object(request):
-    if request.user.has_perm('sentry.monitor'):
+    if request.user.has_perm('monitor.monitor'):
         #data = {}
         object_list = db_sentry.event.objects.all()#.values('object_id')
         object_list = [item.object_id for item in object_list]

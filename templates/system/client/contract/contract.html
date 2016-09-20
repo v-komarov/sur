@@ -20,6 +20,7 @@
             {% else %}<div class="service_string_"></div>
             {% endif %}</h2>
 
+        {% include "system/client/contract/search_archive.html" %}
         {% include "system/client/contract/contract__pop.html" %}
         {% include "system/client/contract/object__pop.html" %}
         {% include "system/client/contract/device__pop.html" %}
@@ -59,15 +60,26 @@
                         <td class="cell_2" name="event_date"></td>
                         <td class="cell" name="sentry_user"></td>
                         <td class="cell_3" name="log_date"></td></tr>
+                    <tr class="row" action="event" event_type="client_contract_close" event_type_id="13" title="Договор закрыт">
+                        <td class="padding text_right" name="event_type">Договор закрыт</td>
+                        <td class="cell_2" name="event_date"></td>
+                        <td class="cell" name="sentry_user"></td>
+                        <td class="cell_3" name="log_date"></td></tr>
                     </tbody>
                 </table>
             </div>
 
             <div id="object_list">
                 <div class="button_list"><b class="txt">Список объектов</b>
-                    {% if perms.system.client_object_service_add %}
-                        <div class="btn_ui bg" action="object_add" icon="object_add" title="Добавить объект"><div class="icon"></div><div class="txt">Добавить объект</div></div>
+                    {% if perms.system.client_object %}
+                        <div class="btn_ui bg" action="object_add" icon="object_add" title="Добавить объект">
+                            <div class="icon"></div><div class="txt">Добавить объект</div>
+                        </div>
                     {% endif %}
+                    <div class="btn_ui bg" action="search_archive" icon="search" title="Поиск в архиве">
+                        <div class="icon"></div><div class="txt">Поиск в архиве</div>
+                    </div>
+
                     <div class="btn_ui bg" action="contract_reset" icon="reset" title="Обновить"><div class="icon"></div></div>
                 </div>
                 <div id="list"></div>
@@ -77,8 +89,14 @@
                 <div class="button_list object__item__title"><b class="txt">Объект: <span name="name"></b></span>
                     <div class="btn_ui bg" action="object_edit" icon="edit" title="Редактировать"><div class="icon"></div></div>
                     <div class="btn_ui bg" action="contract_task_add" icon="object_add" title="Редактировать"><div class="icon"></div><div class="txt">Заявка</div></div>
+                    <div class="btn_ui bg" action="object_hide" icon="arrow_down" title="Скрыть"><div class="icon"></div><div class="txt">Скрыть</div></div>
+                    <div class="btn_ui bg hide" action="object_show" icon="arrow_up" title="Показать"><div class="icon"></div><div class="txt">Показать</div></div>
+                    <!--div class="btn_ui bg" action="object_archive" icon="pack" title="В архив"><div class="icon"></div><div class="txt">В архив</div></div>
+                    <div class="btn_ui bg" action="object_unarchive" icon="unpack" title="Из архива"><div class="icon"></div><div class="txt">Из архива</div></div--->
                 </div>
                 <table class="tableInfo wide"><tbody class="show">
+                <tr class="row" action="object"><td class="padding_5 text_right border_right">Пульт</td>
+                    <td class="padding_5" name="console"></td></tr>
                 <tr class="row" action="object"><td class="padding_5 text_right border_right">Номер на пульте</td>
                     <td class="padding_5" name="console_number"></td></tr>
                 <tr class="row" action="object"><td class="padding_5 text_right border_right">Адрес</td>
@@ -89,12 +107,16 @@
                     <td class="border_left padding" name="charge_month_day"></td></tr>
                 <tr class="row" action="object"><td class="padding_5 text_right border_right">Стоимость услуги</td>
                     <td class="padding_5" name="cost_value"></td></tr>
+                <tr class="row" action="object"><td class="padding_5 text_right border_right">Стоимость подключения</td>
+                    <td class="padding_5" name="connect_cost"></td></tr>
                 <tr class="row" action="object"><td class="padding_5 text_right border_right">Пароль</td>
                     <td class="padding_5" name="password"></td></tr>
                 <tr class="row" action="object"><td class="padding_5 text_right border_right">ГБР</td>
                     <td class="padding_5" name="security_squad"></td></tr>
                 <tr class="row" action="object"><td class="padding_5 nowrap text_right">Материальная ответственность</td>
                     <td class="border_left padding" name="financial_responsibility"></td></tr>
+                <tr class="row" action="object"><td class="padding_5 nowrap text_right">Контроль режима охраны</td>
+                    <td class="border_left padding" name="time24"></td></tr>
                 <tr class="row" action="object"><td class="padding_5 nowrap text_right">Метки</td>
                     <td class="border_left padding" name="tag_list"></td></tr>
                 <tr class="row" action="object"><td class="padding_5 text_right border_right">Вид деятельности</td>
@@ -123,7 +145,7 @@
                         <td class="cell_2" name="event_date"></td>
                         <td class="cell" name="sentry_user"></td><td class="cell_3" name="log_date"></td></tr>
                     <tr class="row" action="pause" event_type="pause" title="Приостановка">
-                        <td class="padding text_right" name="event_type">Приостановка начислений</td>
+                        <td class="padding text_right" name="event_type">Приостановка (добавление) начислений</td>
                         <td name="pause_list" colspan="3"></td></tr>
                     <tr class="row" action="event" event_type="client_object_notice" event_type_id="4" title="Уведомление ОВД о подключении объекта">
                         <td class="padding text_right" name="event_type">Уведомление ОВД (подключение)</td>
@@ -167,7 +189,7 @@
 
 
             {% include "system/client/contract/event__pop.html" %}
-            {% if perms.system.client_object_service_cost %}
+            {% if perms.system.client_object %}
                 {% include "system/client/contract/cost__pop.html" %}
             {% endif %}
 

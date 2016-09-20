@@ -27,11 +27,27 @@ class client_form(forms.ModelForm):
             #'address_postal_building',
             'address_postal_index', 'address_postal_placement', 'address_postal_placement_type',
             'pay_type',
+            'bank', 'bank_account',
             'inn', 'kpp', 'ogrn', 'ogrnip'
         ]
 
+"""
+class contractNameField(form_, forms.Field):
+    def validate(self, value):
+        super(ContactField, self).validate(value)
+        # Проверяем на соответствие поля "email"у
+        if email_re.search(smart_unicode(value)):
+            pass
+        # Проверяем на соответствие поля телефонному номеру
+        elif re.compile("^([0-9\(\)\/\+ \-]*)$").search(smart_unicode(value)):
+            pass
+        # Если не соответствует ничему, то вызываем ошибку
+        else:
+            raise forms.ValidationError(_(u'Enter a valid email or phone number.'), code='invalid')
+"""
 
 class contract_form(forms.ModelForm):
+    #name = contractNameField(required=True)
     class Meta:
         model = db_sentry.client_contract
         fields = [
@@ -47,6 +63,7 @@ class contract_form(forms.ModelForm):
         ]
 
 
+
 class client_user(forms.ModelForm):
     class Meta:
         model = db_sentry.client_user
@@ -55,6 +72,8 @@ class client_user(forms.ModelForm):
             'post',
             'birthday',
             'passport',
+            #'address_building',
+            'address_placement',
             'address',
             'comment'
         ]
@@ -68,6 +87,7 @@ class client_user(forms.ModelForm):
     comment = forms.CharField(required=False, widget=forms.Textarea(
         attrs={'cols': '50', 'rows': '2', }
     ))
+
 
 
 class object_form(forms.ModelForm):
@@ -103,7 +123,8 @@ class client_bind(forms.ModelForm):
             'begin_date',
             'end_date',
             'charge_month_day',
-            'charge_month'
+            'charge_month',
+            'time24'
         ]
 
 
@@ -112,6 +133,7 @@ class workflow_form(forms.ModelForm):
         model = db_sentry.client_workflow
         fields = [
             'contract',
+            'bind',
             'object',
             'sentry_user',
             'workflow_type',

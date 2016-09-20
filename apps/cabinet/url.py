@@ -25,6 +25,7 @@ urlpatterns = patterns('apps.cabinet',
 
     url(r'^auth/$', views_auth.cabinet_auth),
     url(r'^logout/$', views_auth.cabinet_logout),
+
     url(r'^get_access/$', views_auth.get_access),
     url(r'^get_restore/$', views_auth.get_restore),
     url(r'^get_peoples/$', mng_requests_cabinet.get_peoples),

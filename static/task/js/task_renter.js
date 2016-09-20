@@ -1,31 +1,44 @@
 $(document).ready(function() {
     $('#renter_object .btn_ui[action=cancel_object]').hide();
-    $('#renter_client .btn_ui[action=cancel_client]').hide();
-    $('#renter_client .btn_ui[action=change]').hide();
+    $('#renter_contract .btn_ui[action=cancel_client]').hide();
+    $('#renter_contract .btn_ui[action=change]').hide();
 
-    $('.renter_board').on('click','.btn_ui', function() {
+    $(document).on('click', '.btn_ui', function() {
         var action = $(this).attr('action');
-        if(action=='cancel_object'){
+        if(action == 'search'){
+            renterObjectSearch();
+        }
+        else if(action == 'cancel_object'){
             $('#renter_object .btn_ui[action=cancel_object]').hide();
-            $('#renter_client .btn_ui[action=change]').hide();
+            $('#renter_contract .btn_ui[action=change]').hide();
             $('#renter_object .item').remove();
             $('#renter_object .slot').hide();
         }
-        else if(action=='cancel_client'){
-            $('#renter_client .btn_ui[action=cancel_client]').hide();
-            $('#renter_client .btn_ui[action=change]').hide();
-            $('#renter_client .item').remove();
-            $('#renter_client .slot').hide();
+        else if(action == 'cancel_client'){
+            $('#renter_contract .btn_ui[action=cancel_client]').hide();
+            $('#renter_contract .btn_ui[action=change]').hide();
+            $('#renter_contract .item').remove();
+            $('#renter_contract .slot').hide();
         }
-        else if(action=='change'){
+        else if(action == 'reset'){
+            $('table.search input').val('');
+            $('#renter_object .slot .item__object').remove();
+            $('#renter_contract [action=change]').hide();
+            $('#renter_contract .slot .item').remove();
+            $('.renter_board .slot').removeAttr('style');
+            $('.result_count').hide();
+            $('#renter_object_list .item').remove();
+        }
+        else if(action == 'change'){
             renter_Change();
         }
     });
 
-    $('#object_list').on('click', 'div.item', function() {
-        var client_id = $(this).attr('client_id');
-        var object_id = $(this).attr('object_id');
-        renter_Choice(client_id,object_id);
+
+    $('#renter_object_list').on('click', 'div.item__contract, div.item__object', function() {
+        var contract_id = $(this).parents('.item').find('[contract_id]').attr('contract_id');
+        var bind_id = $(this).attr('bind_id');
+        renterChoice(contract_id, bind_id);
     });
 
     $.datepicker.setDefaults( $.extend($.datepicker.regional["ru"]) );
@@ -45,53 +58,112 @@ $(document).ready(function() {
 });
 
 
-function renter_Choice(client_id, object_id) {
-    var focus_client_id = $('#renter_object .item').attr('client_id');
-    if(!focus_client_id){
-        focus_client_id = $('#renter_client .item').attr('client_id');
-    }
-    if(focus_client_id==client_id){
-        popMessage('Один арендатор','yellow');
-    } else {
-        var div = $('#object_list div[object_id='+object_id+']');
-        if($('#renter_object div').is('.item')){
-            $('#renter_client .slot .item').remove();
-            var client_name = div.find('div[name=client]').text().substr(12);
-            var div_string = '<div class="item" client_id="'+client_id+'"><div class="name">'+client_name+'</div></div>';
-            $('#renter_client .slot').prepend(div_string);
-            $('#renter_client .slot').show();
+function renterObjectSearch() {
+    loading('begin');
+    var ajax_array = get_each_value('table.search');
+    console.log(ajax_array);
+    $.ajax({ url: '/system/client/search/ajax/search/', type: 'get', dataType: 'json', data: ajax_array,
+        success: function (data) {
+            renterObjectDraw('#renter_object_list', data);
+            loading('end');
         }
-        else if(object_id){
-            $('#renter_object .slot .item').remove();
-            $('#renter_object .slot').prepend(div.clone());
-            $('#renter_object .slot').show();
-        }
-    }
+    });
+}
 
-    if($('#renter_object div').is('.item')){
-        $('#renter_object .btn_ui[action=cancel_object]').show();
+
+function renterObjectDraw(block_id,data) {
+    $('.result_count').hide();
+    $(block_id+' div.item').remove();
+    var client_block = '';
+    var count = 0;
+    for(var client_id in data['client_list']){
+        var client = data['client_list'][client_id];
+        var contract_count = 0;
+        for(var contract_id in client['contract_list']) {
+            var contract = client['contract_list'][contract_id];
+            var contract_string = get_contract_string(contract);
+            var object_item = '';
+            for(object_id__ in contract['object_list']){
+                var object = contract['object_list'][object_id__];
+                object_item += '<div class="padding_5 right item__object" bind_id="'+object['bind']+'">объект: <b>'+object['name']+'</b>';
+                if(object['console']){
+                    object_item += ' ('+object['console']+', №'+object['console_number']+')';
+                }
+                if(object['address_string']){
+                    object_item += ', адрес: '+object['address_string'];
+                }
+                object_item += '</div><div class="clear" />';
+            }
+            var item = '<div class="item" client_id="'+client_id+'">' +
+                '<div class="left">' +
+                '<div class="service left item__contract" contract_id="'+contract_id+'">'+contract_string+'</div>' +
+                '<div class="clear" />' +
+                '<div class="padding_5 left item__client">клиент: <b>'+client['name']+'</b></div>' +
+                '</div>' +
+                '<div class="right">' +
+                '<div class="left">'+object_item+'</div></div>' +
+                '</div>';
+            $(block_id).append(item);
+            count ++;
+            contract_count++;
+        }
+        if(contract_count==0) {
+            client_block += '<a class="item" href="/system/client/'+client_id+'/"><div class="padding_5 left">клиент: <b>'+client['name']+'</b></div></a>';
+        }
     }
-    if( ($('#renter_object div').is('.item')) && ($('#renter_client div').is('.item')) ){
-        $('#renter_client .btn_ui[action=cancel_client]').show();
-        $('#renter_client .btn_ui[action=change]').show();
+    $(block_id).prepend(client_block);
+    $('.result_count').html('Найдено договоров: '+count);
+    $('.result_count').show();
+    if(count > 0) {
+        $(block_id).show();
+    } else {
+        $(block_id).hide();
     }
 }
 
+
+function renterChoice(contract_id, bind_id) {
+    console.log('renterChoice', contract_id, bind_id);
+    if(bind_id){
+        $('#renter_object').attr('contract_id', contract_id).attr('bind_id', bind_id);
+        var div__bind = $('#renter_object_list [bind_id='+bind_id+']');
+        $('#renter_object .slot .item__object').remove();
+        $('#renter_object .slot').prepend(div__bind.clone());
+        $('#renter_object .slot').show();
+    }
+    else if(contract_id) {
+        $('#renter_contract').attr('contract_id', contract_id);
+        $('#renter_contract .slot .item').remove();
+        var contract_string = $('#renter_object_list [contract_id='+contract_id+']').html();
+        var div_string = '<div class="item" contract_id="' + contract_id + '">' + contract_string + '</div>';
+        $('#renter_contract .slot').prepend(div_string);
+        $('#renter_contract .slot').show();
+    }
+
+    if( $('#renter_contract').attr('contract_id') && $('#renter_object').attr('bind_id')) {
+        $('#renter_contract [action=change]').show();
+    } else {
+        $('#renter_contract [action=change]').hide();
+    }
+}
+
+
 function renter_Change() {
     var renter_array = {};
-    renter_array['object_id'] = $('#renter_object .item').attr('object_id');
-    renter_array['client_id'] = $('#renter_client .item').attr('client_id');
+    renter_array['bind_id'] = $('#renter_object').attr('bind_id');
+    renter_array['contract_id'] = $('#renter_object').attr('contract_id');
+    renter_array['contract_new_id'] = $('#renter_contract').attr('contract_id');
     renter_array['end_date'] = $('#renter_object input[name=end_date]').val();
-    renter_array['begin_date'] = $('#renter_client input[name=begin_date]').val();
+    renter_array['begin_date'] = $('#renter_contract input[name=begin_date]').val();
     $.ajax({ url:'/task/renter/ajax/change/', type:'post', dataType:'json', data:renter_array,
         success: function(data){
-            if(data['answer']=='done'){
-                $('.renter_board .item').remove();
+            if(data['answer'] == 'done'){
+                $('.renter_board .item__object, .renter_board .item__contract').remove();
                 $('.renter_board .slot').hide();
                 $('#renter_object .btn_ui[action=cancel_object]').hide();
-                $('#renter_client .btn_ui[action=cancel_client]').hide();
-                $('#renter_client .btn_ui[action=change]').hide();
-                client_object_Search();
+                $('#renter_contract .btn_ui[action=cancel_contract]').hide();
+                $('#renter_contract .btn_ui[action=change]').hide();
+                renterObjectSearch();
             }
         }
     });

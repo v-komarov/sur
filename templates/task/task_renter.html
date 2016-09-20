@@ -3,7 +3,6 @@
 
     {% include "task/__left_block.html" %}
     <link href="{{ STATIC_URL }}task/css/sentry_task.css" type="text/css" rel="stylesheet">
-    <script type="text/javascript" src="{{ STATIC_URL }}task/js/task_add.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}task/js/task_renter.js"></script>
 
     <div class="middleBlock">
@@ -17,7 +16,7 @@
                     <div class="renter_date"><b>Отключение:</b><input class="datepicker" name="end_date" value="{{ tomorrow }}"></div>
                 </div>
             </div>
-            <div class="render_item" id="renter_client">
+            <div class="render_item" id="renter_contract">
                 <div class="head"><b>Новый арендатор</b>
                     <div class="btn_ui btn_32" action="change" icon="save" title="Сменить"><div class="icon"></div></div>
                     <div class="btn_ui btn_32" action="cancel_client" icon="cancel" title="Отменить объект"><div class="icon"></div></div>
@@ -33,10 +32,10 @@
             <td class="cell secondary"><input class="wide" type="text" value="" name="contract_number"></td>
         </tr>
         <tr class="row"><td class="padding_9 right">Плательщик</td>
-            <td class="cell secondary"><input class="wide" type="text" value="" name="client_name"></td>
+            <td class="cell secondary"><input class="wide" type="text" value="" name="client__name"></td>
         </tr>
         <tr class="row"><td class="padding_9 right">Объект</td>
-            <td class="cell secondary"><input class="wide" type="text" value="" name="object_name"></td>
+            <td class="cell secondary"><input class="wide" type="text" value="" name="object__name"></td>
         </tr>
         <tr class="row"><td class="padding_9 right">Адрес (улица)</td>
             <td class="cell secondary"><input class="wide" type="text" value="" name="address"></td>
@@ -52,7 +51,7 @@
         <div class="clear"></div><div class="loading">Загрузка</div>
 
         <div class="result_count"></div>
-        <div class="list" id="object_list"></div>
+        <div class="list" id="renter_object_list"></div>
 
     </div>
 

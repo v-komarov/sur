@@ -69,3 +69,21 @@ table.title .cell:not(:last-child) {
 }
 
 
+
+.table > tbody > tr > td, .table > tfoot > tr > td {
+    padding: 0;
+}
+
+
+
+.col-xs-offset-1 > span:nth-child(1) {
+    width: 100px;
+    padding-right: 5px;
+}
+
+.col-xs-offset-1 > select:nth-child(2) {
+    width: 200px;
+    padding-right: 5px;
+}
+
+

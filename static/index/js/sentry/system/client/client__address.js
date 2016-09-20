@@ -279,8 +279,8 @@ function address_locality_Search_lunchbox(stage_id){
 }
 
 
-function address_locality_Search(stage_id,action,data_address){
-    console.log('address_locality_Search',stage_id,action);
+function address_locality_Search(stage_id, action, data_address){
+    console.log('address_locality_Search', stage_id, action);
     var region_id = '';
     if(action=='set'){
         region_id = data_address['region_id'];
@@ -302,10 +302,13 @@ function address_locality_Search(stage_id,action,data_address){
                 if(data['error']!=null) alert(data['error']);
                 else if(data['locality']){
                     var locality_select = $('tr#'+stage_id+' select[mark=address_locality]');
+                    var locality_id = locality_select.attr('item_id');
+                    console.log(locality_id);
                     locality_select.find('option').remove();
                     for(var key in data['locality']){
                         var selected = '';
-                        if(data['locality'][key]['id']==lunchbox['setting']['locality']) selected = 'selected';
+                        if(locality_id && data['locality'][key]['id']==locality_id) selected = 'selected';
+                        else if(!locality_id && data['locality'][key]['id']==lunchbox['setting']['locality']) selected = 'selected';
                         var option = '<option value="'+data['locality'][key]['id']+'" '+selected+'>'+data['locality'][key]['name']+'</option>';
                         locality_select.append(option);
                     }

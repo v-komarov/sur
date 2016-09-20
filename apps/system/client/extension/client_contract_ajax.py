@@ -29,7 +29,7 @@ def get(request, data=None):
         'object_list': client_object_ajax.get_object_list(contract_id=contract.id)['object_list'],
         'subtype_list': contract.get_subtype_list(),
         'event_list': contract.get_event_list(),
-    }
+        }
     if contract.service_type_id:
         data['contract']['service_type'] = contract.service_type_id
         data['contract']['service_type__name'] = contract.service_type.name
@@ -71,7 +71,7 @@ def update(request, data=None):
         contract = contract_form.save()
         sentry_log.create(request, client_contract_id=contract.id)
         contract.dir_tag = json.loads(request.POST['dir_tag'])
-        if contract.service_type != int(request.POST['service_type']):
+        if contract.service_type.id != int(request.POST['service_type']):
             contract.dir_service_subtype.clear()
         data['status'] = contract.check_contract_status()
         contract.save()
@@ -81,17 +81,27 @@ def update(request, data=None):
     return data
 
 
+def archive(request, data=None):
+    bind = db_sentry.client_bind.objects.get(id=int(request.GET['bind_id']))
+    if 'action' in request.GET and request.GET['action'] == 'unarchive':
+        bind.status_id = 14
+    else:
+        bind.status_id = 9
+    bind.save()
+    data['answer'] = bind.status.name
+    return data
+
+
 def delete(request, data=None):
     contract = db_sentry.client_contract.objects.get(id=int(request.GET['contract_id']))
+    contract.name = contract.name+'_deleted_'+datetime.datetime.now().strftime('%Y.%m.%d_%H:%M:%S')
     contract.is_active = 0
     contract.save()
-    bind = db_sentry.client_bind.objects.filter(
-        client_contract_id = contract.id,
-        is_active = 1
-    ).first()
-    if bind:
+
+    for bind in contract.client_bind_set.all():
         bind.is_active = 0
         bind.save()
+
 
     '''
     sentry_log.create(request=request,client_object_id=object_set.id,log_type='object_delete')
@@ -162,8 +172,8 @@ def get_contract_interval(request, data=None):
     for contract in db_sentry.dir_contract_interval.objects.filter(
             service_organization = int(request.GET['service_organization_id']),
             is_active = 1 ):
-        end = 4000
-        for number in range(contract.begin,contract.end):
+        end = 100
+        for number in range(contract.begin, contract.end):
             if end > 0:
                 data['all'] += 1
                 number = str(number)

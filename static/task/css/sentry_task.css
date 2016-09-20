@@ -9,7 +9,8 @@
     opacity: .4;
     border: 1px solid #999;
 }
-.tableInfo .ui_btn:hover, .timetable .ui_btn:hover {
+.tableInfo .ui_btn:hover,
+.timetable .ui_btn:hover {
     background-color: #fff;
     opacity: 1;
 }
@@ -338,4 +339,11 @@ table.list td {
 
 #task_list {
     max-width: 1800px;
+}
+
+/*#renter_object_list .item__client:hover,*/
+#renter_object_list .item__contract:hover *,
+#renter_object_list .item__object:hover {
+    color: #fff;
+    background-color: #75a7dd;
 }

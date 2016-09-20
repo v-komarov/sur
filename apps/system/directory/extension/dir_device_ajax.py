@@ -13,12 +13,18 @@ from apps.toolset import date_convert
 def search(request, data):
     device_set = db_sentry.dir_device.objects.filter(is_active=1)
 
-    if 'bind' in request.GET and request.GET['bind']:
+    if 'bind' in request.GET and request.GET['bind'] != '':
         device_list_id = []
         object = db_sentry.client_bind.objects.get(id=int(request.GET['bind'])).client_object
         for install in db_sentry.client_object_dir_device.objects.filter(object=object.id, uninstall_date=None, is_active=1):
             device_list_id.append(install.device.id)
         device_set = device_set.filter(id__in=device_list_id)
+
+    if 'exclude_object' in request.GET and request.GET['exclude_object'] != '':
+        device_list = []
+        for install in db_sentry.client_object_dir_device.objects.filter(object=int(request.GET['exclude_object']), uninstall_date=None, is_active=1):
+            device_list.append(install.device.id)
+        device_set = device_set.exclude(id__in=device_list)
 
     if 'name' in request.GET and request.GET['name']:
         device_set = device_set.filter(name__icontains=request.GET['name'])
@@ -36,6 +42,14 @@ def search(request, data):
         device_set = device_set.filter(comment__icontains=request.GET['comment'])
     if 'limit' in request.GET:
         device_set = device_set[:int(request.GET['limit'])]
+
+    if 'begin' in request.GET:
+        device_set = device_set[int(request.GET['begin']):]
+    if device_set.count() > 300:
+        data['more'] = True
+        device_set = device_set[:300]
+    #else:
+    #    device_set = device_set[:500]
 
     if 'install' in request.GET:
         data['device_list'] = []
@@ -85,7 +99,9 @@ def get(request, data):
         'number': device.number,
         'belong': device.belong,
         'comment': device.comment,
+        'code': device.code,
         'registration_date': registration_date,
+        'data': device.data,
         'install_list': []
     }
     if device.device_console_id: data['device']['device_console'] = device.device_console_id
@@ -140,7 +156,8 @@ def update(request, data):
                 .update(dir_device=device.id)
         else:
             db_sentry.dir_sim_card.objects.filter(dir_device=device.id).update(dir_device=None)
-        device.save()
+
+        data['primary_install_id'] = device.checkPriority()
         data['answer'] = 'done'
 
     else:
@@ -170,21 +187,22 @@ def set_priority(request, data):
 def check_priority(device_id):
     # Если ОУ не подключена, но назначается priority == 'primary', иначе по умолчанию 'secondary'
     device_install_set = db_sentry.client_object_dir_device.objects.filter(device_id=device_id, is_active=1)
+    priority = 0
     if device_install_set.exists():
-        priority = 0
         for install in device_install_set:
             if install.priority == 'primary':
                 priority += 1
-        if priority < 1:
+        if priority <= 1:
             device_install_set[0].priority = 'primary'
         else:
             device_install_set[0].priority = 'secondary'
         device_install_set[0].save()
-    return 'done'
+    return priority#'done'
 
 
 def delete(request, data):
     device = db_sentry.dir_device.objects.get(id=int(request.GET['device']))
+    device.name = device.name + '_deleted'
     device.is_active = 0
     device.save()
     db_sentry.dir_sim_card.objects.filter(dir_device=device.id).update(dir_device=None)

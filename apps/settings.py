@@ -65,12 +65,7 @@ ROOT_URL = settings_local.ROOT_URL
 MEDIA_ROOT = os.path.join(PROJECT_PATH, 'media')
 MEDIA_URL = ROOT_URL+'media/'
 STATIC_ROOT = os.path.join(PROJECT_PATH, 'static')
-if os.name == 'nt':
-    STATIC_URL = ROOT_URL+'static/' # костыль для static
-else:
-    STATIC_URL = ROOT_URL
-
-
+STATIC_URL = ROOT_URL+'static/' # костыль для static
 ADMIN_MEDIA_PREFIX = '/static/admin/'
 
 # Additional locations of static files
@@ -189,3 +184,10 @@ LOGGING = {
 
 OPERATOR_EVT_MAX_ROWS = 300
 OPERATOR_EVT_UPDATE_ROWS = 10
+
+
+MAPS = [
+    {"id":0,"name":"Красноярск", "center":[56.01839,92.86717],"zoom":12,"show":True,"default":True},
+    {"id":1,"name":"Дивногорск", "center":[55.9581,92.3726],"zoom":15,"show":True,"default":False},
+]
+

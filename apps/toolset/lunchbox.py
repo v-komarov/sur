@@ -8,19 +8,21 @@ from apps.system.sentry_user import authorize
 
 
 def get(request):
-    data = {'permissions':[]}
+    data = {'permissions': []}
     for permission in request.user.get_all_permissions():
         data['permissions'].append(permission.encode('ascii'))
 
     setting_set = db_sentry.setting_general.objects.get(user=None)
     sentry_user = authorize.get_sentry_user(request)
+    request.session['currency'] = setting_set.currency
     data['setting'] = {
         'sentry_user_id': sentry_user['id'],
         'sentry_user_full_name': sentry_user['full_name'],
         'today': datetime.datetime.now().strftime("%d.%m.%Y"),
         'region': setting_set.region_id,
         'locality': setting_set.locality_id,
-        'contract_string': setting_set.contract_string
+        'contract_string': setting_set.contract_string,
+        'currency': setting_set.currency
     }
     try:
         data['setting']['manager'] = setting_set.manager_id

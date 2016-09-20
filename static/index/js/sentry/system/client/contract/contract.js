@@ -7,13 +7,6 @@ function contract_Reset(){
                 alert(data['error']);
             } else {
                 loading('end');
-                $('div[action=object_archive]').hide();
-                $('div[action=object_unarchive]').hide();
-                if(data['contract']['status_label']=='disconnected'){
-                    $('div[action=object_archive]').show();
-                } else if(data['contract']['status_label']=='archive'){
-                    $('div[action=object_unarchive]').show();
-                }
 
                 $('#contract_pop input').val('');
                 for(var key in data['contract']){
@@ -43,24 +36,42 @@ function contract_Reset(){
                 }
 
                 event_Draw('contract',data['contract']['id'], data['contract']['event_list']);
-                contract_number_Interval(data['contract']['name']);
+                //contract_number_Interval(data['contract']['name']);
                 contract_tag('set',data['contract']['tag_list']);
 
                 /* Objects draw */
                 $('#object_list div#list .object__item').remove();
-                for(var object_id in data['contract']['object_list']){
+                for(var object_id in data['contract']['object_list']) {
                     var object = data['contract']['object_list'][object_id];
                     var object_item = $('#object_sample').clone();
                     object_item.removeAttr('id').removeClass('hide').attr('object_id',object_id).attr('bind_id',object['bind']);
 
-                    for(var object_key in object){
+                    for(var object_key in object) {
                         //object_item.find('[name='+object_key+']').attr('status', object[object_key]['status']);
                         if(object[object_key+'__name']){
                             object_item.find('[name='+object_key+']').html(object[object_key+'__name']);
-                        } else {
+                        }
+                        else {
                             object_item.find('[name='+object_key+']').html(object[object_key]);
                         }
                     }
+
+                    if(object['connect_cost']) {
+                        object_item.find('td[name=connect_cost]').parents('tr').show();
+                        object_item.find('td[name=connect_cost]').text(
+                            object_item.find('td[name=connect_cost]').text()+' '+lunchbox['setting']['currency']
+                        )
+                    } else {
+                        object_item.find('td[name=connect_cost]').parents('tr').hide();
+                    }
+
+
+                    if(object['time24'] == true) {
+                        object_item.find('[name=time24]').html('да');
+                    } else {
+                        object_item.find('[name=time24]').html('');
+                    }
+
                     if(object['referer_user__full_name']){
                         object_item.find('[name=referer_type]').html(object['referer_user__full_name']);
                     }
@@ -86,7 +97,7 @@ function contract_Reset(){
 
                     if(object['cost_list'] && object['cost_list']['current']) {
                         var cost = object['cost_list']['current'];
-                        object_item.find('td[name=cost_value]').html('<span name="value">'+cost['cost_value']+'</span> '+cost['cost_type__name']);
+                        object_item.find('td[name=cost_value]').html('<span name="value">'+cost['cost_value']+' '+lunchbox['setting']['currency']+' /</span> '+cost['cost_type__name']);
                         object_item.find('td[name=cost_value]').parents('tr').attr('object_cost_id',cost['id']);
 
                         for(var cost_key in object['cost_list']['list']) {
@@ -102,6 +113,11 @@ function contract_Reset(){
                         }
                     }
                     object_item.appendTo('#object_list div#list');
+
+                    if(object['status'] == 'archive') {
+                        object_Show('hide', object['bind'])
+                    }
+
                     var object_tag_cnt = 0;
                     for(var key in object['tag_list']){
                         if(object['tag_list'][key]['id'] == 2){
@@ -113,6 +129,19 @@ function contract_Reset(){
                             object_item.find('td[name=tag_list]').append(string + object['tag_list'][key]['name']);
                         }
                     }
+
+                    console.log(object['status']);
+                    if(object['status']=='white') {
+                        $('[bind_id='+object['bind']+'] div[action=object_archive]').show();
+                    } else {
+                        $('[bind_id='+object['bind']+'] div[action=object_archive]').hide();
+                    }
+                    if(object['status']=='archive') {
+                        $('[bind_id='+object['bind']+'] div[action=object_unarchive]').show();
+                    } else {
+                        $('[bind_id='+object['bind']+'] div[action=object_unarchive]').hide();
+                    }
+
                     event_Draw('object',object_id,object['event_list']);
                     device_install_Draw(object_id,object['device_install_list']);
                 }

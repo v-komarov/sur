@@ -17,7 +17,8 @@ def get(request, data):
         'programmer': setting_set.programmer_id,
         'technician': setting_set.technician_id,
         'region': setting_set.region_id,
-        'locality': setting_set.locality_id
+        'locality': setting_set.locality_id,
+        'currency': setting_set.currency
     }
     return data
 
@@ -29,7 +30,8 @@ def update(request, data):
         programmer = request.POST['programmer_id'],
         technician = request.POST['technician_id'],
         region = request.POST['region'],
-        locality = request.POST['locality']
+        locality = request.POST['locality'],
+        currency = request.POST['currency']
     )
     data = 'done'
     return data

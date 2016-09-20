@@ -38,6 +38,7 @@ function contract_Edit() {
 
 
 function contract_number_Interval(contract) {
+    // Дибильная и ненужная функция, написано по принуждению. После возмущения клиентов, ушла в корзину.
     $('#contract_pop select[name=name] option').remove();
     if(!!contract){
         var option = '<option>'+contract+'</option>';
@@ -49,6 +50,9 @@ function contract_number_Interval(contract) {
     };
     $.ajax({ url:'/system/client/contract/ajax/get_contract_interval/', type:'get', dataType:'json', data:ajax_array,
         success: function(data){
+            if(data['error']!=null){
+                alert(data['error']);
+            }
             if(data['error']!=null){
                 alert(data['error']);
             } else {
@@ -78,7 +82,7 @@ function contract_Check() {
 
 
 function contract_Add() {
-    contract_number_Interval();
+    //contract_number_Interval();
     popMenuPosition('#contract_pop','single');
 }
 
@@ -154,7 +158,8 @@ function contract_Update() {
     contract_array['dir_tag'] = contract_tag('get');
     $.ajax({ url:'/system/client/contract/ajax/'+ajax_action+'/', type:'post', dataType:'json', data:contract_array,
         success: function(data){
-            if(data['error']!=null){
+            if(data['errors']) message_Pop_array(data['errors'], 'red');
+            else if(data['error']!=null){
                 alert(data['error']);
             }
             else if(data['url']){

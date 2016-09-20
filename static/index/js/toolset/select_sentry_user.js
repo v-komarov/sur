@@ -11,7 +11,7 @@ function select_sentry_user(){
         var post_id = $(this).attr('post_id');
         post_list.push(post_id);
     });
-    //console.log(post_list);
+    console.log(post_list);
     ajax_array['post_list'] = JSON.stringify(post_list);
     $.ajax({ url:'/system/sentry_user/ajax/search/', type:'get', dataType:'json', data:ajax_array,
         success: function(data){

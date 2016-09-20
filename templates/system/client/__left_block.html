@@ -81,25 +81,29 @@
         <!-- a class="item {% if request.path|slice:'-10:' == '/security/' %}selected{% endif %}"
            href="/system/client/object/{{ object_id }}/security/">Охрана</a -->
 
-        {% if perms.system.client %}
-            <a class="item {% if request.path|slice:'-10:' == '/incident/' %}selected{% endif %}"
-               href="/system/client/{{ client_id }}/contract/{{ contract_id }}/incident/">События</a>
-        {% endif %}
+        {% comment %}
+            {% if perms.system.client %}
+                <a class="item {% if request.path|slice:'-10:' == '/incident/' %}selected{% endif %}"
+                   href="/system/client/{{ client_id }}/contract/{{ contract_id }}/incident/">События</a>
+            {% endif %}
+        {% endcomment %}
 
         {% if perms.system.client %}
             <a class="item {% if request.path|slice:'-11:' == '/timetable/' %}selected{% endif %}"
-               href="/system/client/{{ client_id }}/contract/{{ contract_id }}/timetable/">Режим работы</a>
+               href="/system/client/{{ client_id }}/contract/{{ contract_id }}/timetable/">Режим охраны</a>
         {% endif %}
 
-        {% if perms.system.client %}
-            <a class="item {% if request.path|slice:'-8:' == '/salary/' %}selected{% endif %}"
-               href="/system/client/{{ client_id }}/contract/{{ contract_id }}/salary/">Плата сотрудникам</a>
-        {% endif %}
+        {% comment %}
+            {% if perms.system.client %}
+                <a class="item {% if request.path|slice:'-8:' == '/salary/' %}selected{% endif %}"
+                   href="/system/client/{{ client_id }}/contract/{{ contract_id }}/salary/">Плата сотрудникам</a>
+            {% endif %}
 
-        {% if perms.system.client %}
-            <a class="item {% if request.path|slice:'-8:' == '/weapon/' %}selected{% endif %}"
-               href="/system/client/{{ client_id }}/contract/{{ contract_id }}/weapon/">Оружие</a>
-        {% endif %}
+            {% if perms.system.client %}
+                <a class="item {% if request.path|slice:'-8:' == '/weapon/' %}selected{% endif %}"
+                   href="/system/client/{{ client_id }}/contract/{{ contract_id }}/weapon/">Оружие</a>
+            {% endif %}
+        {% endcomment %}
     {% endif %}
 
 

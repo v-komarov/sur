@@ -12,24 +12,34 @@ from apps.toolset import date_convert
 from apps.system import models as sentry_models
 
 
-def re(request, data=None):
+def re(request, data=None, client_id=None, contract_id=None, bind_id=None):
     if request.user.has_perm('system.client_object_service_cost_change'):
-        bind_set = sentry_models.client_bind.objects.filter(client_contract__client=int(request.POST['client']), is_active=1)
+        if client_id:
+            bind_set = sentry_models.client_bind.objects.filter(client_contract__client=client_id, is_active=1)
+        elif contract_id:
+            bind_set = sentry_models.client_bind.objects.filter(client_contract=contract_id, is_active=1)
+        elif bind_id:
+            bind_set = sentry_models.client_bind.objects.filter(id=bind_id)
+
+        else:
+            bind_set = sentry_models.client_bind.objects.filter(client_contract__client=int(request.POST['client']), is_active=1)
         if 'contract' in request.POST:
             bind_set = bind_set.filter(client_contract=int(request.POST['contract']))
         if 'bind' in request.POST:
             bind_set = bind_set.filter(id=int(request.POST['bind']))
 
         data['bind_list'] = []
-        for bind in bind_set:
-            bind.client_bind_charge_set.filter(charge_type='auto').delete()
-            if bind.status.label == 'connected':
+        if bind_set:
+            for bind in bind_set:
+                bind.client_bind_charge_set.filter(charge_type='auto').delete()
+                #if bind.status.label == 'connected':
                 data['bind_list'].append(bind.id)
                 cost_list = []
                 index = 0
                 for cost in bind.client_bind_cost_set.filter(is_active=1).order_by('begin_date'):
                     cost_item = {
                         'id': cost.id,
+                        'bind': cost.client_bind.id,
                         'begin_date': cost.begin_date.strftime('%d.%m.%Y'),
                         'cost_type': cost.cost_type_id,
                         'cost_type__label': cost.cost_type.label,
@@ -42,22 +52,41 @@ def re(request, data=None):
                     else:
                         cost_item['cost'] = str(cost.cost_value)
 
-                    cost_list.append(cost_item)
-                    if index > 0:
-                        cost_list[index-1]['end_date'] = (cost.begin_date - datetime.timedelta(days=1)).strftime('%d.%m.%Y')
-                        if cost.cost_type.label == 'pause':
-                            prev_cost = {
-                                'id': cost_list[-2]['id'],
-                                'begin_date': (cost.end_date + datetime.timedelta(days=1)).strftime('%d.%m.%Y'),
-                                'cost_type': cost_list[-2]['cost_type'],
-                                'cost_type__label': cost_list[-2]['cost_type__label'],
-                                'charge_month': cost_list[-2]['charge_month'],
-                                'charge_month_day': cost_list[-2]['charge_month_day'],
-                                'cost': cost_list[-2]['cost'],
-                                }
-                            cost_list.append(prev_cost)
-                            index += 1
-                    index += 1
+
+
+                    if cost.cost_type.label in ['month']:
+                        cost_list.append(cost_item)
+                        if index > 0:
+                            cost_list[index-1]['end_date'] = (cost.begin_date - datetime.timedelta(days=1)).strftime('%d.%m.%Y')
+                            if cost.cost_type.label == 'pause':
+                                prev_cost = {
+                                    'id': cost_list[-2]['id'],
+                                    'begin_date': (cost.end_date + datetime.timedelta(days=1)).strftime('%d.%m.%Y'),
+                                    'cost_type': cost_list[-2]['cost_type'],
+                                    'cost_type__label': cost_list[-2]['cost_type__label'],
+                                    'charge_month': cost_list[-2]['charge_month'],
+                                    'charge_month_day': cost_list[-2]['charge_month_day'],
+                                    'cost': cost_list[-2]['cost'],
+                                    }
+                                cost_list.append(prev_cost)
+                                index += 1
+
+                    elif cost.cost_type.label in ['once']:
+                        charge = sentry_models.client_bind_charge.objects.create(
+                            bind_id = bind.id,
+                            begin_date = cost.begin_date,
+                            end_date = cost.begin_date,
+                            value = -cost.cost_value,
+                            comment = 'Разовая оплата'
+                        )
+                    elif cost.cost_type.label in ['client_object_connect']:
+                        charge = sentry_models.client_bind_charge.objects.create(
+                            bind_id = bind.id,
+                            begin_date = cost.begin_date,
+                            end_date = cost.begin_date,
+                            value = -cost.cost_value,
+                            comment = 'Подключение объекта'
+                        )
 
                 data['cost_list'] = cost_list
 
@@ -69,7 +98,7 @@ def re(request, data=None):
 
                     # руб./месяц
                     for cost_item in cost_list:
-                        if cost_item['cost_type__label'] != 'pause':
+                        if cost_item['cost_type__label'] == 'month':
                             cost_begin_date = datetime.datetime.strptime(cost_item['begin_date'], '%d.%m.%Y')
                             cost_end_date = datetime.datetime.strptime(cost_item['end_date'], '%d.%m.%Y')
                             cost_end_variable = cost_end_date
@@ -98,76 +127,83 @@ def re(request, data=None):
                                 )
 
                                 cost_begin_date += datetime.timedelta(cost_days)
-                                #except:
-                                #    data['debug'].append(cost_begin_date)
+
+
+                        '''
+                        elif cost_item['cost_type__label'] in ['client_object_connect', 'once']:
+                            sentry_models.client_bind_charge.objects.create(
+                                    bind_id = bind.id,
+                                    begin_date = datetime.datetime.strptime(cost_item['begin_date'], '%d.%m.%Y'),
+                                    end_date = datetime.datetime.strptime(cost_item['begin_date'], '%d.%m.%Y'),
+                                    value = cost_item['cost']
+                                )
+                        '''
 
 
                     # Sum total & balance
-                    #sentry_models.debug.objects.create(sentry_id=service.id, comment='charge_sum_total')
-
                     charge_sum_total(bind_id=bind.id)
-                    #client_balance(client_id=charge_set[0].object.client_id)
+                    client_balance(client_id=bind.client_contract.client_id)
 
                     '''
-                    # Post
-                    service_salary_set = sentry_models.client_object_service_salary.objects.filter(service_id=service.id, is_active=1).order_by('-begin_date')
-                    post_count = 0
-                    for post in sentry_models.client_object_service_post.objects.filter(service_id=service.id):
-                        post_cost = 0
-                        post_salary = 0
+                        # Post
+                        service_salary_set = sentry_models.client_object_service_salary.objects.filter(service_id=service.id, is_active=1).order_by('-begin_date')
+                        post_count = 0
+                        for post in sentry_models.client_object_service_post.objects.filter(service_id=service.id):
+                            post_cost = 0
+                            post_salary = 0
 
-                        for cost_item in service_cost_set:
-                            # Определяем стоимость смены
-                            if cost_item.end_date:
-                                if post.completed_begin_date >= cost_item.begin_date and post.completed_begin_date <= cost_item.end_date:
+                            for cost_item in service_cost_set:
+                                # Определяем стоимость смены
+                                if cost_item.end_date:
+                                    if post.completed_begin_date >= cost_item.begin_date and post.completed_begin_date <= cost_item.end_date:
+                                        post_cost = cost_item.cost
+                                        break
+                                elif post.completed_begin_date >= cost_item.begin_date:
                                     post_cost = cost_item.cost
+
+                            for salary in service_salary_set:
+                                if post.completed_begin_date >= salary.begin_date:
+                                    post_salary = salary.salary
                                     break
-                            elif post.completed_begin_date >= cost_item.begin_date:
-                                post_cost = cost_item.cost
 
-                        for salary in service_salary_set:
-                            if post.completed_begin_date >= salary.begin_date:
-                                post_salary = salary.salary
-                                break
+                            # Add to charge
+                            # Пришло ли время начислять эту смену
+                            if post.reason_end_id and post.completed_begin_date <= get_charge_day(cost_item.calculation_month_id) and \
+                                            cost_item.cost_type_id in [2]: # руб./час с заступлением
+                                # Определяем период для начисления, charge
+                                charge_begin_date = post.completed_begin_date.replace(day=1,hour=0,minute=0,second=0)
+                                charge_end_date = charge_begin_date.replace(day=calendar.monthrange(charge_begin_date.year, charge_begin_date.month)[1],hour=23,minute=59,second=59)
 
-                        # Add to charge
-                        # Пришло ли время начислять эту смену
-                        if post.reason_end_id and post.completed_begin_date <= get_charge_day(cost_item.calculation_month_id) and \
-                                        cost_item.cost_type_id in [2]: # руб./час с заступлением
-                            # Определяем период для начисления, charge
-                            charge_begin_date = post.completed_begin_date.replace(day=1,hour=0,minute=0,second=0)
-                            charge_end_date = charge_begin_date.replace(day=calendar.monthrange(charge_begin_date.year, charge_begin_date.month)[1],hour=23,minute=59,second=59)
+                                #if not sentry_models.client_object_service_charge.objects.filter( # Проверяем нет ли такой же записи с типом 'manual'
+                                #        service_id = service.id, charge_type='manual',
+                                #        begin_date = charge_begin_date, end_date = charge_end_date ).exists():
 
-                            #if not sentry_models.client_object_service_charge.objects.filter( # Проверяем нет ли такой же записи с типом 'manual'
-                            #        service_id = service.id, charge_type='manual',
-                            #        begin_date = charge_begin_date, end_date = charge_end_date ).exists():
+                                try:
+                                    charge_set = sentry_models.client_object_service_charge.objects.get(
+                                        service_id = service.id,
+                                        charge_type='post',
+                                        begin_date = charge_begin_date,
+                                        end_date = charge_end_date )
+                                    charge_set.value -= post.hours*post_cost
+                                    post_count += 1
+                                    #post_list.append({post.cost:post.completed_begin_date})
+                                except:
+                                    charge_set = sentry_models.client_object_service_charge.objects.create(
+                                        service_id = service.id,
+                                        begin_date = charge_begin_date, end_date = charge_end_date,
+                                        charge_type = 'post',
+                                        value = post.hours*post_cost*-1 )
+                                    post_count = 1
+                                    #post_list = [{post.cost:post.completed_begin_date}]
 
-                            try:
-                                charge_set = sentry_models.client_object_service_charge.objects.get(
-                                    service_id = service.id,
-                                    charge_type='post',
-                                    begin_date = charge_begin_date,
-                                    end_date = charge_end_date )
-                                charge_set.value -= post.hours*post_cost
-                                post_count += 1
-                                #post_list.append({post.cost:post.completed_begin_date})
-                            except:
-                                charge_set = sentry_models.client_object_service_charge.objects.create(
-                                    service_id = service.id,
-                                    begin_date = charge_begin_date, end_date = charge_end_date,
-                                    charge_type = 'post',
-                                    value = post.hours*post_cost*-1 )
-                                post_count = 1
-                                #post_list = [{post.cost:post.completed_begin_date}]
+                                comment = 'смен: '+str(post_count)
+                                charge_set.comment = comment
+                                charge_set.save()
+                                post.charge_id = charge_set.id
 
-                            comment = 'смен: '+str(post_count)
-                            charge_set.comment = comment
-                            charge_set.save()
-                            post.charge_id = charge_set.id
-
-                        post.cost = post.hours*post_cost
-                        post.salary = post.hours*post_salary
-                        post.save()
+                            post.cost = post.hours*post_cost
+                            post.salary = post.hours*post_salary
+                            post.save()
                     '''
 
         if data:
@@ -204,7 +240,7 @@ def client_balance(**kwargs):
         payment_value += payment.value
     charge_value = 0
     for charge in sentry_models.client_bind_charge.objects \
-            .filter(bind__client_id=client_id, value__gt=0, is_active=1):
+            .filter(bind__client_contract__client_id=client_id, value__gt=0, is_active=1):
         charge_value += charge.value
     balance = payment_value - charge_value
     sentry_models.client.objects.filter(id=client_id).update(balance=balance)

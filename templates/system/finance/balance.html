@@ -1,29 +1,43 @@
-{% extends "sentry/index.html" %}
+{% extends "index.html" %}
 {% block content %}
 
-    {% include "sentry/system/finance/__left_block.html" %}
+    {% include "system/finance/__left_block.html" %}
     <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/finance/balance.js"></script>
+    <link href="{{ STATIC_URL }}index/css/balance.css" type="text/css" rel="stylesheet">
 
     <div class="middleBlock"><h2 class="cabinet_title">{{ title }}</h2>
 
         <table class="tableInfo searchObject">
             <tbody>
             <tr class="row">
-                <td class="padding_9 right">Плательщик</td>
+                <td class="padding_9 right">Холдинг</td>
                 <td class="cell secondary" colspan="2">
-                    <select class="wide width_320" name="client"><option value="">все</option>
-                        {% for item in client_set %}
+                    <select class="wide width_320" name="holding"><option value="">все</option>
+                        {% for item in holding_set %}
                             <option value="{{ item.id }}">{{ item.name }}</option>
                         {% endfor %}
                     </select>
                 </td></tr>
             <tr class="row">
+                <td class="padding_9 right">Клиент</td>
+                <td class="cell secondary" colspan="2"><input class="wide " name="client" /></td></tr>
+            <tr class="row">
                 <td class="padding_9 right">Отв. менеджер</td>
                 <td class="cell secondary" colspan="2">
-                    <select class="wide width_320" name="manager"><option value="">все</option>
+                    <select class="wide width_320" name="warden"><option value="">все</option>
                         <optgroup label="Менеджер"></optgroup>
+                        <optgroup label="Инженер"></optgroup>
                         <optgroup label="Руководитель"></optgroup>
                         <optgroup label="Начальник охраны"></optgroup>
+                    </select>
+                </td></tr>
+            <tr class="row">
+                <td class="padding_9 right">Обслуживающая организация</td>
+                <td class="cell secondary" colspan="2">
+                    <select class="wide width_320" name="service_organization"><option value="">все</option>
+                        {% for item in service_organization_set %}
+                            <option value="{{ item.id }}">{{ item.name }}</option>
+                        {% endfor %}
                     </select>
                 </td></tr>
             <tr class="row">
@@ -35,66 +49,158 @@
                         {% endfor %}
                     </select>
                 </td></tr>
-            <tr class="row"><td class="padding_9 right">Тип охраны</td>
+            <tr class="row"><td class="padding_9 right">Виды услуг</td>
                 <td colspan="2">
                     <div class="down_box left" name="service_filter">
                         <div class="btn_ui" icon="filter" action="service_filter" title="Фильтр"><div class="icon"></div></div>
                         <ul class="drop_list" id="filter_service_type">
-                            <li service_type_id="2" title="Личная безопасность">
-                                <div class="chechbox"></div><div class="txt">ЛБ</div></li>
-                            <li service_type_id="3" title="Мониторинг подвижных объектов">
-                                <div class="chechbox"></div><div class="txt">МП</div></li>
-                            <li service_type_id="7" title="Первоначальное подключение">
-                                <div class="chechbox"></div><div class="txt">Подключение</div></li>
-                            <li service_type_id="4" title="Постовая, физическая охрана">
-                                <div class="chechbox"></div><div class="txt">Пост</div></li>
-                            <li service_type_id="1" title="Пульт Централизованного Наблюдения">
-                                <div class="chechbox"></div><div class="txt">ПЦН</div></li>
-                            <li checked="checked" service_type_id="5" title="Тревожный вызов">
-                                <div class="chechbox"></div><div class="txt">ТВ</div></li>
-                            <li service_type_id="6" title="Техническое обслуживание">
-                                <div class="chechbox"></div><div class="txt">ТО</div></li>
+                            {% for item in dir_service_type_set %}
+                                <li checked="checked" service_type_id="{{ item.id }}" title="{{ item.description }}">
+                                    <div class="chechbox"></div><div class="txt">{{ item.name }}</div>
+                                </li>
+                            {% endfor %}
                         </ul>
                     </div>
                     <div class="left" name="service_list" style="padding: 10px 10px 0 0"></div>
                 </td></tr>
             <tr class="row"><td class="padding_9 right">Период</td>
                 <td colspan="2">
-                    <input class="datepicker" type="text" value="{{ month_day }}" name="from" id="from"><span style="float:left; padding:8px 10px 0 2px;">-</span>
+                    <input class="datepicker" type="text" value="01.01.2016" name="from" id="from">
+                    {% comment %}
+                        <input class="datepicker" type="text" value="{{ month_day }}" name="from" id="from">
+                    {% endcomment %}
+                    <span style="float:left; padding:8px 10px 0 2px;">-</span>
                     <input class="datepicker" type="text" value="{{ today }}" name="to" id="to">
                 </td></tr>
             <tr class="row"><td class="padding_9 right">Показать список объектов</td>
                 <td class="cell secondary" colspan="2">
                     <select class="wide width_320" name="view_list">
+                        <option value="">не показывать</option>
                         <option value="debt">долг</option>
                         <option value="payment">переплата</option>
                         <option value="null">долг и переплата</option>
-                        <option value="other">с начислениями "другое"</option>
                     </select>
                 </td></tr>
 
             <tr class="row status">
-                <td class="switch" name="expired" colspan="3"><div class="chechbox"></div><div class="txt">С учетом начислений "другое"</div></td>
+                <td class="cell switch" name="other" colspan="2"><div class="chechbox"></div><div class="txt">С учетом начислений "другое"</div></td>
             </tr>
 
             <tr class="row status white">
-                <td colspan="3"><div class="btn_ui bg" action="finance_search" icon="calculator" title="Обновить"><div class="icon"></div><div class="txt">Посчитать</div></div></td>
+                <td colspan="3">
+                    <div class="btn_ui bg left" action="finance_reset" icon="reset"><div class="icon"></div><div class="txt">Сбросить</div></div>
+                    <div class="btn_ui bg" action="finance_search" icon="calculator" title="Обновить"><div class="icon"></div><div class="txt">Посчитать</div></div>
+                </td>
             </tr>
 
             </tbody>
         </table>
 
+
         <div class="clear"></div><div class="loading">Загрузка</div>
         <div class="clear"></div><div class="result_count"></div>
 
-        <table class="tableInfo" id="finance_list">
-            <thead><tr class="row title">
-                <td class="cell">Объект</td>
+
+        <table class="tableInfo" id="charge_list">
+            <tbody class="list show">
+
+            <tr class="row title"><td class="cell" colspan="4">Статистика</td></tr>
+
+            <tr class="row title">
+                <td class="cell">Период</td>
+                <td class="cell" colspan="3" name="period"></td>
+            </tr>
+
+            <tr class="row title">
+                <td class="cell">Отв. менеджер (ФИО)</td>
                 <td class="cell">Начислено</td>
                 <td class="cell">Оплачено</td>
-                <td class="cell">Итог</td>
-            </tr></thead>
-            <tbody class="list show"></tbody>
+                <td class="cell">Итого</td>
+            </tr>
+            <tr name="row-warden" class="hide">
+                <td class="cell" name="full_name"></td>
+                <td class="cell" name="minus"></td>
+                <td class="cell" name="plus"></td>
+                <td class="cell" name="total"></td>
+            </tr>
+
+            <tr class="row title">
+                <td class="cell">Обслуживающая организация</td>
+                <td class="cell">Начислено</td>
+                <td class="cell">Оплачено</td>
+                <td class="cell">Итого</td>
+            </tr>
+            <tr name="row-service_organization" class="hide">
+                <td class="cell" name="name"></td>
+                <td class="cell" name="minus"></td>
+                <td class="cell" name="plus"></td>
+                <td class="cell" name="total"></td>
+            </tr>
+
+            <tr class="row title">
+                <td class="cell">Всего</td>
+                <td class="cell">Начислено</td>
+                <td class="cell">Оплачено</td>
+                <td class="cell">Итого</td>
+            </tr>
+            <tr name="row-total">
+                <td class="cell" name="name"></td>
+                <td class="cell" name="minus"></td>
+                <td class="cell" name="plus"></td>
+                <td class="cell" name="total"></td>
+
+            </tr>
+
+
+            <tr class="row">
+                <td class="cell">Подключения</td>
+                <td class="cell" name="connected_count"></td>
+                <td class="cell" colspan="2" name="connected_total"></td>
+
+            </tr>
+            <tr class="row">
+                <td class="cell">Отключения</td>
+                <td class="cell" name="disconnected_count"></td>
+                <td class="cell" colspan="2" name="connected_disconnected"></td>
+            </tr>
+
+
+            <!--tr class="row title">
+                <td class="cell">Начислено по типу платежа</td>
+                <td class="cell">Касса</td>
+                <td class="cell">Банк</td>
+                <td class="cell">Взаимозачет</td>
+                <td class="cell">Всего</td>
+            </tr>
+            <tr name="row-payment-type-charge">
+                <td class="cell" name="name"></td>
+                <td class="cell" name="cash"></td>
+                <td class="cell" name="bank"></td>
+                <td class="cell" name="offset"></td>
+                <td class="cell" name="total"></td>
+            </tr>
+
+            <tr class="row title">
+                <td class="cell">Оплачено по типу платежа</td>
+                <td class="cell">Касса</td>
+                <td class="cell">Банк</td>
+                <td class="cell">Взаимозачет</td>
+                <td class="cell">Всего</td>
+            </tr>
+            <tr name="row-payment-type-pay">
+                <td class="cell" name="name"></td>
+                <td class="cell" name="cash"></td>
+                <td class="cell" name="bank"></td>
+                <td class="cell" name="offset"></td>
+                <td class="cell" name="total"></td>
+            </tr-->
+
+            </tbody>
+        </table>
+        <div class="clear"></div>
+
+        <table class="tableInfo" id="finance_list">
+            <tbody></tbody>
         </table>
 
     </div>

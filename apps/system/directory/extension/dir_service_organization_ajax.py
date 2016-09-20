@@ -47,7 +47,10 @@ def update(request, data):
 
 
 def delete(request,data):
-    if db_sentry.client_contract.objects.filter(service_organization=int(request.GET['service_organization'])).exists():
+    if db_sentry.client_contract.objects.filter(
+            service_organization = int(request.GET['service_organization']),
+            is_active = 1
+    ).exists():
         data['error'] = 'Есть объекты под охраной этой организации'.decode('utf-8')
     else:
         db_sentry.dir_service_organization.objects \

@@ -3,7 +3,7 @@
     <form>
         <table class="tableInfo wide margin_null">
             <tr class="row"><td class="cell middle">Сумма платежа</td>
-                <td><input name="mount" class="datepicker" type="text" value=""><div class="txt9">руб.</div></td></tr>
+                <td><input name="mount" class="datepicker" type="text" value=""><div class="txt9">{{ request.session.currency }}</div></td></tr>
             <tr class="row">
                 <td class="cell middle">Дата пополнения</td>
                 <td><input name="payment_date" class="datepicker" type="text" value=""></td></tr>

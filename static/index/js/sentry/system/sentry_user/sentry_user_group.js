@@ -53,34 +53,32 @@ $(document).ready(function() {
         permissions_Get(group_id);
     });
 
-    $('.table_select').on('click', '.header .cell', function(){
-        //var table_id = $(this).parents('table').attr('id');
-        var model_name = $(this).parent('.header').attr('model_title');
-        list_Show(model_name);
+    $('#permission_list tbody').on('click', '.permission', function() {
+        var app_label = $(this).attr('app_label');
+        var permission_id = $(this).attr('permission_id');
+        var choice = $(this).find('[choice]').attr('choice');
+        if(choice=='yes') {
+            $(this).find('[choice]').attr('choice','no');
+        } else {
+            $(this).find('[choice]').attr('choice','yes');
+        }
+        permissionsIconChoice();
     });
-    $('.table_select').on('click', '.header .choice', function(){
-        var model_name = $(this).parent('.header').attr('model_title');
+    $('#permission_list tbody').on('click', '.header .choice', function() {
+        var app_label = $(this).parent('.header').attr('app_label');
         var choice = $(this).attr('choice');
-        if(choice=='yes'){
+        console.log(app_label, choice);
+        if(choice=='yes') {
             $(this).attr('choice','no');
-            $('.table_select tbody tr[model_name='+model_name+'] .choice').attr('choice','no');
+            $('#permission_list tbody tr[app_label='+app_label+'] .choice').attr('choice','no');
         } else {
             $(this).attr('choice','yes');
-            $('.table_select tbody tr[model_name='+model_name+'] .choice').attr('choice','yes');
+            $('#permission_list tbody tr[app_label='+app_label+'] .choice').attr('choice','yes');
         }
     });
-    $('.table_select').on('click', '.select__item', function() {
-        //#permission_list
-        var model_name = $(this).attr('model_name');
-        var permission_id = $(this).attr('permission_id');
-        var choice = $(this).find('.choice').attr('choice');
-        if(choice=='yes'){
-            $(this).find('.choice').attr('choice','no');
-            //$('.table_select tbody [model_title='+model_name+'] .choice').attr('choice','no');
-        } else {
-            $(this).find('.choice').attr('choice','yes');
-        }
-        select_title__Choice(model_name);
+    $('#permission_list tbody').on('click', '.header .cell', function() {
+        var app_label = $(this).parent('.header').attr('app_label');
+        titleShow(app_label);
     });
 
 
@@ -126,39 +124,32 @@ function permissions_Get(group_id) {
                 $('#group_select [value='+group_id+']').attr('selected', 'selected');
                 $('table#permission_list tbody .row').remove();
                 $('table#permission_list tbody .row_split').remove();
-                var position = 0;
-                var model_check = '';
+                var model = '';
                 for(var key in data['permissions']) {
                     var permission = data['permissions'][key];
-                    if( !$('table#permission_list tbody .row').is('[model_title='+permission['model_name']+']') )
-                    {
-                        var row_title = '<tr class="row header" model_title="'+permission['model_name']+'" show="no">' +
+                    if( !$('table#permission_list tbody .row').is('[app_label='+permission['app_label']+']') ){
+                        var row_title = '<tr class="row header" app_label="'+permission['app_label']+'" show="no">' +
                             '<td class="choice" choice="yes"><div class="chechbox"></div></td>' +
-                            '<td class="cell">'+permission['model_description']+'</td></tr>';
+                            '<td class="cell">'+permission['app_label']+'</td></tr>';
                         $('table#permission_list tbody').append(row_title);
                     }
                     var permission_txt = '';
-                    if(permission['position']!='None') permission_txt = permission['position']+'. ';
                     permission_txt += permission['name'];
-                    var row = '<tr class="row select__item hide" model_name="'+permission['model_name']+'" permission_id="'+permission['id']+'" >' +
+                    var row = '<tr class="row permission hide" ' +
+                        'app_label="'+permission['app_label']+'" ' +
+                        'model="'+permission['model']+'" ' +
+                        'codename="'+permission['codename']+'" ' +
+                        'permission_id="'+permission['id']+'" >' +
                         '<td class="choice" choice="'+permission['choice']+'"><div class="chechbox"></div></td>' +
                         '<td class="cell" name="permission" >'+permission_txt+'</td></tr>';
 
-                    var position_string_index = permission['position'].indexOf('.');
-                    var position_check = permission['position'].slice(0, position_string_index);
-                    var tr_split = '<tr class="row_split hide" model_name="'+permission['model_name']+'"><td colspan="2"></td></tr>';
-                    if(position_check!=position) {
-                        position = position_check;
-                        if(model_check==permission['model_name']){
-                            $('table#permission_list tbody').append(tr_split);
-                        } else {
-                            model_check = permission['model_name'];
-                        }
+                    var tr_split = '<tr class="row_split hide" app_label="'+permission['app_label']+'" model="'+permission['model']+'"><td colspan="2"></td></tr>';
+                    if(model!=permission['model']){
+                        $('table#permission_list tbody').append(tr_split);
+                        model = permission['model'];
                     }
-
                     $('table#permission_list tbody').append(row);
                 }
-                select_title__Choice('permission');
 
                 $('table#notice_list tbody .row').remove();
                 for(var key in data['notice_list']) {
@@ -171,7 +162,8 @@ function permissions_Get(group_id) {
                         '<td class="cell" name="notice" >'+notice_txt+'</td></tr>';
                     $('table#notice_list tbody').append(notice_tr);
                 }
-                select_title__Choice('notice');
+
+                permissionsIconChoice();
                 loading('end');
             }
         },
@@ -182,47 +174,46 @@ function permissions_Get(group_id) {
 }
 
 
-function select_title__Choice(model_name) {
-    var model_title = '';
-    var choice = '';
-    var choice_title = '';
-    var select_list = {};
-    if(model_name=='permission') {
-        $('table#permission_list tbody tr:not(.row_split)').each(function(){
-            if( $(this).attr('model_title') ){
-                model_title = $(this).attr('model_title');
-                select_list[model_title] = {'all':0,'choice':0};
-            }
-            else {
-                select_list[model_title]['all']++;
-                choice = $(this).children('td.choice').attr('choice');
-                if(choice=='yes') {
-                    select_list[model_title]['choice']++;
-                }
-            }
-        });
-        console.log(select_list);
-        for(var key in select_list){
-            if(select_list[key]['choice']==0) choice_title = 'no';
-            else if(select_list[key]['all']==select_list[key]['choice']) choice_title= 'yes';
-            else choice_title = 'part';
-            $('table.table_select tr[model_title='+key+'] td.choice').attr('choice',choice_title);
-        }
+function titleShow(app_label) {
+    var tr_title = $('#permission_list tbody tr[app_label='+app_label+']');
+    var show = tr_title.attr('show');
+    if(show=='yes'){
+        tr_title.attr('show','no');
+        $('#permission_list tbody tr[app_label='+app_label+']:not(.header)').hide();
+    } else {
+        tr_title.attr('show','yes');
+        $('#permission_list tbody tr[app_label='+app_label+']').show();
     }
-    else {
-        select_list[model_name] = {'all':0,'choice':0};
-        $('table#notice_list tr[model_name='+model_name+']:not(.row_split)').each(function(){
-            select_list[model_name]['all']++;
-            choice = $(this).children('td.choice').attr('choice');
-            if(choice=='yes') {
-                select_list[model_name]['choice']++;
-            }
-        });
+}
 
-        if(select_list[model_name]['choice']==0) choice_title = 'no';
-        else if(select_list[model_name]['all']==select_list[model_name]['choice']) choice_title= 'yes';
-        else choice_title = 'part';
-        $('table.table_select tr[model_title='+model_name+'] td.choice').attr('choice',choice_title);
+
+function permissionsIconChoice() {
+    var app_label = '';
+    var choice = '';
+    var permissions = {};
+    $('#permission_list tbody tr:not(.row_split)').each(function(){
+        app_label = $(this).attr('app_label');
+        if( !permissions[app_label] ){
+            permissions[app_label] = {'all':0,'choice':0};
+        }
+        else {
+            permissions[app_label]['all']++;
+            choice = $(this).find('[choice]').attr('choice');
+            if(choice=='yes') {
+                permissions[app_label]['choice']++;
+            }
+        }
+    });
+    for(var key in permissions){
+        if(permissions[key]['choice']==0){
+            $('table#permission_list tbody tr[app_label='+key+'].header td.choice').attr('choice','no');
+        }
+        else if(permissions[key]['all']==permissions[key]['choice']){
+            $('table#permission_list tbody tr[app_label='+key+'].header td.choice').attr('choice','yes');
+        }
+        else {
+            $('table#permission_list tbody tr[app_label='+key+'].header td.choice').attr('choice','part');
+        }
     }
 }
 
@@ -265,20 +256,6 @@ function update_Permissions(group_id) {
             }
         }
     });
-}
-
-
-function list_Show(model_name) {
-    //console.log(model_name);
-    var tr_title = $('.table_select tr[model_title='+model_name+']');
-    var show = tr_title.attr('show');
-    if(show=='yes'){
-        tr_title.attr('show','no');
-        $('.table_select tbody tr[model_name='+model_name+']').hide();
-    } else {
-        tr_title.attr('show','yes');
-        $('.table_select tbody tr[model_name='+model_name+']').show();
-    }
 }
 
 

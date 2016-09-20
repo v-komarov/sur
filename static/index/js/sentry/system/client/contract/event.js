@@ -45,7 +45,7 @@ $(document).ready(function(){
 });
 
 
-function event_Draw(type,object_id,event_list) {
+function event_Draw(type, object_id, event_list) {
     //console.log('event_Draw, object_id: '+object_id);
     if(type=='object'){
         var block = $('.object__item[object_id='+object_id+']');
@@ -60,7 +60,7 @@ function event_Draw(type,object_id,event_list) {
         $(this).removeAttr('event_id').removeAttr('object_id');
     });
     if(event_list && event_list['core']){
-        for(var event_key in event_list['core']){
+        for(var event_key in event_list['core']) {
             var event = event_list['core'][event_key];
             if(event['event_type']=='client_object_warden'){
                 var event_td = block.find('tr[action=object] td[name=client_object_warden]');
@@ -80,7 +80,14 @@ function event_Draw(type,object_id,event_list) {
                 event_tr.find('td[name=event_date]').html(event['event_date']);
                 event_tr.find('td[name=sentry_user]').html(event['sentry_user']);
                 event_tr.find('td[name=log_date]').html(event['log_date']);
+                /*
+                 if(event['event_type'] == 'client_object_connect' && 'cost' in event) {
+                 event_tr.find('[name=event_type]').html('<b>['+event['cost']+' '+lunchbox['setting']['currency']+']</b> Подключение');
+                 console.log(event['event_type'], event['cost']);
+                 }
+                 */
             }
+
         }
     }
     if(event_list && event_list['bonus']) {
@@ -90,7 +97,7 @@ function event_Draw(type,object_id,event_list) {
                 '<td class="padding right" name="event_type">' + event['event_type_name'] + '</td>' +
                 '<td class="cell_2" name="event_date">' + event['event_date'] + '</td>' +
                 '<td class="cell" name="sentry_user">' + event['sentry_user'] + '</td>' +
-                '<td class="cell_3">' + event['cost'] + ' руб.</td></tr>';
+                '<td class="cell_3">' + event['cost'] + ' '+lunchbox['setting']['currency']+'</td></tr>';
             block.find('.bonus_list tbody').append(event_tr);
             event_tr = $('[event_id=' + event['id'] + ']');
             event_tr
@@ -107,24 +114,26 @@ function event_Draw(type,object_id,event_list) {
 }
 
 
-function event_Edit(contract_id,object_id,event_type,event_id) {
+function event_Edit(contract_id, bind_id, object_id, event_type, event_id) {
     //console.log('event_Edit, event_type: '+event_type+', event_id: '+event_id+', contract_id: '+contract_id+', object_id: '+object_id);
     $('#event_pop select[name=event_type]').parents('tr').hide();
     $('#event_pop')
         .removeAttr('contract_id')
+        .removeAttr('bind_id')
         .removeAttr('object_id')
         .removeAttr('event_type_id')
         .removeAttr('event_id');
     //if($.inArray('main.'+event_type, lunchbox['permissions'])>=0){
-    /*
-     if(8>0){
-     */
-    if(!!contract_id){
-        $('#event_pop').attr('contract_id',contract_id);
+
+    if(!!contract_id)  {
+        $('#event_pop').attr('contract_id', contract_id);
         var tr = $('#contract tr[event_type='+event_type+']');
     } else {
-        $('#event_pop').attr('object_id',object_id);
+        $('#event_pop').attr('object_id', object_id);
         var tr = $('.object__item[object_id='+object_id+'] tr[event_type='+event_type+']');
+    }
+    if(!!bind_id)  {
+        $('#event_pop').attr('bind_id', bind_id);
     }
 
     var event_type_id = tr.attr('event_type_id');
@@ -147,7 +156,7 @@ function event_Edit(contract_id,object_id,event_type,event_id) {
     if( event_type=='client_object_connect' && !event_id &&
         $('#contract [event_type=client_contract_register] [name=event_date]').text()=='' &&
         $('#contract [event_type=client_contract_return] [name=event_date]').text()=='' ){
-        popMessage('Договор должен быть зарегистрирован и вернулся','red');
+        popMessage('Договор должен быть зарегистрирован и вернулся', 'red');
     }
     // Подключение для ПЦН возможно только при установленных ОУ
     else if( event_type=='client_object_connect' && !event_id &&
@@ -185,6 +194,7 @@ function event_Edit(contract_id,object_id,event_type,event_id) {
             $('#event_pop select[name=sentry_user]').val(lunchbox['setting']['sentry_user_id']);
             $('#event_pop div[action=event_delete]').hide();
         }
+
         popMenuPosition('#event_pop','single');
     }
     /*
@@ -196,7 +206,7 @@ function event_Edit(contract_id,object_id,event_type,event_id) {
 }
 
 
-function bonus_Edit(object_id,event_type,event_id) {
+function bonus_Edit(object_id, event_type, event_id) {
     //console.log('bonus_Edit, object_id: '+object_id);
     object_Cancel();
     $('#event_pop').attr('object_id',object_id);
@@ -281,6 +291,7 @@ function event_Update(action,event_type) {
     event_array['workflow_date'] = event_array['event_date'];
     event_array['workflow_type'] = $('#event_pop').attr('event_type_id');
     event_array['contract'] = $('#contract').attr('contract_id');
+    event_array['bind'] = $('#event_pop').attr('bind_id');
     event_array['object'] = $('#event_pop').attr('object_id');
     event_array['sentry_user'] = $('#event_pop select[name=sentry_user]').val();
     $.ajax({ url:'/system/client/object/ajax/'+action+'/', type:'post', dataType:'json', data:event_array,
@@ -329,9 +340,9 @@ function event_Validate(){
 
     $('#event_pop form').validate({ // validate the comment form when it is submitted
         rules: {
-            cost: {
-                required: true
-            },
+            //cost: {
+            //  required: true
+            //},
             event_date: {
                 required: true
             },
@@ -343,9 +354,9 @@ function event_Validate(){
             }
         },
         messages: {
-            cost: {
-                required: "Необходима сумма"
-            },
+            //cost: {
+            //  required: "Необходима сумма"
+            //},
             event_date: {
                 required: "Необходима дата"
             },

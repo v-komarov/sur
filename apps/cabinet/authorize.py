@@ -4,7 +4,7 @@ import datetime
 import json
 
 from django.contrib import auth
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseRedirect
 from django.template import RequestContext
 from django.shortcuts import render_to_response, redirect
 
@@ -12,7 +12,6 @@ from apps.system import models as db_sentry
 from apps.toolset import token, send_mail
 from apps.cabinet import authorize_permissions
 from apps import settings
-#from apps.cabinet.authcheck import checkactiveusers
 
 
 def index(request):
@@ -26,10 +25,17 @@ def index(request):
                 ### checkactiveusers() добавлено 25.12.2015
 
                 auth.login(request, user)
-                request.session['permissions'] = authorize_permissions.get_all_permissions_list(request)
-
                 data['answer'] = 'green'
-                data['url'] = '/system/client/search/'
+                request.session['permissions'] = authorize_permissions.get_all_permissions_list(request)
+                if request.user.has_perm('system.client'):
+                    data['url'] = '/system/client/search/'
+                    #return redirect('/system/client/search/')
+                elif request.user.has_perm('monitor.monitor'):
+                    data['url'] = '/monitor/operator/'
+                    #return redirect('/monitor/operator/')
+                else:
+                    data['errors'] = [u'Нет прав доступа']
+
             else: # the password is valid, but the account has been disabled
                 data['answer'] = 'yellow'
         else:

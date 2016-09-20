@@ -1,7 +1,7 @@
 $(document).ready(function(){
 
     $('#device_pop').on('click', 'tr.switch', function(){
-        if($(this).attr('checked')=='checked'){
+        if($(this).attr('checked')=='checked') {
             $(this).removeAttr('checked');
             $('#device_pop tr.switch td.text_right').html('Аренда');
         } else {
@@ -41,8 +41,8 @@ $(document).ready(function(){
 
     $('#device_list tbody').on('click', '.row:not(.edit)', function(){
         //if(8>0) {
-            var device_id = $(this).attr('device_id');
-            device_Edit(device_id);
+        var device_id = $(this).attr('device_id');
+        device_Edit(device_id);
         //}
     });
 
@@ -60,7 +60,11 @@ $(document).ready(function(){
         source: function(request, response) {
             $.ajax({
                 url: '/system/directory/sim_card/ajax/search/', dataType: "json",
-                data: { number:request.term, device_null:true, limit:10 },
+                data: {
+                    number: request.term,
+                    device_null: true,
+                    sim_card_exclude: device_sim_card('get'),
+                    limit: 10 },
                 success: function(data) {
                     response($.map(data['sim_card_list'], function(item) {
                         return {
@@ -92,24 +96,46 @@ $(document).ready(function(){
         deferRequestBy: 200 // Задержка запроса (мсек), на случай, если мы не хотим слать миллион запросов, пока пользователь печатает. Я обычно ставлю 300.
     });
 
+    $.ajaxSetup({
+        timeout: 900000
+    });
+    console.log(900000);
+
     device_Search();
     device_Validate();
+
 });
 
 
-function device_Search() {
+
+function device_Search(more) {
     device_Cancel();
-    loading('begin');
     var ajax_array = get_each_value('#device_list');
     ajax_array['install'] = true;
-    $.ajax({ url:'/system/directory/device/ajax/search/', type:'get', dataType:'json', data:ajax_array,
+
+    if(more == 'true') {
+        ajax_array['begin'] = $('#device_list tbody tr[device_id]').length;
+    } else {
+        loading('begin');
+        $('#device_list tbody tr').remove();
+    }
+
+    $.ajax({ url:'/system/directory/device/ajax/search/',
+        type:'get', dataType:'json', data:ajax_array, async:true,
         success: function(data) {
             if(data['error']!=null){
                 alert(data['error']);
                 loading('end');
             }
-            else if(data['device_list']){
-                setTable(data['device_list']);
+            else if(data['device_list']) {
+
+                if('more' in data) {
+                    console.log('device_Search, true');
+                    setTable(data['device_list'], 'true');
+                }
+                else {
+                    setTable(data['device_list']);
+                }
             }
         },
         error: function() {
@@ -120,7 +146,44 @@ function device_Search() {
 }
 
 
-function device_sim_card(action,data) {
+function setTable(data, more) {
+    for(var key in data){
+        var device_console__name = '';
+        if(data[key]['device_console__name']) device_console__name = data[key]['device_console__name'];
+        var device_type__name = '';
+        if(data[key]['device_type__name']) device_type__name = data[key]['device_type__name'];
+
+        var series_number = '';
+        if(data[key]['series']){ series_number += data[key]['series']}
+        if(data[key]['number']){ series_number += ' - '+data[key]['number']}
+        var comment = '';
+        if(data[key]['comment']) comment = data[key]['comment'];
+        if(data[key]['belong']=='rent') var belong_name = 'Аренда';
+        else var belong_name = 'Продано';
+        var tr_bg = '';
+        if(data[key]['install']=='yes') tr_bg = ' bg_green';
+        var item_tr = '<tr class="row'+tr_bg+'" device_id="'+data[key]['id']+'" >' +
+            '<td class="cell">'+device_console__name+'</td>' +
+            '<td class="cell">'+device_type__name+'</td>' +
+            '<td class="cell">'+data[key]['name']+'</td>' +
+                //'<td class="cell">'+series_number+'</td>' +
+            '<td class="cell">'+belong_name+'</td>' +
+            '<td class="cell" colspan="2">'+comment+'</td>' +
+            '</tr>';
+        $('#device_list tbody').append(item_tr);
+    }
+
+    if(more == 'true') {
+        device_Search('true');
+    } else {
+        loading('end');
+        $('.result_count').html('Найдено: '+$('#device_list tbody tr[device_id]').length);
+    }
+
+}
+
+
+function device_sim_card(action, data) {
     if(action=='add'){
         var sim_card_number = $('#device_pop input.device_sim_card').val();
         var sim_card_id = $('#device_pop input.device_sim_card').attr('sim_card_id');
@@ -156,40 +219,6 @@ function device_sim_card(action,data) {
 }
 
 
-function setTable(data) {
-    $('#device_list tbody tr').remove();
-    var count = 0;
-    for(var key in data){
-        var device_console__name = '';
-        if(data[key]['device_console__name']) device_console__name = data[key]['device_console__name'];
-        var device_type__name = '';
-        if(data[key]['device_type__name']) device_type__name = data[key]['device_type__name'];
-
-        var series_number = '';
-        if(data[key]['series']){ series_number += data[key]['series']}
-        if(data[key]['number']){ series_number += ' - '+data[key]['number']}
-        var comment = '';
-        if(data[key]['comment']) comment = data[key]['comment'];
-        if(data[key]['belong']=='rent') var belong_name = 'Аренда';
-        else var belong_name = 'Продано';
-        var tr_bg = '';
-        if(data[key]['install']=='yes') tr_bg = ' bg_green';
-        var item_tr = '<tr class="row'+tr_bg+'" device_id="'+data[key]['id']+'" >' +
-            '<td class="cell">'+device_console__name+'</td>' +
-            '<td class="cell">'+device_type__name+'</td>' +
-            '<td class="cell">'+data[key]['name']+'</td>' +
-                //'<td class="cell">'+series_number+'</td>' +
-            '<td class="cell">'+belong_name+'</td>' +
-            '<td class="cell" colspan="2">'+comment+'</td>' +
-            '</tr>';
-        $('#device_list tbody').append(item_tr);
-        count ++;
-    }
-    loading('end');
-    $('.result_count').html('Найдено: '+count);
-}
-
-
 function device_Edit(device_id){
     device_Cancel();
     $('tr[name=communication_gsm]').hide();
@@ -197,9 +226,9 @@ function device_Edit(device_id){
     if(!!device_id){
         $('#device_list tbody tr[device_id='+device_id+']').addClass('hover');
         //if(8>0) {
-            $('#device_pop div.btn_ui[action=delete]').show();
+        $('#device_pop div.btn_ui[action=delete]').show();
         //} else {
-            //$('#device_pop div.btn_ui[action=delete]').hide();
+        //$('#device_pop div.btn_ui[action=delete]').hide();
         //}
         var ajax_array = {'device':device_id,'communication':true};
         $.ajax({ url:'/system/directory/device/ajax/get/', type:'get', dataType:'json', data:ajax_array,
@@ -241,6 +270,7 @@ function device_Edit(device_id){
                         $('#device_pop #device_install tbody').append(item);
                         $('#device_pop #device_install').attr('install_count',install_count);
                     }
+                    eachWire('set',data['device']['data']);
                     loading('end');
                 }
             },
@@ -266,6 +296,7 @@ function device_Update(){
     var ajax_array = get_each_value('#device_pop');
     ajax_array['device_sim_card_list'] = device_sim_card('get');
     ajax_array['device'] = $('#device_list tbody tr.hover').attr('device_id');
+    ajax_array['data'] = eachWire('get');
     if($('#device_pop tr[name=belong]').is('[checked]')) ajax_array['belong'] = 'sell'; else ajax_array['belong'] = 'rent';
     $.ajax({ url:'/system/directory/device/ajax/update/', type:'post', dataType:'json', data:ajax_array,
         success: function(data){
@@ -282,11 +313,44 @@ function device_Update(){
 }
 
 
-function device_Delete(){
+function eachWire(action, data){
+    if(action=='get') {
+        var data_array = {};
+        $("#wires tbody tr").each(function() {
+            var check = false;
+            if($(this).find('.switch').attr('checked')) check = true;
+            data_array[$(this).attr('name')] = {
+                'description': $(this).find('[name=description]').val(),
+                'zone': $(this).find('[name=zone]').val()
+                //'time24': check
+            };
+        });
+        return JSON.stringify(data_array);
+    }
+    else if(action=='set') {
+        console.log(data);
+        $('#wires tbody input').val('');
+        $('#wires tbody td.switch').attr('checked','checked');
+        var wires = jQuery.parseJSON(data);
+        for(key in wires){
+            console.log(key);
+            var wire = wires[key];
+            console.log(wire);
+            console.log(wire['description']);
+            var tr = $('#wires tbody tr[name='+key+']');
+            tr.find('[name=description]').val(wire['description']);
+            tr.find('[name=zone]').val(wire['zone']);
+            //if(wire['time24']==false) tr.find('td.switch').removeAttr('checked');
+        }
+    }
+}
+
+
+function device_Delete() {
     var device_id = $('#device_list .hover').attr('device_id');
     $.ajax({ url:'/system/directory/device/ajax/delete/?device='+device_id, type:'get', dataType:'json',
         success: function(data){
-            if(data['error']!=null){
+            if(data['error']!=null) {
                 alert(data['error']);
             } else {
                 $('.tableInfo tbody tr[device_id='+device_id+']').remove();
@@ -297,14 +361,15 @@ function device_Delete(){
 }
 
 
-function device_Cancel(){
+function device_Cancel() {
     $('#device_list tbody tr.hover').removeClass('hover');
     $('#device_pop').hide();
+    $('#device_pop input').val('');
     $('#device_pop #device_install tbody tr').remove();
 }
 
 
-function device_install_Priority(install_id){
+function device_install_Priority(install_id) {
     var ajax_array = {'install_id': install_id};
     $.ajax({ url:'/system/directory/device/ajax/priority/', type:'post', dataType:'json', data:ajax_array,
         success: function(data){
@@ -355,6 +420,10 @@ function device_Validate(){
             number: {
                 maxlength: 11,
                 number: true
+            },
+            code: {
+                maxlength: 8,
+                minlength: 8
             }
         },
         messages: {
@@ -362,11 +431,15 @@ function device_Validate(){
                 required: "Необходимо наименование"
             },
             series: {
-                minlength: "Минимум 6 знаков"
+                maxlength: "Максимум 6 знаков"
             },
             number: {
-                minlength: "Максимум 11 знаков",
+                maxlength: "Максимум 11 знаков",
                 number: "Только цифры"
+            },
+            code: {
+                maxlength: "Максимум 8 знаков",
+                minlength: "Минимум 8 знаков"
             }
         }
     });

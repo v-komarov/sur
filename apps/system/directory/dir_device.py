@@ -26,32 +26,32 @@ def index(request):
         return render_to_response('403.html', locals(), RequestContext(request) )
 
 
-def ajax(request,action):
-    data = {'error':None}
+def ajax(request, action):
+    data = {'error': None}
 
     if action=='search':
         if request.user.has_perm('system.client'):
-            data = dir_device_ajax.search(request,data)
+            data = dir_device_ajax.search(request, data)
         else: data['error'] = 'Доступ запрещен'
 
     elif action=='get':
         if request.user.has_perm('system.client'):
-            data = dir_device_ajax.get(request,data)
+            data = dir_device_ajax.get(request, data)
         else: data['error'] = 'Доступ запрещен'
 
     elif action=='update':
         if request.user.has_perm('system.client'):
-            data = dir_device_ajax.update(request,data)
+            data = dir_device_ajax.update(request, data)
         else: data['error'] = 'Доступ запрещен'
 
     elif action=='priority':
         if request.user.has_perm('system.client'):
-            data = dir_device_ajax.set_priority(request,data)
+            data = dir_device_ajax.set_priority(request, data)
         else: data['error'] = 'Доступ запрещен'
 
     elif action=='delete':
         if request.user.has_perm('system.client'):
-            data = dir_device_ajax.delete(request,data)
+            data = dir_device_ajax.delete(request, data)
         else: data['error'] = 'Доступ запрещен'
 
 

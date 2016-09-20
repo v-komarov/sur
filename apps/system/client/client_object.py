@@ -17,8 +17,8 @@ from apps.system.client.extension import client_workflow_ajax
 def index(request, client_id=None, object_id=None):
     request.session['lunchbox'] = lunchbox.get(request)
 
-    if (not object_id and request.user.has_perm('system.client')) \
-            or (object_id and request.user.has_perm('system.client')):
+    if (not object_id and request.user.has_perm('system.client_object')) \
+            or (object_id and request.user.has_perm('system.client_object')):
 
         client_set = db_sentry.client.objects.get(id=client_id)
         if object_id:
@@ -54,7 +54,7 @@ def ajax(request, action=None):
     if action == 'get':
         if request.user.has_perm('system.client'):
             data = client_object_ajax.get(request=request)
-        else: data['error'] = 'Доступ запрещен'
+        else: data['errors'] = {'Доступ': 'запрещен'}
 
     elif action == 'update':
         if request.user.has_perm('system.client'):
@@ -63,7 +63,18 @@ def ajax(request, action=None):
 
     elif action == 'delete':
         if request.user.has_perm('system.client'):
-            data = client_contract_ajax.delete(request,data)
+            data = client_object_ajax.delete(request,data)
+        else: data['error'] = 'Доступ запрещен'
+
+    elif action == 'archive':
+        if request.user.has_perm('system.client'):
+            data = client_contract_ajax.archive(request,data)
+        else: data['error'] = 'Доступ запрещен'
+
+
+    elif action == 'search_archive':
+        if request.user.has_perm('system.client'):
+            data = client_object_ajax.search_archive(request,data)
         else: data['error'] = 'Доступ запрещен'
 
 
@@ -82,7 +93,7 @@ def ajax(request, action=None):
             data = client_workflow_ajax.delete(request,data)
         else: data['error'] = 'Доступ запрещен'
 
-    else: 
+    else:
         data['error'] = 'No function'
 
     return HttpResponse(json.dumps(data, ensure_ascii=False), content_type='application/json')

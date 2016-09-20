@@ -12,7 +12,7 @@
             <thead>
             <tr><td colspan="5">
                 <div class="balance"></div>
-                {% if perms.system.client_payment_change %}
+                {% if perms.system.add_client_payment %}
                     <div class="btn_ui bg right" action="payment_add" icon="object_add" title="Пополнить баланс"><div class="txt">Пополнить</div><div class="icon"></div></div>
                 {% endif %}
                 {% if years_list %}
@@ -30,7 +30,7 @@
             <tr class="row title">
                 <td class="cell">Дата платежа</td>
                 <td class="cell">Способ оплаты</td>
-                <td class="cell">Сумма (руб.)</td>
+                <td class="cell">Сумма ({{ request.session.currency }})</td>
                 <td class="cell">Ф.И.О.</td>
                 <td class="cell">Комментарий</td>
             </tr>

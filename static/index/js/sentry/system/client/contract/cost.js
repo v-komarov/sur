@@ -74,10 +74,10 @@ function cost_Clean(){
 
 
 function cost_Edit(client_bind_id, cost_id, cost_type) {
-    console.log(client_bind_id, cost_id);
+    console.log(client_bind_id, cost_id, cost_type);
     cost_Clean();
     $('#object_cost__pop').removeAttr('cost_id');
-    var ajax_array = {'client_bind_id':client_bind_id};
+    var ajax_array = {'client_bind_id': client_bind_id};
     if(!cost_id || cost_id==''){ // Стоимость не определена
         $.ajax({ url:'/system/client/object/cost/ajax/cost_null/', type:'post', dataType:'json', data:ajax_array,
             success: function(data){
@@ -104,7 +104,6 @@ function cost_Edit(client_bind_id, cost_id, cost_type) {
                 }
             },
             complete: function(){
-                console.log('+++',cost_type);
                 if(cost_type=='pause'){
                     cost_Add();
                     check_cost_type(7);
@@ -148,7 +147,7 @@ function cost_Render(data, cost_id) {
                 cost_date_string = cost['begin_date']+' - '+cost['end_date'];
             }
             else {
-                if(cost['cost_value']) cost_string += cost['cost_value'];
+                if(cost['cost_value']) cost_string += cost['cost_value'] +' '+lunchbox['setting']['currency']+' / ';
                 if(cost['cost_type']) cost_string += ' '+cost['cost_type__name'];
                 cost_date_string = '<span name="date">'+cost['begin_date']+'</span>';
             }
@@ -305,7 +304,7 @@ function cost_Validate(){
             cost_type: {
                 required: true
             },
-            cost: {
+            cost_value: {
                 required: true,
                 number: true
             },
@@ -325,7 +324,7 @@ function cost_Validate(){
             cost_type: {
                 required: "Необходима тип начисления"
             },
-            cost: {
+            cost_value: {
                 required: "Необходима стоимость",
                 number: "Должно быть число"
             },

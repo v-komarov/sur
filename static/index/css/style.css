@@ -905,6 +905,111 @@ ul.number {
 
 }
 
+
+
+
+.menu {
+    max-width: 1300px;
+    min-width: 980px;
+    margin: 0 auto;
+    font-size: 0;
+    padding: 0;
+}
+.menu form {
+    float: left;
+    width: 295px;
+}
+.menu input {
+    float: left;
+    margin: 14px 0 0 30px;
+    padding: 0 5px;
+    width: 215px;
+    border: none;
+    height: 23px;
+}
+.menu input[type=button] {
+    margin: 14px 0 0 0;
+    background: url("images/button_search.gif") 0 1px;
+    border: none;
+    width: 26px;
+    height: 23px;
+    padding: 0;
+    cursor: pointer;
+}
+.menu a {
+    display: inline-block;
+    padding: 18px 20px 17px;
+    text-align: center;
+    vertical-align: middle;
+    font-size: 15px;
+    color: #fff;
+    text-decoration: none;
+}
+
+.menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    left:-9999px;
+}
+.menu li:hover .inside {
+    left:0;
+    z-index: 200;
+}
+.menu_3 li,
+.menu li {
+    list-style: none;
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+.menu ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    left:-9999px;
+}
+.menu li:hover .inside {
+    left:0;
+}
+.top_menu {
+    list-style: none;
+    display: inline-block;
+}
+
+.menu .top_menu ul {
+    font-size: 0;
+    position: absolute;
+    min-width: 90px;
+    left:-9999px;
+}
+.menu .top_menu .inside .sub {
+    width: 100%;
+}
+.menu_3 .top_menu li,
+.menu .top_menu li {
+    position: relative;
+    border-bottom: 1px solid #d1d1d1;
+}
+.menu_3 .top_menu .link,
+.menu .top_menu .link {
+    text-align: left;
+    color: #000;
+    background-color: #fafafa;
+    display: block;
+    text-decoration: none;
+    white-space: nowrap;
+}
+.menu_3 .top_menu .link:hover,
+.menu .top_menu .link:hover {
+    color: #fff;
+    background-color: #ffbd42;
+    text-shadow: 1px 1px 2px #000;
+}
+.menu .top_menu .inside .sub { width: 100%; }
+
+
+
 .footer {
     padding: 20px 15px;
 }

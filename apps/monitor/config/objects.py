@@ -11,7 +11,7 @@ from apps.system import models as db_sentry
 
 
 def index(request, client_id=None):
-    if request.user.has_perm('sentry.objects'):
+    if request.user.has_perm('monitor.monitor'):
         title = 'Список объектов'
         objects_set = db_sentry.object.objects.filter(is_active=1)
 
@@ -32,7 +32,7 @@ def index(request, client_id=None):
         return render_to_response('404.html', RequestContext(request))
 
 def save_wires(request):
-    if request.user.has_perm('sentry.objects') and 'wires' in request.POST:
+    if request.user.has_perm('monitor.monitor') and 'wires' in request.POST:
         data = {}
         object_id = int(request.POST['object_id'])
         db_sentry.object_wires.objects.filter(object_id=object_id).delete()

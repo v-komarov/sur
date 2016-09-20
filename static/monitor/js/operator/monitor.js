@@ -1,23 +1,62 @@
 $(document).ready(function() {
 
-    $("ul li a").bind("click",SwitchButton);
-    $("button[clear=OK]").bind("click",ClearAlarm);
+    window.static_url = "";
+    window.max_rows = 0;
+
+    window.alarm1 = "";
+    window.alarm2 = "";
+    window.alarm3 = "";
+    window.alarm9 = "";
+
+    // Загрузка свойств
+    var jqxhr = $.getJSON("/monitor/operator/getdata?settings=ok",
+    function(data) {
+
+        window.max_rows = data['max_rows'];
+        window.static_url = data["static_url"];
+
+        window.alarm9 = new Audio(window.static_url+"monitor/wav/9.wav");
+        window.alarm1 = new Audio(window.static_url+"monitor/wav/1.wav");
+        window.alarm2 = new Audio(window.static_url+"monitor/wav/2.wav");
+        window.alarm3 = new Audio(window.static_url+"monitor/wav/3.wav");
+
+        // Список техников
+        /*
+        t = "";
+        data["tech_list"].forEach(function(item,i,arr){
+
+            var a = "<option value="+item["tech_id"]+">"+item["tech_name"]+"</option>"
+            t = t + a
+            $("#tech_list").prepend(t);
+
+        });
+        */
+    })
+    // Загрузка свойств конец
+
+
     $("button[create_alarm=OK]").bind("click",CreateAlarm);
     $("table[group=1] tbody tr").bind("click",ClickObjectRow);
     $("first-step button").bind("click",FirstStep);
     $("second-step button").bind("click",SecondStep);
     $("third-step button").bind("click",ThirdStep);
-    $("fourth-step button").bind("click",FourthStep);
     $("button[service=ok]").bind("click",SetStatusService);
+    $("button[service=end]").bind("click",OffStatusService);
+
+    $('#tooltip').tooltip();
 
     MakeColorTable2();
-    GetSettings();
+    //GetSettings();
     GetAlarmList();
     GetServiceList();
     MarkFirst();
     setInterval('UpdateData();',5000);
 
+
+
 });
+
+
 
 
 
@@ -33,78 +72,20 @@ function MarkFirst() {
 }
 
 
+
+
+
+
 function MakeColorTable2() {
 
-    $("table[group=2] tbody tr[alert_level=3]").css("background-color","yellow");
-    $("table[group=2] tbody tr[alert_level=0]").css("background-color","#98FB98");
-    $("table[group=2] tbody tr[alert_level=1]").css("background-color","#40E0D0");
-    $("table[group=2] tbody tr[alert_level=9]").css("background-color","#FF4500");
+    // Окраска в зависимости от alert_level
+    $("table[group=2] tbody tr[alert_level=9]").css("background-color","red").css("color","white");
+    $("table[group=2] tbody tr[alert_level=1]").css("background-color","#330099").css("color","white");
+    $("table[group=2] tbody tr[alert_level=3]").css("background-color","#336633").css("color","white");
+    $("table[group=2] tbody tr[alert_level=2]").css("background-color","brown").css("color","white");
+    $("table[group=2] tbody tr[alert_level=4]").css("background-color","gray").css("color","white");
 
 }
-
-
-
-function SwitchButton(e) {
-
-    var mygroup = $(this).closest("ul").attr('group');
-    var group = $("ul[group="+mygroup+"]").children("li");
-    group.removeClass('active');
-    $(this).closest("li").addClass('active');
-
-    if ((mygroup == "1") && ($(this).text() == "Все")) {
-        $("table[group=1] tbody tr").show();
-
-    }
-
-    if ((mygroup == "1") && ($(this).text() == "Охраняемые")) {
-        $("table[group=1] tbody tr[status!=connected]").hide();
-        $("table[group=1] tbody tr[status=connected]").show();
-
-    }
-
-    if ((mygroup == "1") && ($(this).text() == "Не подохраной")) {
-        $("table[group=1] tbody tr[status=connected]").hide();
-        $("table[group=1] tbody tr[status!=connected]").show();
-
-    }
-
-    if ((mygroup == "1") && ($(this).text() == "Тревожные")) {
-        $("table[group=1] tbody tr[alarm=no]").hide();
-        $("table[group=1] tbody tr[alarm=yes]").show();
-
-    }
-
-    if ((mygroup == "1") && ($(this).text() == "Нет теста")) {
-        $("table[group=1] tbody tr[test=yes]").hide();
-        $("table[group=1] tbody tr[test=no]").show();
-
-    }
-
-    if ((mygroup == "1") && ($(this).text() == "Обслуживание")) {
-        $("table[group=1] tbody tr[service=no]").hide();
-        $("table[group=1] tbody tr[service=yes]").show();
-
-    }
-
-
-    if ((mygroup == "2") && ($(this).text() == "Все")) {
-        $("table[group=2] tbody tr").show();
-
-    }
-
-    if ((mygroup == "2") && ($(this).text() == "Тревоги")) {
-        $("table[group=2] tbody tr[alert_level!=9]").hide();
-        $("table[group=2] tbody tr[alert_level=9]").show();
-    }
-
-    if ((mygroup == "2") && ($(this).text() == "На объекте")) {
-        var client_bind = $("table[group=1] tbody tr[marked=yes]").attr("client_bind");
-        $("table[group=2] tbody tr[client_bind_id!="+client_bind+"]").hide();
-        $("table[group=2] tbody tr[client_bind_id="+client_bind+"]").show();
-    }
-
-}
-
 
 
 
@@ -132,20 +113,93 @@ function CreateAlarm(e) {
 
 
 
+
+
+
 // Отмена тревоги
 function ClearAlarm(e) {
 
-    var client_bind = $("table[group=1] tbody tr[marked=yes]").attr("client_bind");
+    // Для заполнения описания и отмены тревоги необходимо заполнить три поля
+    if ($("first-step button").hasClass("btn-success") && $("second-step button").hasClass("btn-success")) {
 
-    var jqxhr = $.getJSON("/monitor/operator/getdata?clearalarm="+client_bind,
-    function(data) {
 
-        if (data['result'] == 'ok') {
-            $(".alarm").hide();
-            $(".noalarm").show();
-        }
+        var client_bind = $("table[group=1] tbody tr[marked=yes]").attr("client_bind");
+        $("#dialog-info textarea").val("");
 
-    })
+
+        // Ввод описания
+        $("#dialog-info").dialog(
+            {
+                hide: { effect: "blind", duration: 100 },
+                show: { effect: "blind", duration: 100 },
+                minWidth: 500,
+                modal: false,
+                position: {my : "center", at : 'center', of : ".alarm"},
+                title: "Описание события: " + $("third-step select").val(),
+                buttons: [
+                    {
+                        text: "Сохранить отчет",
+                        click: function() {
+
+                            var uyuy = $("#dialog-info textarea").val();
+                            $("fourth-step input").val(uyuy);
+
+                            var jqxhr = $.getJSON("/monitor/operator/getdata?fourth-step="+uyuy+"&client_bind="+client_bind,
+                            function(data) {
+                                if (data['result'] == 'ok') {
+
+                                    // Отмена тревоги
+
+                                            var jqxhr = $.getJSON("/monitor/operator/getdata?clearalarm="+client_bind,
+                                            function(data) {
+
+                                                if (data['result'] == 'ok') {
+                                                    $(".alarm").hide();
+                                                    $(".noalarm").show();
+                                                }
+                                            })
+                                    // Отмена тревоги конец
+
+                                    //GetAddsData(client_bind);
+
+                                }
+                            })
+
+                            $(this).dialog("close");
+                        }
+                    },
+                    {
+                        text: "Не сохранять",click: function() { $(this).dialog("close"); }
+                    }
+                ]
+            }
+        );
+
+
+
+
+
+
+
+
+
+
+
+
+    }
+    else {
+        $("#dialog-alarm").dialog({
+            model: true,
+            buttons:[
+                {text:"Закрыть",click: function() {
+                    $(this).dialog("close")}}]
+        });
+
+    }
+
+
+
+
 }
 
 
@@ -156,6 +210,7 @@ function ClearAlarm(e) {
 
 
 function ClickObjectRow(e) {
+
 
         var mytablegroup = $(this).siblings("tr")
         mytablegroup.css("background-color","");
@@ -178,6 +233,52 @@ function ClickObjectRow(e) {
 
 
 
+// суммы на кнопках
+function ButtonCount() {
+    var all = $("table[group=1] tbody tr").length;
+    $("ul[group=1] li:first a").html("Все<br />("+all+")");
+
+    var watching = $("table[group=1] tbody tr[status=True]").length;
+    $("ul[group=1] li:eq(1) a").html("Охраняемые<br />("+watching+")");
+
+    var nowatching = $("table[group=1] tbody tr[status=False]").length;
+    $("ul[group=1] li:eq(2) a").html("Не под<br />охраной ("+nowatching+")");
+
+    var alarm = $("table[group=1] tbody tr[alarm=yes]").length;
+    $("ul[group=1] li:eq(3) a").html("Тревожные<br />("+alarm+")");
+
+    var test = $("table[group=1] tbody tr[test=no]").length;
+    $("ul[group=1] li:eq(4) a").html("Нет теста<br />("+test+")");
+
+    var service = $("table[group=1] tbody tr[service=yes]").length;
+    $("ul[group=1] li:eq(5) a").html("Обслуживание<br />("+service+")");
+
+}
+
+
+
+
+// Получение списка объектов с отсутсвием теста
+function GetNoTestList() {
+
+    var jqxhr = $.getJSON("/monitor/operator/getdata?notestlist=ok",
+    function(data) {
+
+        var arr = data['notestlist']
+        $("table[group=1] tbody tr").attr("test","yes");
+        arr.forEach(function(item,i,arr){
+            $("table[group=1] tbody tr[client_bind="+item+"]").attr("test","no");
+
+        });
+
+    });
+
+}
+
+
+
+
+// Список объектов с тревогой
 function GetAlarmList() {
 
     var jqxhr = $.getJSON("/monitor/operator/getdata?alarmlist=ok",
@@ -188,7 +289,8 @@ function GetAlarmList() {
 
 
 
-        var arr = data['client_bind_alarm']
+        var arr = (data['client_bind_alarm'])['alarm_visio']
+        var arr2 = (data['client_bind_alarm'])['alarm_audio']
         arr.forEach(function(item,i,arr){
             $("table[group=1] tbody tr[client_bind="+item+"]").attr("alarm","yes");
             $("table[group=1] tbody tr[client_bind="+item+"]").css("color","red");
@@ -202,6 +304,11 @@ function GetAlarmList() {
             $(".container").css( "border", "");
         }
 
+        // Звуковой сигнал
+        if (arr2.length != 0) {
+            // Звуковой сигнал тревоги
+            window.alarm9.play();
+        }
 
     })
 
@@ -211,6 +318,8 @@ function GetAlarmList() {
 
 
 
+
+// Список объектов на обслуживании
 function GetServiceList() {
 
     var jqxhr = $.getJSON("/monitor/operator/getdata?servicelist=ok",
@@ -224,7 +333,7 @@ function GetServiceList() {
         var arr = data['client_bind_service']
         arr.forEach(function(item,i,arr){
             $("table[group=1] tbody tr[client_bind="+item+"]").attr("service","yes");
-            $("table[group=1] tbody tr[client_bind="+item+"]").css("color","green");
+            $("table[group=1] tbody tr[client_bind="+item+"]").css("color","brown");
         });
 
     })
@@ -241,13 +350,17 @@ function GetServiceList() {
 function SetStatusService() {
 
     var client_bind = $("table[group=1] tbody tr[marked=yes]").attr("client_bind");
-    var status = $('input[service=ok]:checkbox').prop('checked');
-    var comment = $('input[service=ok]:text').val();
 
-    var jqxhr = $.getJSON("/monitor/operator/getdata?service_status="+client_bind+"&status="+status+"&comment="+comment,
+    var time = $("#service-time").val();
+    var tech = $("#service-tech").val();
+    var reason = $("#service-reason").val();
+
+    var jqxhr = $.getJSON("/monitor/operator/getdata?service_status="+client_bind+"&time="+time+"&reason="+reason+"&tech="+tech,
     function(data) {
 
-
+        if (data['result'] == 'ok') {
+            GetAddsData(client_bind);
+        }
 
     })
 
@@ -255,6 +368,26 @@ function SetStatusService() {
 
 
 
+
+
+
+// Сброс обслуживания
+function OffStatusService() {
+
+
+
+    var client_bind = $("table[group=1] tbody tr[marked=yes]").attr("client_bind");
+
+    var jqxhr = $.getJSON("/monitor/operator/getdata?service_status_end="+client_bind,
+    function(data) {
+
+        if (data['result'] == 'ok') {
+            GetAddsData(client_bind);
+        }
+
+    })
+
+}
 
 
 
@@ -265,48 +398,81 @@ function SetStatusService() {
 // Информация по объекту
 function GetAddsData(client_bind) {
 
-    var jqxhr = $.getJSON("/monitor/operator/getdata?client_bind="+client_bind,
+    var jqxhr = $.getJSON("/monitor/operator/getdata?getdata=ok&client_bind="+client_bind,
     function(data) {
+
+
+        // Закрепленный ГБР
+        var squad = data["squad"];
+        $("first-step select option").css("background-color","").css("color","");
+        $("first-step select :contains("+squad+")").css("background-color","#009933").css("color","white");
+
+        // Отображение состояния кнопок обработки тревоги
+        // first
+        if ( data['actions']['action_1'] != '') {
+
+            $("first-step select").css("background-color","#185574");
+            $("first-step select").css("color","#FFFFFF");
+            $("first-step select").val(data['actions']['action_1']);
+            $("first-step button").toggleClass("btn-success",true);
+            $("first-step button").toggleClass("btn-danger",false);
+        }
+        else {
+
+            $("first-step select").css("background-color","");
+            $("first-step select").css("color","");
+            $("first-step button").toggleClass("btn-success",false);
+            $("first-step button").toggleClass("btn-danger",true);
+            $('first-step select option:selected').removeAttr("selected");
+        }
+
+
+        // second
+        if ( data['actions']['action_2'] != '') {
+            $("second-step select").css("background-color","#185574");
+            $("second-step select").css("color","#FFFFFF");
+            $("second-step select").val(data['actions']['action_2']);
+            $("second-step button").toggleClass("btn-success",true);
+            $("second-step button").toggleClass("btn-danger",false);
+        }
+        else {
+            $("second-step select").css("background-color","");
+            $("second-step select").css("color","");
+            $("second-step button").toggleClass("btn-success",false);
+            $("second-step button").toggleClass("btn-danger",true);
+            $('second-step select option:selected').removeAttr("selected");
+            // Копирование выбранного ГБР в первом во второй
+            if ( data['actions']['action_1'] != '') { $("second-step select").val($("first-step select option:selected").val()); }
+        }
+
+        // third
+        if ( data['actions']['action_3'] != '') {
+            $("third-step select").css("background-color","#185574");
+            $("third-step select").css("color","#FFFFFF");
+            $("third-step select").val(data['actions']['action_3']);
+            $("third-step button").toggleClass("btn-success",true);
+            $("third-step button").toggleClass("btn-danger",false);
+        }
+        else {
+            $("third-step select").css("background-color","");
+            $("third-step select").css("color","");
+            $("third-step select").val('');
+            $("third-step button").toggleClass("btn-success",false);
+            $("third-step button").toggleClass("btn-danger",true);
+        }
+
+        // Информация о времени
+        $("time_begin").text(data['actions']['time_begin'])
+        $("from_begin").text(data['actions']['from_begin'])
+        $("time_way").text(data['actions']['time_way'])
+        $("time_text_2").text(data['actions']['time_text_2'])
+
+
 
         $("client_name").text(data['additions']['client_name']);
         if ($("table[group=1] tbody tr[client_bind="+client_bind+"]").attr("alarm") == "yes") {
             $(".alarm").show();
             $(".noalarm").hide();
-
-
-            $("time_begin").text(data['actions']['time_begin'])
-            $("from_begin").text(data['actions']['from_begin'])
-            $("time_way").text(data['actions']['time_way'])
-            $("time_text_2").text(data['actions']['time_text_2'])
-
-            if ( data['actions']['action_1'] != '') {
-                $("first-step select").css("background-color","#185574");
-                $("first-step select").css("color","#FFFFFF");
-                $("first-step select").find("option:contains("+ data['actions']['action_1']  +")").attr("selected", "selected");
-            }
-            else {$("first-step select").css("background-color",""); $("first-step select").css("color","");}
-
-            if ( data['actions']['action_2'] != '') {
-                $("second-step select").css("background-color","#185574");
-                $("second-step select").css("color","#FFFFFF");
-                $("second-step select").find("option:contains("+ data['actions']['action_2']  +")").attr("selected", "selected");
-            }
-            else {$("second-step select").css("background-color",""); $("second-step select").css("color","");}
-
-            if ( data['actions']['action_3'] != '') {
-                $("third-step select").css("background-color","#185574");
-                $("third-step select").css("color","#FFFFFF");
-                $("third-step select").find("option:contains("+ data['actions']['action_3']  +")").attr("selected", "selected");
-            }
-            else {$("third-step select").css("background-color","");$("third-step select").css("color","");}
-
-            if ( data['actions']['action_4'] != '') {
-                $("fourth-step select").css("background-color","#185574");
-                $("fourth-step select").css("color","#FFFFFF");
-                $("fourth-step select").find("option:contains("+ data['actions']['action_4']  +")").attr("selected", "selected");
-            }
-            else {$("fourth-step select").css("background-color",""); $("fourth-step select").css("color","");}
-
 
         }
         else {
@@ -315,21 +481,57 @@ function GetAddsData(client_bind) {
         }
 
         // Информация о обслуживании
-
-        if (data['additions']['service_status']) {
-            $('input[service=ok]:checkbox').prop('checked', "checked");
-        }
-        else {
-            $('input[service=ok]:checkbox').prop('checked', "");
-        }
-        $('input[service=ok]:text').val(data['additions']['service_comment']);
         ShowServiceHistory(client_bind,(data['additions']['service_history']).reverse());
+
+        // История вызовов ГБР
+        ShowGbrHistory((data['additions']['gbr_history']));
+
+
+        // Контакты
+        $("dl.contacts").empty();
+        data['contacts'].forEach(function(item,i,arr){
+
+            var t = "<dt class='col-md-offset-1'>"+item["hiskey"]+" "+item['name']+" ("+item['post']+")</dt>"
+                        + "<dd class='col-md-offset-2'>" + item["address"] + "</dd>";
+
+                item['phones'].forEach(function(item2,i2,arr2){
+
+                    t = t + "<dd class='col-md-offset-2'>"+item2['phone']+" ("+item2['phone_type']+")</dd>";
+
+                });
+
+            $("dl.contacts").append(t);
+
+        });
+
+
+        // Сервисная информация
+        ShowServiceInformation(data["gsm"]);
+
+
+
 
 
     })
 
 
 }
+
+
+
+
+
+
+
+function ShowServiceInformation(data) {
+
+    $("#status-gsm").css("width",data["level"]*3+"%");
+    if (data["signal"] == "high") { $("#status-gsm").toggleClass("progress-bar-success",true); $("#status-gsm").toggleClass("progress-bar-warning",false); }
+    if (data["signal"] == "low") { $("#status-gsm").toggleClass("progress-bar-success",false); $("#status-gsm").toggleClass("progress-bar-warning",true); }
+    $("#status-gsm").text(data["level"]*3+"%");
+}
+
+
 
 
 
@@ -344,15 +546,13 @@ function ShowServiceHistory(client_bind,data) {
 
     data.forEach(function(item,i,arr){
 
-        if (item['status']) {status = "Обслуживание";} else {status = "Работа";}
-
         var t = "<tr "
 
-            +"><td width='15%'>"
-            +item['date_text']+"</td><td width='15%'>"
-            +item['time_text']+"</td><td width='20%'>"
-            +status+"</td><td width='50%'>"
-            +item['comment']+"</td></tr>";
+            +"><td width='20%' style=\"color:red;\">"+item['datetime_text']
+            +"</td><td width='20%' style=\"color:green;\">"+item['datetime_text2']
+            +"</td><td width='25%'>"+item['tech']
+            +"</td><td width='35%'>"+item['reason']
+            +"</td></tr>";
 
             $("tbody[group=3]").prepend(t);
 
@@ -363,18 +563,29 @@ function ShowServiceHistory(client_bind,data) {
 
 
 
-
-function GetSettings() {
-
-    var jqxhr = $.getJSON("/monitor/operator/getdata?settings=ok",
-    function(data) {
-
-        window.max_rows=data['max_rows'];
-
-    })
+function ShowGbrHistory(data) {
 
 
+    $("tbody[group=4]").empty();
+
+    data.forEach(function(item,i,arr){
+
+        var t = "<tr "
+
+            +"><td width='20%' style=\"color:red;\">"+item['time_start']
+            +"</td><td width='10%' style=\"color:green;\">"+item['time_arived']
+            +"</td><td width='15%'>"+item['gbr']
+            +"</td><td width='25%'>"+ "<a id=\"tooltip\" title=\""+item['type_evt']+"\">"+item['type_evt'].substring(0,18)+"</a>"
+            +"</td><td width='30%'>"+ "<a id=\"tooltip\" title=\""+item['comment']+"\">"+item['comment'].substring(0,22)+"</a>"
+            +"</td></tr>";
+
+            $("tbody[group=4]").prepend(t);
+
+    });
 }
+
+
+
 
 
 
@@ -384,11 +595,28 @@ function FirstStep(e) {
 
     var jqxhr = $.getJSON("/monitor/operator/getdata?first-step="+uyuy+"&client_bind="+client_bind,
     function(data) {
+
         if (data['result'] == 'ok') {
-            GetAddsData(client_bind);
+            if (uyuy == "ГБР не направлялся") {
+                // Отмена тревоги
+                var jqxhr2 = $.getJSON("/monitor/operator/getdata?clearalarm="+client_bind,
+                    function(data2) {
+
+                        if (data2['result'] == 'ok') {
+                            $(".alarm").hide();
+                            $(".noalarm").show();
+                        }
+
+                    })
+
+            }
+            else { GetAddsData(client_bind); }
+
         }
     })
 }
+
+
 
 
 
@@ -416,22 +644,7 @@ function ThirdStep(e) {
     function(data) {
         if (data['result'] == 'ok') {
             GetAddsData(client_bind);
-        }
-    })
-
-}
-
-
-
-
-function FourthStep(e) {
-    var uyuy = $("fourth-step select option:selected").text();
-    var client_bind = $("table[group=1] tbody tr[marked=yes]").attr("client_bind");
-
-    var jqxhr = $.getJSON("/monitor/operator/getdata?fourth-step="+uyuy+"&client_bind="+client_bind,
-    function(data) {
-        if (data['result'] == 'ok') {
-            GetAddsData(client_bind);
+            ClearAlarm();
         }
     })
 
@@ -451,6 +664,9 @@ function UpdateData() {
         ShowData(data);
         GetAlarmList();
         GetServiceList();
+        ButtonCount();
+        GetNoTestList();
+        $("ul[group=1] li.active").trigger("click");
     })
 }
 
@@ -475,13 +691,14 @@ function ShowData(data) {
 
         +"client_bind_idl=\""+item["client_bind_id"]+"\" "
 
-        +"><td width='10%'>"
-        +item['date_text']+"</td><td width='10%'>"
-        +item['time_text']+"</td><td width='10%'>"
-        +item['device_number']+"</td><td width='40%'>"
-        +item['message_text']+"</td><td width='15%'>"
-        +item['zone_text']+"</td><td width='15%'>"
-        +item['stub_text']+"</td></tr>";
+        +"><td width='10%'>"+item['date_text']
+        +"</td><td width='5%'>"+item['time_text']
+        +"</td><td width='5%'>"+item['device_number']
+        +"</td><td width='15%'>"+item['object']
+        +"</td><td width='20%'>"+item['address']
+        +"</td><td width='50%'>"+item['message_text']
+        +"</td><td width='5%'>"+item['stub']
+        +"</td></tr>";
 
         var first = $("tbody[group=2] tr:first").attr("row_id");
 
@@ -489,17 +706,29 @@ function ShowData(data) {
 
             $("tbody[group=2]").prepend(t);
 
-            if ( $("table[group=2] tr:first").attr("alert_level") == 0 ) {$("tbody[group=2] tr:first").css("background-color","#98FB98");}
-            if ( $("tbody[group=2] tr:first").attr("alert_level") == 1 ) {$("tbody[group=2] tr:first").css("background-color","#40E0D0");}
-            if ( $("tbody[group=2] tr:first").attr("alert_level") == 3 ) {$("tbody[group=2] tr:first").css("background-color","yellow");}
-            if ( $("tbody[group=2] tr:first").attr("alert_level") == 9 ) {$("tbody[group=2] tr:first").css("background-color","#FF4500");}
+            // Окраска в зависимости от alert_level
+            $("table[group=2] tbody tr:first[alert_level=9]").css("background-color","red").css("color","white");
+            $("table[group=2] tbody tr:first[alert_level=1]").css("background-color","#330099").css("color","white");
+            $("table[group=2] tbody tr:first[alert_level=3]").css("background-color","#336633").css("color","white");
+            $("table[group=2] tbody tr:first[alert_level=2]").css("background-color","brown").css("color","white");
+            $("table[group=2] tbody tr:first[alert_level=4]").css("background-color","gray").css("color","white");
+            // Звуковой сишнал
+            if ($("table[group=2] tbody tr:first").attr("alert_level") == 1) { window.alarm1.play();}
+            if ($("table[group=2] tbody tr:first").attr("alert_level") == 2) { window.alarm2.play();}
+            if ($("table[group=2] tbody tr:first").attr("alert_level") == 3) { window.alarm3.play();}
+            if ($("table[group=2] tbody tr:first").attr("alert_level") == 9) { window.alarm9.play();}
 
             // Проверка нужно строку показывать ли нет
-            if (($("ul[group=2] li.active").text() == "На объекте") && ( $("table[group=1] tr[marked=yes]").attr("client_bind") != item["client_bind_id"] )) {$("table[group=2] tr:first").hide();}
+            if (($("ul[group=2] li.active").text().substring(0,10) == "На объекте") && ( $("table[group=1] tr[marked=yes]").attr("client_bind") != item["client_bind_id"] )) {$("table[group=2] tr:first").hide();}
 
         }
 
     });
 
 }
+
+
+
+
+
 

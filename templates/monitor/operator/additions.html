@@ -17,13 +17,13 @@
     <div class="panel-heading" role="tab" id="headingTwo" style="padding:0;">
       <h4 class="panel-title" style="background-color:rgb(209,211,212);">
         <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
-          <h6 style="margin:0;">Отметки о прибытии</h6>
+          <h6 style="margin:0;">Выезды ГБР</h6>
         </a>
       </h4>
     </div>
     <div id="collapseTwo" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingTwo">
       <div class="panel-body">
-        Тест
+        {% include "monitor/operator/gbr-history.html" %}
       </div>
     </div>
   </div>
@@ -37,7 +37,7 @@
     </div>
     <div id="collapseThree" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingThree">
       <div class="panel-body">
-        Тест
+        {% include "monitor/operator/timetable.html" %}
       </div>
     </div>
   </div>
@@ -51,7 +51,7 @@
     </div>
     <div id="collapseFour" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFour">
       <div class="panel-body">
-        Тест
+        {% include "monitor/operator/docs.html" %}
       </div>
     </div>
   </div>
@@ -59,13 +59,13 @@
     <div class="panel-heading" role="tab" id="headingFive" style="padding:0;">
       <h4 class="panel-title" style="background-color:rgb(209,211,212);">
         <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
-          <h6 style="margin:0;">Телефоны ответственных</h6>
+          <h6 style="margin:0;">Список ответственных за постановку/снятие</h6>
         </a>
       </h4>
     </div>
     <div id="collapseFive" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingFive">
       <div class="panel-body">
-        Тест
+        {% include "monitor/operator/phones.html" %}
       </div>
     </div>
   </div>
@@ -79,7 +79,21 @@
     </div>
     <div id="collapseSix" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingSix">
       <div class="panel-body">
-        Тест
+        {% include "monitor/operator/maps.html" %}
+      </div>
+    </div>
+  </div>
+  <div class="panel panel-default">
+    <div class="panel-heading" role="tab" id="headingEight" style="padding:0;">
+      <h4 class="panel-title" style="background-color:rgb(209,211,212);">
+        <a class="collapsed" role="button" data-toggle="collapse" data-parent="#accordion" href="#collapseEight" aria-expanded="false" aria-controls="collapseEight">
+          <h6 style="margin:0;">Сервисная информация</h6>
+        </a>
+      </h4>
+    </div>
+    <div id="collapseEight" class="panel-collapse collapse" role="tabpanel" aria-labelledby="headingEight">
+      <div class="panel-body">
+        {% include "monitor/operator/service-information.html" %}
       </div>
     </div>
   </div>

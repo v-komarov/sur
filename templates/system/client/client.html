@@ -19,7 +19,8 @@
 
                 <tr class="row" id="holding">
                     <td class="padding_9 text_right">Холдинг</td>
-                    <td class="cell secondary"><input name="holding" class="wide" type="text" value="{{ client_set.holding.name }}" item_id="{{ client_set.holding.id }}"></td></tr>
+                    <td class="cell secondary"><input name="holding" class="wide" type="text" value="{{ client_set.holding.name }}" item_id="{{ client_set.holding.id }}"></td>
+                </tr>
                 <tr class="row">
                     <td class="padding_9 text_right"><div class="required">*</div>Форма собственности</td>
                     <td class="cell secondary">
@@ -35,10 +36,12 @@
                             {% for item in legal_type_base_set %}
                                 <option value="{{ item.id }}" legal_type_id="{{ item.legal_type.id }}">{{ item.name }}</option>
                             {% endfor %}
-                        </select></td></tr>
+                        </select></td>
+                </tr>
                 <tr class="row" id="name">
                     <td class="padding_9 text_right"><div class="required">*</div>Плательщик</td>
-                    <td class="cell secondary"><input name="name" class="wide" type="text" value="{{ client_set.name }}"></td></tr>
+                    <td class="cell secondary"><input name="name" class="wide" type="text" value="{{ client_set.name }}"></td>
+                </tr>
                 <tr class="row">
                     <td class="padding_9 text_right"><div class="required">*</div>ИНН</td>
                     <td class="cell secondary">
@@ -50,11 +53,12 @@
                     </td></tr>
                 <tr class="row">
                     <td class="padding_9 text_right">ОГРН</td>
-                    <td class="cell secondary"><input name="ogrn" class="wide" size="40" type="text" value="{{ client_set.ogrn }}"></td></tr>
+                    <td class="cell secondary"><input name="ogrn" class="wide" size="40" type="text" value="{{ client_set.ogrn }}"></td>
+                </tr>
                 <tr class="row">
                     <td class="padding_9 text_right">ОГРНИП</td>
-                    <td class="cell secondary"><input name="ogrnip" class="wide" size="40" type="text" value="{{ client_set.ogrnip }}"></td></tr>
-
+                    <td class="cell secondary"><input name="ogrnip" class="wide" size="40" type="text" value="{{ client_set.ogrnip }}"></td>
+                </tr>
                 <tr class="row" id="pay">
                     <td class="padding_5 text_right">Баланс</td>
                     <td class="padding_5 secondary">{% if client_set.balance %}{{ client_set.balance }} руб.{% endif %}</td></tr>
@@ -63,13 +67,15 @@
                     <td class="cell secondary">
                         <select name="pay_type" class="wide">
                             {% for item in pay_type %}
-                                <option value="{{ item }}">{{ item }}</option>
+                                <option value="{{ item }}" {% if item == client_set.pay_type %}selected{% endif %}>{{ item }}</option>
                             {% endfor %}
-                        </select></td></tr>
+                        </select>
+                    </td>
+                </tr>
                 <tr class="row" id="founding_date">
                     <td class="padding_9 text_right">Дата основания</td>
-                    <td class="edit"><input name="founding_date" style="width: 70px; margin: 5px 0; float: left;" type="text" value="{{ client_set.founding_date|date:'d.m.Y' }}"></td></tr>
-
+                    <td class="edit"><input name="founding_date" style="width: 70px; margin: 5px 0; float: left;" type="text" value="{{ client_set.founding_date|date:'d.m.Y' }}"></td>
+                </tr>
                 <tr class="row" id="address_actual">
                     <td class="padding_9" colspan="2">
                         <div class="address_txt"><div class="required">*</div>Фактический адрес</div>
@@ -90,7 +96,9 @@
                     </td>
                 </tr>
 
-                <tr class="row2"><td colspan="2"><button class="btn_ui bg" action="save" icon="save" type="submit"><div class="txt">Сохранить</div><div class="icon"></div></button></td></tr>
+                <tr class="row2">
+                    <td colspan="2"><button class="btn_ui bg" action="save" icon="save" type="submit"><div class="txt">Сохранить</div><div class="icon"></div></button></td>
+                </tr>
 
                 <tr class="row" id="address_legal">
                     <td class="padding_9" colspan="2">

@@ -84,8 +84,11 @@
                             <div class="in_pop_sublist device_sim_card_list"></div>
                             <input class="device_sim_card" type="text" value="">
                             <div class="btn_ui bg left" action="sim_card_add" icon="object_add"><div class="txt">Добавить SIM карту</div><div class="icon"></div></div>
-
                         </td></tr>
+
+                    <tr class="row2" name="code">
+                        <td class="padding_9 text_right">Ключ шифрования</td><td><input class="margin-5-5-0 code" name="code" type="text" value=""></td></tr>
+
                     <tr>
                         <td class="cell" colspan="2">Комментарий<br />
                             <textarea cols="45" rows="3" id="id_passport" name="comment"></textarea>
@@ -98,6 +101,112 @@
                             </thead>
                             <tbody class="show compact"><tr class="row"><td class="cell click"></td><td class="cell click"></td></tr></tbody>
                         </table>
+                    </td></tr>
+
+                    <tr class="row2"><td class="padding_9 text_right" colspan="2">
+                        <!--table id="wires">
+                            <thead><tr class="text_left">
+                                <td>№</td>
+                                <td>Описание</td>
+                                <td>Раздел</td>
+                            </tr></thead>
+                            <tbody>
+                            <tr class="row2" name="wire_01">
+                                <td class="padding_9">01</td>
+                                <td class="cell secondary"><input type="text" size="35" name="description" value=""></td>
+                                <td class="cell secondary"><input type="text" size="1" name="zone" value="1"></td>
+                            </tr>
+                            <tr class="row2" name="wire_02">
+                                <td class="padding_9">02</td>
+                                <td class="cell secondary"><input type="text" size="35" name="description" value=""></td>
+                                <td class="cell secondary"><input type="text" size="1" name="zone" value="1"></td>
+                            </tr>
+                            <tr class="row2" name="wire_03">
+                                <td class="padding_9">03</td>
+                                <td class="cell secondary"><input type="text" size="35" name="description" value=""></td>
+
+                                <td class="cell secondary"><input type="text" size="1" name="zone" value="1"></td>
+                            </tr>
+                            <tr class="row2" name="wire_04">
+                                <td class="padding_9">04</td>
+                                <td class="cell secondary"><input type="text" size="35" name="description" value=""></td>
+
+                                <td class="cell secondary"><input type="text" size="1" name="zone" value="1"></td>
+                            </tr>
+                            <tr class="row2" name="wire_05">
+                                <td class="padding_9">05</td>
+                                <td class="cell secondary"><input type="text" size="35" name="description" value=""></td>
+
+                                <td class="cell secondary"><input type="text" size="1" name="zone" value="1"></td>
+                            </tr>
+                            <tr class="row2" name="wire_06">
+                                <td class="padding_9">06</td>
+                                <td class="cell secondary"><input type="text" size="35" name="description" value=""></td>
+
+                                <td class="cell secondary"><input type="text" size="1" name="zone" value="1"></td>
+                            </tr>
+                            <tr class="row2" name="wire_07">
+                                <td class="padding_9">07</td>
+                                <td class="cell secondary"><input type="text" size="35" name="description" value=""></td>
+
+                                <td class="cell secondary"><input type="text" size="1" name="zone" value="1"></td>
+                            </tr>
+                            <tr class="row2" name="wire_08">
+                                <td class="padding_9">08</td>
+                                <td class="cell secondary"><input type="text" size="35" name="description" value=""></td>
+
+                                <td class="cell secondary"><input type="text" size="1" name="zone" value="1"></td>
+                            </tr>
+                            <tr class="row2" name="wire_09">
+                                <td class="padding_9">09</td>
+                                <td class="cell secondary"><input type="text" size="35" name="description" value=""></td>
+
+                                <td class="cell secondary"><input type="text" size="1" name="zone" value="1"></td>
+                            </tr>
+                            <tr class="row2" name="wire_10">
+                                <td class="padding_9">10</td>
+                                <td class="cell secondary"><input type="text" size="35" name="description" value=""></td>
+
+                                <td class="cell secondary"><input type="text" size="1" name="zone" value="1"></td>
+                            </tr>
+                            <tr class="row2" name="wire_11">
+                                <td class="padding_9">11</td>
+                                <td class="cell secondary"><input type="text" size="35" name="description" value=""></td>
+
+                                <td class="cell secondary"><input type="text" size="1" name="zone" value="1"></td>
+                            </tr>
+                            <tr class="row2" name="wire_12">
+                                <td class="padding_9">12</td>
+                                <td class="cell secondary"><input type="text" size="35" name="description" value=""></td>
+
+                                <td class="cell secondary"><input type="text" size="1" name="zone" value="1"></td>
+                            </tr>
+                            <tr class="row2" name="wire_13">
+                                <td class="padding_9">13</td>
+                                <td class="cell secondary"><input type="text" size="35" name="description" value=""></td>
+
+                                <td class="cell secondary"><input type="text" size="1" name="zone" value="1"></td>
+                            </tr>
+                            <tr class="row2" name="wire_14">
+                                <td class="padding_9">14</td>
+                                <td class="cell secondary"><input type="text" size="35" name="description" value=""></td>
+
+                                <td class="cell secondary"><input type="text" size="1" name="zone" value="1"></td>
+                            </tr>
+                            <tr class="row2" name="wire_15">
+                                <td class="padding_9">15</td>
+                                <td class="cell secondary"><input type="text" size="35" name="description" value=""></td>
+
+                                <td class="cell secondary"><input type="text" size="1" name="zone" value="1"></td>
+                            </tr>
+                            <tr class="row2" name="wire_16">
+                                <td class="padding_9">16</td>
+                                <td class="cell secondary"><input type="text" size="35" name="description" value=""></td>
+                                <td class="switch"><div class="chechbox"></div></td>
+                                <td class="cell secondary"><input type="text" size="1" name="zone" value="1"></td>
+                            </tr>
+                            </tbody>
+                        </table-->
                     </td></tr>
 
                     <tr><td colspan="2">

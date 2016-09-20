@@ -1,100 +1,70 @@
 <client_name></client_name>
 
 
-<div class="alarm">
+<form class="alarm">
 
-    <div class="row">
+    <div class="row col-xs-offset-1">
         <small>Время поступления тревоги: </small><time_begin></time_begin> <small>от начала тревоги: </small><from_begin></from_begin>
     </div>
-    <div class="row">
+    <div class="row col-xs-offset-1" style="margin-bottom:5px;">
         <small>Время следования экипажа: </small><time_way></time_way><small> Прибытие: </small><time_text_2></time_text_2>
     </div>
 
-    <div class="row" style="padding:10px;">
-        <div class="col-xs-2">
-            <small>Вызов:</small>
-        </div>
-        <div class="col-xs-3 col-xs-offset-4">
-            <small>Прибытие:</small>
-        </div>
-    </div>
 
     <div class="row">
-
-    <first-step>
-        <div class="col-xs-5" style="padding-right:2px;">
-            <select class="col-xs-12">
-                {% for item in gbr_list %}
-                    <option value="{{ item }}">{{ item }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="col-xs-1" style="padding-left:2px;">
-            <button type="button" class="btn btn-primary btn-xs">Y</button>
-        </div>
-    </first-step>
-    <second-step>
-        <div class="col-xs-5" style="padding-right:2px;">
-            <select class="col-xs-12">
-                {% for item in gbr_list %}
-                    <option value="{{ item }}">{{ item }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="col-xs-1" style="padding-left:2px;">
-            <button type="button" class="btn btn-primary btn-xs">Y</button>
-        </div>
-    </second-step>
+        <first-step>
+            <div class="input-group input-group-sm col-xs-8 col-xs-offset-1" style="padding: 2px;">
+                <span class="input-group-addon">Вызов</span>
+                <select class="form-control" style="margin-right: 20px;">
+                    {% for item in gbr_list %}
+                        <option value="{{ item }}">{{ item }}</option>
+                    {% endfor %}
+                </select>
+                <button type="button" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>
+            </div>
+        </first-step>
     </div>
 
-
-
-    <div class="row" style="padding:10px;">
-        <div class="col-xs-2">
-            <small>Осмотр:</small>
-        </div>
-        <div class="col-xs-3 col-xs-offset-4">
-            <small>Решение:</small>
-        </div>
-    </div>
 
     <div class="row">
-
-    <third-step>
-        <div class="col-xs-5" style="padding-right:2px;">
-            <select class="col-xs-12">
-                {% for item in start_list %}
-                    <option value="{{ item }}">{{ item }}</option>
-                {% endfor %}
-
-            </select>
-        </div>
-        <div class="col-xs-1" style="padding-left:2px;">
-            <button type="button" class="btn btn-primary btn-xs">Y</button>
-        </div>
-    </third-step>
-    <fourth-step>
-        <div class="col-xs-5" style="padding-right:2px;">
-            <select class="col-xs-12">
-                {% for item in end_list %}
-                    <option value="{{ item }}">{{ item }}</option>
-                {% endfor %}
-            </select>
-        </div>
-        <div class="col-xs-1" style="padding-left:2px;">
-            <button type="button" class="btn btn-primary btn-xs">Y</button>
-        </div>
-    </fourth-step>
+        <second-step>
+            <div class="input-group input-group-sm col-xs-8 col-xs-offset-1" style="padding: 2px;">
+                <span class="input-group-addon">Прибытие</span>
+                <select class="form-control" style="margin-right: 20px;">
+                    {% for item in gbr_list %}
+                        <option value="{{ item }}">{{ item }}</option>
+                    {% endfor %}
+                </select>
+                <button type="button" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>
+            </div>
+        </second-step>
     </div>
 
 
 
-    <div class="col-md-4 col-md-offset-7" style="padding-top:20px;">
-        <button clear="OK" type="button" class="btn btn-warning btn-xs btn-block">Отмена тревоги</button>
+    <div class="row">
+        <third-step>
+            <div class="input-group input-group-sm col-xs-8 col-xs-offset-1" style="padding: 2px;">
+                <span class="input-group-addon">Тип события</span>
+                <select class="form-control" style="margin-right: 20px;">
+                        <option value="">-----</option>
+                    {% for item in inc_list %}
+                        <option value="{{ item }}">{{ item }}</option>
+                    {% endfor %}
+
+                </select>
+                <button type="button" class="btn btn-danger btn-xs"><span class="glyphicon glyphicon-ok" aria-hidden="true"></span></button>
+            </div>
+        </third-step>
     </div>
+
+
+<div>
+
 
 </div>
 
+</form>
 
 
 <div class="noalarm">
@@ -106,3 +76,5 @@
     </div>
 
 </div>
+
+

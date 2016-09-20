@@ -18,8 +18,8 @@ def index(request, client_id=None):
 
     if request.user.has_perm('system.client'):
         title = 'Пользователи'
-        permission_groups_set = Group.objects.all()
-        user_post_set = db_sentry.dir_user_post.objects.all()
+        permission_groups_set = Group.objects.all().order_by('name')
+        user_post_set = db_sentry.dir_user_post.objects.all().order_by('name')
         users_set = db_sentry.sentry_user.objects.all()
 
         return render_to_response('system/sentry_user/sentry_user.html', locals(), RequestContext(request))
@@ -27,27 +27,37 @@ def index(request, client_id=None):
         return render_to_response('403.html', locals(), RequestContext(request) )
 
 
-def ajax(request,action=None):
-    data = {'error': None}
+def ajax(request, action=None):
+    data = {'errors': None}
 
-    if action=='search':
+    if action == 'search':
         if request.user.has_perm('system.client'):
-            data = sentry_user_ajax.search(request,data)
-        else: data['error'] = 'Доступ запрещен'
+            data = sentry_user_ajax.search(request, data)
+        else:
+            data['errors'] = {'Доступ': 'запрещен'}
 
-    elif action=='get':
+    elif action == 'person':
+        if request.user.has_perm('system.client'):
+            data = sentry_user_ajax.person(request,data)
+        else:
+            data['errors'] = {'Доступ': 'запрещен'}
+
+    elif action == 'get':
         if request.user.has_perm('system.client'):
             data = sentry_user_ajax.get(request,data)
-        else: data['error'] = 'Доступ запрещен'
+        else:
+            data['errors'] = {'Доступ': 'запрещен'}
 
-    elif action=='update':
+    elif action == 'update':
         if request.user.has_perm('system.client'):
             data = sentry_user_ajax.update(request,data)
-        else: data['error'] = 'Доступ запрещен'
+        else:
+            data['errors'] = 'Доступ запрещен'
 
-    elif action=='delete':
+    elif action == 'delete':
         if request.user.has_perm('system.client'):
             data = sentry_user_ajax.delete(request,data)
-        else: data['error'] = 'Доступ запрещен'
+        else:
+            data['errors'] = 'Доступ запрещен'
 
     return HttpResponse(json.dumps(data, ensure_ascii=False), content_type='application/json')

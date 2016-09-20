@@ -8,15 +8,20 @@ class task_type(models.Model):
     label = models.CharField(max_length=128)
     name = models.CharField(max_length=128)
     is_active = models.SmallIntegerField(default=1)
+    class Meta:
+        default_permissions = ()
 
 
 class task_status(models.Model):
     label = models.CharField(max_length=32)
     name = models.CharField(max_length=64)
+    class Meta:
+        default_permissions = ()
 
 
 class task(models.Model):
     contract = models.ForeignKey(system_models.client_contract, blank=True, null=True)
+    bind = models.ForeignKey(system_models.client_bind, blank=True, null=True)
     object = models.ForeignKey(system_models.client_object, blank=True, null=True)
     device = models.ForeignKey(system_models.dir_device, blank=True, null=True)
     task_type = models.ForeignKey(task_type)
@@ -32,6 +37,13 @@ class task(models.Model):
     is_active = models.SmallIntegerField(default=1)
     class Meta:
         ordering = ['-complete_date']
+        default_permissions = ()
+        permissions = (
+            ('task', 'Доступ к списку заявок'),
+            ('add_task', 'Добавлять заявки'),
+            ('change_task', 'Редактировать заявки'),
+            ('delete_task', 'Удалять заявки'),
+        )
 
     def get_report(self):
         report_list = []
@@ -50,7 +62,7 @@ class task_log(models.Model):
     comment = models.TextField()
     is_active = models.SmallIntegerField(default=1)
     class Meta:
-        pass
+        default_permissions = ()
 
 
 class task_report(models.Model):
@@ -65,3 +77,9 @@ class task_report(models.Model):
     is_active = models.SmallIntegerField(default=1)
     class Meta:
         ordering = ['-create_date']
+        default_permissions = ()
+        permissions = (
+            ('add_task_report', 'Добавлять отчет заявкам'),
+            ('change_task_report', 'Редактировать отчеты у заявок'),
+            ('delete_task_report', 'Удалять отчеты заявок'),
+        )

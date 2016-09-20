@@ -7,6 +7,7 @@ from apps.system import models as db_sentry
 
 def search(request, data=None):
     #client_set = None
+    contract_set = None
     data['client_list'] = {}
     data['client_count'] = 0
     data['client_id_list'] = []
@@ -18,9 +19,11 @@ def search(request, data=None):
     data['object_count'] = 0
     data['list'] = []
 
-    show_list = ['client', 'contract', 'object']
+    show_client = True
+    show_contract  = True
+    show_object = True
 
-    bind_set = db_sentry.client_bind.objects.filter(client_object__is_active=1, is_active=1)
+    bind_set = db_sentry.client_bind.objects.filter(client_contract__is_active=1, is_active=1)#client_object__is_active=1,
 
     if 'object' in request.GET and request.GET['object'] != '':
         bind_set = bind_set.filter(client_object_id=int(request.GET['object']))
@@ -29,99 +32,105 @@ def search(request, data=None):
         bind_set = bind_set.filter(client_object_id__in=json.loads(request.GET['object_list']))
 
     if 'client' in request.GET and request.GET['client'] != '':
+        show_client = False
+        contract_set = db_sentry.client_contract.objects.filter(client_id=int(request.GET['client']))
         bind_set = bind_set.filter(client_contract__client_id=int(request.GET['client']))
         if not bind_set.exists():
             data['client_id_list'].append(int(request.GET['client']))
 
     if 'address_region' in request.GET and request.GET['address_region'] != '':
+        show_client = False
+        show_contract = False
         bind_set = bind_set.filter(client_object__address_building__street__locality__region_id=int(request.GET['address_region']))
     if 'address_locality' in request.GET and request.GET['address_locality'] != '':
+        show_client = False
+        show_contract = False
         bind_set = bind_set.filter(client_object__address_building__street__locality_id=int(request.GET['address_locality']))
     if 'address_street' in request.GET and request.GET['address_street'] != '':
+        show_client = False
+        show_contract = False
         bind_set = bind_set.filter(client_object__address_building__street_id=int(request.GET['address_street']))
     if 'address_placement' in request.GET and request.GET['address_placement'] != '':
+        show_client = False
+        show_contract = False
         bind_set = bind_set.filter(client_object__address_placement=request.GET['address_placement'])
     if 'address_placement_type' in request.GET and request.GET['address_placement_type'] != '':
+        show_client = False
+        show_contract = False
         bind_set = bind_set.filter(client_object__address_placement_type_id=request.GET['address_placement_type'])
 
     if 'client__name' in request.GET and request.GET['client__name'] != '':
-        #client_set = db_sentry.client.objects.filter(name__icontains=request.GET['client__name'], is_active=1)
         bind_set = bind_set.filter(client_contract__client__name__icontains=request.GET['client__name'])
 
     if 'client__legal_type' in request.GET and request.GET['client__legal_type'] != '':
         bind_set = bind_set.filter(client_contract__client__legal_type_base__legal_type=request.GET['client__legal_type'])
 
-    if 'object_name' in request.GET and request.GET['object_name'] != '':
-        bind_set = bind_set.filter(client_object__name__icontains=request.GET['object_name'])
+    if 'object__name' in request.GET and request.GET['object__name'] != '':
+        show_client = False
+        show_contract = False
+        bind_set = bind_set.filter(client_object__name__icontains=request.GET['object__name'])
 
-    if 'console_number' in request.GET and request.GET['console_number'] != '':
-        bind_set = bind_set.filter(console_number=int(request.GET['console_number']))
 
     if 'status' in request.GET and request.GET['status'] != '':
+        show_client = False
+        show_contract = False
         bind_set = bind_set.filter(status=int(request.GET['status']))
+    else:
+        bind_set = bind_set.exclude(status__label='archive')
 
-    #if 'device_console' in request.GET and request.GET['device_console'] != '':
-    #    bind_set = bind_set.filter(console_id=int(request.GET['device_console']))
+    if 'contract_status' in request.GET and request.GET['contract_status'] != '':
+        show_client = False
+        bind_set = bind_set.filter(client_contract__status=int(request.GET['contract_status']))
+    else:
+        bind_set = bind_set.exclude(client_contract__status__label='archive')
 
     if 'contract_number' in request.GET and request.GET['contract_number'] != '':
-        show_list.remove('client')
-        show_list.remove('contract')
-        #regexp = '^'+request.GET['contract_number']+'[^0-9]' # http://wiki.dieg.info/regexp
+        show_client = False
         bind_set = bind_set.filter(client_contract__name__startswith=request.GET['contract_number'])
 
-    '''
-    if 'device_type' in request.GET and request.GET['device_type'] != '':
-        installation_set = db_sentry.client_object_dir_device.objects.filter(
-            device__device_type_id=int(request.GET['device_type']), uninstall_date=None, is_active=1)
-        data['device_type_id_list'] = [item.object_id for item in installation_set]
-        bind_set = bind_set.filter(id__in=data['device_type_id_list'])
+    if 'device_console' in request.GET and request.GET['device_console'] != '':
+        show_client = False
+        show_contract = False
+        bind_set = bind_set.filter(console=request.GET['device_console'])
 
-    if 'cost_type' in request.GET and request.GET['cost_type'] != '':
-        object_set_ = db_sentry.client_bind_cost.objects.filter(
-            object__is_active = 1,
-            is_active = 1
-        ).exclude(
-            cost = None
-        )
-        data['cost_list'] = [item.id for item in object_set_]
-        #object_set = object_set.filter(object_id__in=data['cost_type_id_list'])
+    if 'console_number' in request.GET and request.GET['console_number'] != '':
+        show_client = False
+        show_contract = False
+        bind_set = bind_set.filter(console_number=int(request.GET['console_number']))
 
-    if 'cost_type' in request.GET and request.GET['cost_type'] != '':
-        object_set = db_sentry.client_object_service.objects.filter(
-            client_object_service_cost__cost_type_id = int(request.GET['cost_type']),
-            contract = None, is_active = 1
-        )
-        data['cost_type_id_list'] = [item.object_id for item in object_set]
-        object_set = object_set.filter(id__in=data['cost_type_list'])
-    '''
 
     if 'service_type' in request.GET and request.GET['service_type'] != '':
-        bind_set = db_sentry.client_object.objects.filter(service_type_id=int(request.GET['service_type']), is_active=1)
-        data['service_type_id_list'] = [item.object_id for item in bind_set]
-        bind_set = bind_set.filter(id__in=data['service_type_id_list'])
+        show_client = False
+        bind_set = bind_set.filter(client_contract__service_type=int(request.GET['service_type']))
 
     if 'service_subtype' in request.GET and request.GET['service_subtype'] != '':
-        bind_set = db_sentry.client_object.objects.filter(dir_service_subtype=int(request.GET['service_subtype']), is_active=1)
-        data['service_subtype'] = [item.object_id for item in bind_set]
-        bind_set = bind_set.filter(id__in=data['service_subtype'])
+        show_client = False
+        show_contract = False
+        bind_set = bind_set.filter(dir_service_subtype=int(request.GET['service_subtype']))
 
     if 'service_organization' in request.GET and request.GET['service_organization'] != '':
-        bind_set = bind_set.filter(object__client_object_service__service_organization_id=int(request.GET['service_organization']))
+        show_client = False
+        bind_set = bind_set.filter(client_contract__service_organization_id=int(request.GET['service_organization']))
 
     if 'security_squad' in request.GET and request.GET['security_squad'] != '':
-        bind_set = bind_set.filter(security_squad_id=int(request.GET['security_squad']))
+        show_client = False
+        show_contract = False
+        bind_set = bind_set.filter(client_object__security_squad_id=int(request.GET['security_squad']))
 
     if 'holding' in request.GET and request.GET['holding'] != '':
-        bind_set = bind_set.filter(object__client__holding_id=int(request.GET['holding']))
+        show_contract = False
+        bind_set = bind_set.filter(client_contract__client__holding_id=int(request.GET['holding']))
 
     if 'warden' in request.GET and request.GET['warden'] != '':
+        show_client = False
+        show_contract = False
         event_set = db_sentry.client_workflow.objects.filter(
             sentry_user_id = int(request.GET['warden']),
-            event_type__label = 'client_object_warden',
+            workflow_type__label = 'client_object_warden',
             is_active = 1
         )
         data['warden'] = [item.object_id for item in event_set]
-        bind_set = bind_set.filter(id__in=data['warden'])
+        bind_set = bind_set.filter(client_object__in=data['warden'])
 
     data['locality_exclude'] = []
     for locality in db_sentry.dir_address_2_locality.objects.all():
@@ -169,6 +178,7 @@ def search(request, data=None):
 
         # Object
         object_item = {
+            'bind': bind.id,
             'name': bind.client_object.name,
             'status': bind.status.id,
             'status__label': bind.status.label,
@@ -193,10 +203,34 @@ def search(request, data=None):
             data['object_id_list__'].append(object_id)
 
 
-    if 'contract' in show_list:
-        for contract in db_sentry.client_contract.objects \
-                .filter(client_id__in=data['client_id_list'], is_active=1) \
-                .exclude(id__in=data['contract_id_list']):
+    if show_contract:
+        if contract_set:
+            contract_set = contract_set.filter(is_active=1).exclude(id__in=data['contract_id_list'])
+        else:
+            contract_set = db_sentry.client_contract.objects.filter(is_active=1) \
+                .exclude(id__in=data['contract_id_list'])
+
+        if 'contract_status' in request.GET and request.GET['contract_status'] != '':
+            contract_set = contract_set.filter(status=int(request.GET['contract_status']))
+        else:
+            contract_set = contract_set.exclude(status__label='archive')
+
+        if 'client__name' in request.GET and request.GET['client__name'] != '':
+            contract_set = contract_set.filter(client__name__icontains=request.GET['client__name'])
+
+        if 'holding' in request.GET and request.GET['holding'] != '':
+            contract_set = contract_set.filter(client__holding=request.GET['holding'])
+
+        if 'contract_number' in request.GET and request.GET['contract_number'] != '':
+            contract_set = contract_set.filter(name__startswith=int(request.GET['contract_number']))
+
+        if 'service_organization' in request.GET and request.GET['service_organization'] != '':
+            contract_set = contract_set.filter(service_organization=int(request.GET['service_organization']))
+
+        if 'service_type' in request.GET and request.GET['service_type'] != '':
+            contract_set = contract_set.filter(service_type=int(request.GET['service_type']))
+
+        for contract in contract_set:
             if not data['client_list'].has_key(contract.client.id):
                 if not data['client_list'].has_key(contract.client.id):
                     # Client
@@ -218,13 +252,23 @@ def search(request, data=None):
                 data['client_list'][contract.client.id]['contract_list'][contract.id]['begin_date'] = contract.begin_date.strftime("%d.%m.%Y")
 
     # Client list
-    if 'client' in show_list:
-        if 'client' not in request.GET or request.GET['client'] == '':
-            for client in db_sentry.client.objects.filter(is_active=1).exclude(id__in=data['client_id_list']):
-                data['client_count'] += 1
-                data['client_list'][client.id] = {
-                    'name': client.name,
-                    }
+    if show_client:
+        client_set = db_sentry.client.objects.filter(is_active=1).exclude(id__in=data['client_id_list'])
+
+        if 'client__name' in request.GET and request.GET['client__name'] != '':
+            client_set = client_set.filter(name__icontains=request.GET['client__name'])
+
+        if 'client__legal_type' in request.GET and request.GET['client__legal_type'] != '':
+            client_set = client_set.filter(legal_type_base__legal_type=request.GET['client__legal_type'])
+
+        if 'holding' in request.GET and request.GET['holding'] != '':
+            client_set = client_set.filter(holding=int(request.GET['holding']))
+
+        for client in client_set:
+            data['client_count'] += 1
+            data['client_list'][client.id] = {
+                'name': client.name,
+                }
 
 
     return data

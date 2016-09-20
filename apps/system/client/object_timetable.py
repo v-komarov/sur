@@ -11,24 +11,15 @@ from apps.toolset import lunchbox
 from apps.system.client.extension import object_timetable_ajax
 
 
-def index(request,client_id=None,object_id=None):
+def index(request, client_id=None, contract_id=None):
     if request.user.has_perm('system.client'):
-        request.session['lunchbox'] = lunchbox.get(request)
         title = 'Режим работы'
-        contract_id = db_sentry.client_object_service.objects.filter(contract_id=None,object_id=object_id,is_active=1).first().id
-        client_object_set = db_sentry.client_object.objects.get(id=object_id)
-        status_list = ['новый','подключен']
+        status_list = ['новый', 'подключен']
+        contract_set = db_sentry.client_contract.objects.filter(client_id=client_id, is_active=1)
+        bind_set = db_sentry.client_bind.objects.filter(client_contract=contract_id, is_active = 1)
         weekday_set = db_sentry.dir_weekday.objects.all()
-        object_set = db_sentry.client_object.objects.filter(
-            client = client_id,
-            status__name__in = status_list,
-            is_active = 1 )
-        service_set = db_sentry.client_object_service.objects.filter(
-            object__client = client_id,
-            status__name__in = status_list,
-            is_active = 1 )
 
-        return render_to_response('system/client/object_service_timetable.html', locals(), RequestContext(request))
+        return render_to_response('system/client/object_timetable.html', locals(), RequestContext(request))
     else:
         return render_to_response('403.html', locals(), RequestContext(request) )
 
@@ -36,12 +27,12 @@ def index(request,client_id=None,object_id=None):
 def ajax(request,action=None):
     data = {'error':None}
 
-    if action=='get':
+    if action == 'get':
         if request.user.has_perm('system.client'):
             data = object_timetable_ajax.get(request,data)
         else: data['error'] = 'Доступ запрещен'
 
-    elif action=='update':
+    elif action == 'update':
         if request.user.has_perm('system.client'):
             data = object_timetable_ajax.update(request,data)
         else: data['error'] = 'Доступ запрещен'

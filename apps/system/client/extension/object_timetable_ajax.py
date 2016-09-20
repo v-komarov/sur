@@ -12,8 +12,8 @@ from apps.toolset import date_convert
 def get(request, data=None):
     data['timetable'] = []
     data['shifts'] = {}
-    for item in db_sentry.client_object_service_timetable.objects \
-            .filter(service_id=int(request.GET['service_id'])):
+    for item in db_sentry.client_object_timetable.objects \
+            .filter(bind_id=int(request.GET['bind_id'])):
 
         if item.shift:
             shift = item.shift
@@ -38,16 +38,15 @@ def get(request, data=None):
 
 
 def update(request, data=None):
-    db_sentry.client_object_service_timetable.objects \
-        .filter(service=int(request.POST['selected_id'])).delete()
+    db_sentry.client_object_timetable.objects.filter(bind=int(request.POST['bind_id'])).delete()
 
     shifts = json.loads(request.POST['shifts'])
-    for shift,week in shifts.items():
-        for weekday,time in week.items():
-            hours = date_convert.get_hours(time['begin'],time['end'])
+    for shift, week in shifts.items():
+        for weekday, time in week.items():
+            hours = date_convert.get_hours(time['begin'], time['end'])
             weekday_id = db_sentry.dir_weekday.objects.get(weekday=weekday).id
-            db_sentry.client_object_service_timetable.objects.create(
-                service_id = int(request.POST['selected_id']),
+            db_sentry.client_object_timetable.objects.create(
+                bind_id = int(request.POST['bind_id']),
                 shift = shift,
                 weekday_id = weekday_id,
                 begin_time = time['begin'],
@@ -55,7 +54,7 @@ def update(request, data=None):
                 hours = hours
             )
 
-        data['error'] = 'Временной период пересекается с существующим. Выберите другой.'
+        #data['error'] = 'Временной период пересекается с существующим. Выберите другой.'
 
     return data
 

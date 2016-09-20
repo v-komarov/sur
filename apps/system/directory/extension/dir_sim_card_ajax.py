@@ -11,14 +11,17 @@ from apps.system.directory.extension import dir__form
 
 def search(request, data):
     sim_card_set = db_sentry.dir_sim_card.objects.filter(is_active=1)
-    if 'sim_card' in request.GET and request.GET['sim_card']:
+    if 'sim_card' in request.GET and request.GET['sim_card'] != '':
         sim_card_set = sim_card_set.filter(id=int(request.GET['sim_card']))
-    if 'number' in request.GET and request.GET['number']:
+    if 'number' in request.GET and request.GET['number'] != '':
         sim_card_set = sim_card_set.filter(number__icontains=request.GET['number'])
-    if 'device_name' in request.GET and request.GET['device_name']:
+    if 'device_name' in request.GET and request.GET['device_name'] != '':
         sim_card_set = sim_card_set.filter(dir_device__name__icontains=request.GET['device_name'])
-    if 'device_null' in request.GET and request.GET['device_null']:
+    if 'device_null' in request.GET and request.GET['device_null'] != '':
         sim_card_set = sim_card_set.filter(dir_device=None)
+
+    if 'sim_card_exclude' in request.GET:
+        sim_card_set = sim_card_set.exclude(id__in=json.loads(request.GET['sim_card_exclude']))
     if 'limit' in request.GET:
         sim_card_set = sim_card_set[:int(request.GET['limit'])]
 

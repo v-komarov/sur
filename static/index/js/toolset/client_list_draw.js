@@ -1,4 +1,4 @@
-function contract_list_draw(block_id,data) {
+function contract_list_draw(block_id, data) {
     $(block_id+' a.item').remove();
     for(var client_id in data['client_list']) {
         var client_block = '';
@@ -17,7 +17,7 @@ function contract_list_draw(block_id,data) {
                     var object = contract['object_list'][object_id];
                     object_item += '<div class="padding_5 right contract__object" status="'+object['status__label']+'">объект: <b>'+object['name']+'</b>';
                     if(object['console']){
-                        object_item += ' ('+object['console']+', №'+object['console_number']+')';
+                        object_item += ' ('+object['console__name']+', №'+object['console_number']+')';
                     }
                     if(object['address_string']){
                         object_item += ', адрес: '+object['address_string'];

@@ -563,10 +563,19 @@ table.events tr {
 .service_string span[sign=begin_date][status=paused] {
     background-color: #cc99ff;
 }
-*:hover .service_string span[sign=begin_date][status=archive],
-.service_string span[sign=begin_date][status=archive] {
-    background-color: #d5d5d5;
+
+*:hover .service_string[status=blue],
+.service_string[status=blue],
+.contract__object[status=blue] {
     color: #fff;
+    background-color: #00a1ff;
+}
+
+*:hover .service_string[status=archive],
+.service_string[status=archive],
+.contract__object[status=archive] {
+    color: #fff;
+    background-color: #bcbcbc;
 }
 
 #task_list .service_string,
@@ -920,6 +929,7 @@ table.wide tr, tbody.wide tr {
     white-space: nowrap;
 }
 
+.text_left { text-align: left }
 .text_right { text-align: right }
 .green { color: #009900; }
 a.green { background-color: #8aed84; }

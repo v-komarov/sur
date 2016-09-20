@@ -21,10 +21,12 @@ def index(request, client_id=None, contract_id=None):
             or (contract_id and request.user.has_perm('system.client')):
 
         client = db_sentry.client.objects.get(id=client_id)
+        request.session['history'] = {'client': client.id}
         if contract_id:
             title = 'Карточка договора'
             position = 'client_contract'
             contract = db_sentry.client_contract.objects.get(id=contract_id)
+            request.session['history']['contract'] = contract.id
         else:
             title = 'Новый договор'
             position = 'client_contract_add'

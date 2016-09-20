@@ -13,7 +13,7 @@ from apps.task.extension import task_ajax
 
 
 def index(request):
-    if request.user.has_perm('system.client'):
+    if request.user.has_perm('task.task'):
         title = 'Заявки'
         today = datetime.datetime.today().strftime("%d.%m.%Y")
         month_begin = datetime.datetime.today().replace(day=1).strftime("%d.%m.%Y")
@@ -33,7 +33,7 @@ def index(request):
 
 
 def add(request):
-    if request.user.has_perm('system.client'):
+    if request.user.has_perm('task.task'):
         title = 'Новая заявка'
         task_type_set = task_models.task_type.objects.all()
         return render_to_response('task/task_add.html', locals(), RequestContext(request) )
@@ -42,69 +42,86 @@ def add(request):
 
 
 def ajax(request,action):
-    data = {'error':None}
+    data = {}
 
-    if action=='search':
-        if request.user.has_perm('system.client'):
-            data = task_ajax.search(request,data)
-        else: data['error'] = 'Доступ запрещен'
+    if action == 'search':
+        if request.user.has_perm('task.task'):
+            data = task_ajax.search(request, data)
+        else:
+            data['errors'] = {'access': 'Доступ запрещен'.decode('utf-8')}
 
-    elif action=='get':
-        if request.user.has_perm('system.client'):
-            data = task_ajax.get(request,data)
-        else: data['error'] = 'Доступ запрещен'
+    elif action == 'get_task_type':
+        if request.user.has_perm('task.task'):
+            data = task_ajax.get_task_type(request,data)
+        else:
+            data['errors'] = {'access': 'Доступ запрещен'.decode('utf-8')}
 
-    elif action=='create':
-        if request.user.has_perm('system.client'):
+    elif action == 'get':
+        if request.user.has_perm('task.task'):
+            data = task_ajax.get(request, data)
+        else:
+            data['errors'] = {'access': 'Доступ запрещен'.decode('utf-8')}
+
+    elif action == 'create':
+        if request.user.has_perm('task.task'):
             data = task_ajax.create(request,data)
-        else: data['error'] = 'Доступ запрещен'
+        else:
+            data['errors'] = {'access': 'Доступ запрещен'.decode('utf-8')}
 
-    elif action=='delete':
-        if request.user.has_perm('system.client'):
+    elif action == 'delete':
+        if request.user.has_perm('task.task'):
             data = task_ajax.delete(request,data)
-        else: data['error'] = 'Доступ запрещен'
+        else:
+            data['errors'] = {'access': 'Доступ запрещен'.decode('utf-8')}
 
-    elif action=='update':
-        if request.user.has_perm('system.client'):
+    elif action == 'update':
+        if request.user.has_perm('task.task'):
             data = task_ajax.update(request,data)
-        else: data['error'] = 'Доступ запрещен'
+        else:
+            data['errors'] = {'access': 'Доступ запрещен'.decode('utf-8')}
 
-    elif action=='get_report':
-        if request.user.has_perm('system.client'):
+    elif action == 'get_report':
+        if request.user.has_perm('task.task'):
             data = task_ajax.get_report(request,data)
-        else: data['error'] = 'Доступ запрещен'
+        else:
+            data['errors'] = {'access': 'Доступ запрещен'.decode('utf-8')}
 
-    elif action=='create_report':
-        if request.user.has_perm('system.client'):
+    elif action == 'create_report':
+        if request.user.has_perm('task.task'):
             data = task_ajax.create_report(request,data)
-        else: data['error'] = 'Доступ запрещен'
+        else:
+            data['errors'] = {'access': 'Доступ запрещен'.decode('utf-8')}
 
-    elif action=='delete_report':
-        if request.user.has_perm('system.client'):
+    elif action == 'delete_report':
+        if request.user.has_perm('task.task'):
             data = task_ajax.delete_report(request,data)
-        else: data['error'] = 'Доступ запрещен'
+        else:
+            data['errors'] = {'access': 'Доступ запрещен'.decode('utf-8')}
 
-    elif action=='get_log':
-        if request.user.has_perm('system.client'):
+    elif action == 'get_log':
+        if request.user.has_perm('task.task'):
             data = task_ajax.get_log(request,data)
-        else: data['error'] = 'Доступ запрещен'
-    elif action=='change_complete_date':
-        if request.user.has_perm('system.client'):
+        else:
+            data['errors'] = {'access': 'Доступ запрещен'.decode('utf-8')}
+    elif action == 'change_complete_date':
+        if request.user.has_perm('task.task'):
             data = task_ajax.change_complete_date(request,data)
-        else: data['error'] = 'Доступ запрещен'
-    elif action=='delete_log':
-        if request.user.has_perm('system.client'):
+        else:
+            data['errors'] = {'access': 'Доступ запрещен'.decode('utf-8')}
+    elif action == 'delete_log':
+        if request.user.has_perm('task.task'):
             data = task_ajax.delete_log(request,data)
-        else: data['error'] = 'Доступ запрещен'
+        else:
+            data['errors'] = {'access': 'Доступ запрещен'.decode('utf-8')}
 
     else:
-        data['error'] = 'No function'
+        data['errors'] = {'access': 'No function'}
 
     return HttpResponse(json.dumps(data, ensure_ascii=False), content_type='application/json')
 
 
 def search(request):
-    if request.user.has_perm('system.client'):
+    if request.user.has_perm('task.task'):
         title = 'Поиск заявок'
         post_list = [1,2,3,7,8,9,36]
         users_set = db_sentry.sentry_user.objects \

@@ -15,7 +15,7 @@ from apps.system.client.extension import client_payment_ajax
 def index(request,client_id=None):
     request.session['lunchbox'] = lunchbox.get(request)
 
-    if request.user.has_perm('system.client'):
+    if request.user.has_perm('system.client_payment'):
         title = 'Платежи'
         client_set = db_sentry.client.objects.get(id=client_id)
         today_year = datetime.date.today().year
@@ -38,18 +38,18 @@ def index(request,client_id=None):
 def ajax(request,action=None):
     data = {'error': None}
 
-    if action=='get':
-        if request.user.has_perm('system.client'):
+    if action == 'get':
+        if request.user.has_perm('system.client_payment'):
             data = client_payment_ajax.get(request,data)
         else: data['error'] = 'Доступ запрещен'
 
-    elif action=='update':
-        if request.user.has_perm('system.client'):
+    elif action == 'update':
+        if request.user.has_perm('system.add_client_payment'):
             data = client_payment_ajax.update(request,data)
         else: data['error'] = 'Доступ запрещен'
 
-    elif action=='delete':
-        if request.user.has_perm('system.client'):
+    elif action == 'delete':
+        if request.user.has_perm('system.delete_client_payment'):
             data = client_payment_ajax.delete(request,data)
         else: data['error'] = 'Доступ запрещен'
 

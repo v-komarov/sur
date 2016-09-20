@@ -10,7 +10,7 @@ from sentry.models import db_security, db_sentry
 import event_log, refresh
 
 def index(request):
-    if request.user.has_perm('sentry.monitor'):
+    if request.user.has_perm('monitor.monitor'):
         user_id = request.user.id
         data = {}
         if 'action' in request.GET:

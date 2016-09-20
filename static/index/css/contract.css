@@ -56,12 +56,11 @@ div.button_list {
     color: #fff;
     background-color: #00a1ff;
 }
-#task_add__pop .client_object b.txt[status=white],
-#object_list .button_list b[status=white],
-.object__item b[status=white] {
-    color: #000;
-    background-color: #fff;
-    box-shadow: 0 0 0 3px #0090ff inset;
+#task_add__pop .client_object b.txt[status=archive],
+#object_list .button_list b[status=archive],
+.object__item b[status=archive] {
+    color: #fff;
+    background-color: #bcbcbc;
 }
 #task_add__pop .client_object b.txt[status=discconnected],
 .object__item b[status=discconnected] {
@@ -157,4 +156,8 @@ span[name=log_date] {
 }
 .bg_red {
     background-color: #e70000;
+}
+
+#search_archive_list .item {
+    padding: 3px 5px;
 }

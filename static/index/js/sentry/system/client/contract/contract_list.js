@@ -2,7 +2,7 @@ $(document).ready(function() {
     client_id = $('.middleBlock').attr('client_id');
     $('body').on('click', '.btn_ui', function(){
         var action = $(this).attr('action');
-        if(action=='reset'){
+        if(action=='reset') {
             client_object_Refresh();
         }
     });

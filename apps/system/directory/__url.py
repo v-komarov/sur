@@ -14,16 +14,23 @@ import dir_device_communication
 import dir_device_type
 import dir_holding
 import dir_incident_type
+import dir_legal_type_base
 import dir_service_organization
 import dir_security_squad
 import dir_service_type
 import dir_sim_card
+import dir_status
 import dir_user_post
+import dir_tag
 import dir_weapon
 import dir_weapon_type
 
 # Справочники
 urlpatterns = [
+    url(r'^status/ajax/(?P<action>\w{1,32})/$', dir_status.ajax),
+    url(r'^legal_type_base/ajax/(?P<action>\w{1,32})/$', dir_legal_type_base.ajax),
+
+
     url(r'^region/$', dir_address_1_region.index),
     url(r'^region/ajax/(?P<action>\w{1,32})/$', dir_address_1_region.ajax),
     url(r'^locality/$', dir_address_2_locality.index),
@@ -65,6 +72,8 @@ urlpatterns = [
     url(r'^security_squad/ajax/(?P<action>\w{1,32})/$', dir_security_squad.ajax),
     url(r'^service_type/$', dir_service_type.index),
     url(r'^service_type/ajax/(?P<action>\w{1,32})/$', dir_service_type.ajax),
+    url(r'^tag/$', dir_tag.index),
+    url(r'^tag/ajax/(?P<action>\w{1,32})/$', dir_tag.ajax),
     url(r'^user_post/$', dir_user_post.index),
     url(r'^user_post/ajax/(?P<action>\w{1,32})/$', dir_user_post.ajax),
     url(r'^weapon/$', dir_weapon.index),

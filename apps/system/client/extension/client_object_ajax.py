@@ -47,10 +47,13 @@ def get(**kwargs):
 
         bind = object.client_bind_set.filter(is_active=1).first()
         if bind:
+            data['object']['time24'] = bind.time24
             data['object']['status'] = bind.status.label
             data['object']['ovd_status'] = bind.ovd_status.label
             data['object']['cost_list'] = bind.get_cost(current=True, list=True)
             data['object']['subtype_list'] = bind.get_subtype_list()
+            data['object']['code'] = bind.GetCode()
+            data['object']['connect_cost'] = bind.get_connect_cost()
 
             if bind.console_id:
                 data['object']['console'] = bind.console_id
@@ -112,17 +115,20 @@ def get_object_list(**kwargs):
                 is_active = 1):
             data['object_list'][bind.client_object.id] = get(object=bind.client_object.id)['object']
             data['object_list'][bind.client_object.id]['bind'] = bind.id
+            data['object_list'][bind.client_object.id]['time24'] = bind.time24
 
     return data
 
 
 def update(request, data=None):
     client_contract_id = int(request.POST['client_contract'])
+    object_new = False
     if 'client_object' in request.POST:
         object = db_sentry.client_object.objects.get(id=int(request.POST['client_object']))
         object_form = client__form.object_form(request.POST, instance=object)
     else:
         object_form = client__form.object_form(request.POST)
+        object_new = True
 
     if object_form.is_valid(): #and object_form.has_changed():
         object = object_form.save()
@@ -144,20 +150,37 @@ def update(request, data=None):
 
         bind, created = db_sentry.client_bind.objects.get_or_create(
             client_contract_id = client_contract_id,
-            client_object_id = object.id)
-        bind.is_active = 1
+            client_object_id = object.id
+        )
         bind.dir_service_subtype.clear()
         bind.dir_service_subtype = json.loads(request.POST['dir_service_subtype'])
+        bind.time24 = request.POST['time24']
         bind.save()
         bind_form = client__form.client_bind(request.POST, instance=bind)
-        if bind_form.is_valid():
+
+        if 'console' in request.POST and request.POST['console'] != '':
+            check_console_number = bind.checkConsoleNumber(
+                console = int(request.POST['console']),
+                console_number = int(request.POST['console_number'])
+            )
+            if check_console_number:
+                data['errors'] = check_console_number
+                if object_new:
+                    object.delete()
+
+        if bind_form.is_valid() and not 'errors' in data:
             bind = bind_form.save()
 
+
             # Cost
+
             data['cost'] = 0
             if 'cost_value__text' in request.POST:
                 data['cost'] = 1
-                cost_current = db_sentry.client_bind_cost.objects.filter(client_bind_id=bind.id, is_active=1).first()
+                cost_current = db_sentry.client_bind_cost.objects \
+                    .filter(client_bind_id=bind.id, is_active=1, ) \
+                    .exclude(cost_type__label__in=['once', 'pause', 'client_object_connect']) \
+                    .last()
                 if not cost_current:
                     cost_current = db_sentry.client_bind_cost.objects.create(
                         client_bind_id = bind.id,
@@ -191,12 +214,55 @@ def update(request, data=None):
                     cost_type_id = cost_last.cost_type.id,
                     begin_date = datetime.datetime.strptime(request.POST['begin_date_new'], '%d.%m.%Y')
                 )
+
+            # Connect cost, event_type=='client_object_connect'
+
+            cost_type = db_sentry.dir_cost_type.objects.get(label='client_object_connect')
+            try:
+                connect_cost, created = db_sentry.client_bind_cost.objects.get_or_create(
+                    client_bind_id = bind.id,
+                    cost_type_id = cost_type.id,
+                    is_active = 1
+                )
+                connect_cost.cost_value = Decimal(request.POST['connect_cost'])
+                connect_cost.save()
+                data['connect_cost'] = str(connect_cost.cost_value)
+            except:
+                db_sentry.client_bind_cost.objects.filter(
+                    client_bind_id = bind.id,
+                    cost_type_id = cost_type.id,
+                    is_active = 1
+                ).update(is_active=0)
+                data['connect_cost'] = None
+
+
+            data['contract_subtype'] = bind.client_contract.set_subtype()
+            data['check_status'] = bind.check_bind_status()
+
+            if 'from_bind' in request.POST:
+                from_bind = db_sentry.client_bind.objects.get(id=int(request.POST['from_bind']))
+                install_set = db_sentry.client_object_dir_device.objects.filter(object=from_bind.client_object.id, is_active=1)
+                for install in install_set:
+                    install_new = db_sentry.client_object_dir_device.objects.create(
+                        object_id = bind.client_object.id,
+                        device_id = install.device.id,
+                        priority = install.priority,
+                        install_date = install.install_date,
+                        install_user_id = install.install_user.id,
+                        password = install.password,
+                        comment = install.comment
+                    )
+                    if install.uninstall_date and install.uninstall_user:
+                        install_new.uninstall_date = install.uninstall_date
+                        install_new.uninstall_user = install.uninstall_user
+                    install_new.save()
+
         else:
-            data['errors'] = bind_form.errors
+            if check_console_number:
+                data['errors'] = check_console_number
+            else:
+                data['errors'] = bind_form.errors
 
-
-        data['contract_subtype'] = bind.client_contract.set_subtype()
-        data['check_status'] = bind.check_bind_status()
 
 
         # client_object_warden
@@ -218,14 +284,43 @@ def update(request, data=None):
     return data
 
 
+def search_archive(request, data):
+    bind = db_sentry.client_bind.objects.filter(is_active=1, status__label='archive').values(
+        'id',
+        'client_object__name',
+        'client_object__id',
+        'client_object__address_building__street__locality__name',
+        'client_object__address_building__street__name',
+        'client_object__address_building__name',
+        'client_object__address_placement_type__name',
+        'client_object__address_placement'
+    )
+
+    if 'name' in request.GET and request.GET['name'] != '':
+        bind = bind.filter( client_object__name__icontains = request.GET['name'] )
+
+    if 'address' in request.GET and request.GET['address'] != '':
+        bind = bind.filter(
+            #client_object__address_building__name__icontains = request.GET['address'],
+            client_object__address_building__street__name__icontains = request.GET['address'],
+            #client_object__address_building__street__locality__name__icontains = request.GET['address']
+        )
+
+    data['bind_list'] = [item for item in bind]
+
+    return data
+
+
 def delete(request, data=None):
     # Not work!!!
-    object = db_sentry.client_object.objects.get(id=int(request.GET['service_id']))
-    #object.is_active = 0
-    #object.save()
-    object.check_bind_status()
-
-
-    data['answer'] = 'done'
+    # ...now work =)
+    bind = db_sentry.client_bind.objects.get(id=int(request.GET['bind']))
+    if bind.client_object.client_object_dir_device_set.filter(uninstall_date=None, is_active=1):
+        data['errors'] = {'install': 'Установлено ОУ'}
+    else:
+        bind.is_active = 0
+        bind.save()
+        bind.check_bind_status()
+        data['answer'] = 'done'
     return data
 

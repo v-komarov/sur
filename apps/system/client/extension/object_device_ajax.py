@@ -14,6 +14,11 @@ def get(request,data):
         device_install_set = db_sentry.client_object_dir_device.objects \
             .filter(id=int(request.GET['device_install_id']))
 
+    try:
+        bind = db_sentry.client_bind.objects.get(id=int(request.GET['bind_id']))
+    except:
+        bind = None
+
     data['device_install_list'] = []
     for item in device_install_set:
         try: install_date = item.install_date.strftime("%d.%m.%Y")
@@ -40,6 +45,8 @@ def get(request,data):
             'password': item.password,
             'comment': item.comment
         }
+        if bind:
+            install['data'] = bind.data
         data['device_install_list'].append(install)
     return data
 
@@ -73,6 +80,7 @@ def get_device_install_list(service_id):
 
 
 def install_update(request, data):
+    #bind = db_sentry.client_bind.objects.get(id=int(request.POST['bind']))
     object = db_sentry.client_object.objects.get(id=int(request.POST['object']))
     try:
         install = db_sentry.client_object_dir_device.objects.get(id=int(request.POST['device_install']))
@@ -82,10 +90,14 @@ def install_update(request, data):
 
     if form.is_valid():
         install = form.save()
-        dir_device_ajax.check_priority(install.device_id)
+        data['priority'] = dir_device_ajax.check_priority(install.device_id)
         data['install.device_id'] = install.device_id
 
         data['status'] = db_sentry.client_bind.objects.filter(client_object=object.id, is_active=1).first().check_bind_status()
+
+        #bind.data = request.POST['data']
+        #bind.save()
+
         #data['status'] = object.client_bind.check_bind_status()
         #data['status'] = object.check_object_status()
         data['answer'] = 'done'
@@ -102,7 +114,7 @@ def install_delete(request,data):
     device_install_set.save()
     #device_install_set.object.check_status()
     dir_device_ajax.check_priority(device_install_set.device_id)
-    #data['status'] = object.check_object_status()
+    data['status'] = db_sentry.client_bind.objects.filter(client_object=object.id, is_active=1).first().check_bind_status()
     data['answer'] = 'done'
     return data
 

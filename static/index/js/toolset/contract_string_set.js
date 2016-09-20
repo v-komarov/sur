@@ -41,7 +41,7 @@ function get_contract_string(data){
 }
 
 
-function contract_string_set(data,mode){
+function contract_string_set(data, mode){
     var contract_set = lunchbox['setting']['contract_string'];
     var string = '';
     var data_labels = [

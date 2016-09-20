@@ -100,6 +100,13 @@ def search(request, data):
     return data
 
 
+def get_task_type(request, data):
+    task_type = task_models.task_type.objects.all().values('id', 'label', 'name')
+    data['task_type_set'] = [item for item in task_type]
+
+    return data
+
+
 def get(request, data):
     datetime_now = datetime.datetime.today().replace(hour=0, minute=0) - datetime.timedelta(days=1)
     task_set = task_models.task.objects.get(id=int(request.GET['task']))
@@ -264,7 +271,7 @@ def get_report(request,data):
 def create_report(request, data):
     task_set = task_models.task.objects.get(id=int(request.POST['task']))
     if task_set.status.label == 'done':
-        data['errors'] = 'Эта заявка уже выполнена'
+        data['errors'] = 'Эта заявка уже выполнена'.decode('utf-8')
     else:
         status_id = int(request.POST['status'])
         report_set = task_models.task_report.objects.create(
@@ -285,16 +292,24 @@ def create_report(request, data):
 
         if status_id == 3: # Выполнено
 
-            if task_set.task_type_id == 2: # Подключение объекта
-                data['task_type'] = 'Подключение объекта'
-                db_sentry.client_workflow.objects.create(
-                    contract_id = task_set.contract_id,
-                    object_id = task_set.object_id,
-                    sentry_user_id = report_set.user_id,
-                    workflow_type_id = 6,
-                    workflow_date = report_set.create_date,
-                    comment = report_set.comment
-                )
+            bind = db_sentry.client_bind.objects.get(
+                client_contract = task_set.contract_id,
+                client_object = task_set.object_id,
+                is_active = 1 )
+
+            ### Подключение объекта
+            if task_set.task_type_id == 2:
+                data['task_type'] = 'Подключение объекта'.decode('utf-8')
+                if bind:
+                    db_sentry.client_workflow.objects.create(
+                        contract_id = task_set.contract_id,
+                        bind_id = bind.id,
+                        object_id = task_set.object_id,
+                        sentry_user_id = report_set.user_id,
+                        workflow_type_id = 6,
+                        workflow_date = report_set.create_date,
+                        comment = report_set.comment
+                    )
                 if task_set.device:
                     install = db_sentry.client_object_dir_device.objects.create(
                         object_id = task_set.object.id,
@@ -302,54 +317,63 @@ def create_report(request, data):
                         install_date = task_set.complete_date,
                         install_user_id = task_set.doer.id
                     )
-                    install.check_priority()
+                    install.device.checkPriority()
 
                 if task_set.contract:
                     client_bind = db_sentry.client_bind.objects.filter(client_contract_id=task_set.contract.id, is_active=1).first()
                     client_bind.check_bind_status()
                     #data['contract_status'] = task_set.contract.check_contract_status()
 
-            elif task_set.task_type_id == 5: # Отключение
-                data['task_type'] = 'Отключение'
+            ### Отключение объекта
+            elif task_set.task_type_id == 5:
+                data['task_type'] = 'Отключение'.decode('utf-8')
                 db_sentry.client_workflow.objects.create(
                     contract_id = task_set.contract_id,
+                    bind_id = bind.id,
                     object_id = task_set.object_id,
                     sentry_user_id = report_set.user_id,
                     workflow_type_id = 7,
                     workflow_date = report_set.create_date,
                     comment = report_set.comment
                 )
-                db_sentry.client_object_dir_device.objects.filter(
-                    object_id = task_set.object.id,
-                    uninstall_date = None,
-                    is_active = 1
-                ).update(
-                    uninstall_date = task_set.complete_date
-                )
+
+                for install in db_sentry.client_object_dir_device.objects.filter(
+                        object_id = task_set.object.id,
+                        uninstall_date = None,
+                        is_active = 1 ):
+                    install.uninstall_date = task_set.complete_date
+                    install.uninstall_user_id = report_set.user_id
+                    install.device.checkPriority()
+                    install.save()
+
                 if task_set.contract:
                     data['contract_status'] = task_set.contract.check_contract_status()
 
-            elif task_set.task_type_id == 7: # Подключение ОУ
-                data['task_type'] = 'Подключение ОУ'
+            ### Подключение ОУ
+            elif task_set.task_type_id == 7:
+                data['task_type'] = 'Подключение ОУ'.decode('utf-8')
                 if task_set.device:
                     install = db_sentry.client_object_dir_device.objects.create(
                         object_id = task_set.object.id,
                         device_id = task_set.device.id,
-                        install_date = task_set.complete_date,
+                        install_date = datetime.datetime.now(),
                         install_user_id = task_set.doer.id
                     )
-                    install.check_priority()
+                    install.device.checkPriority()
 
-            elif task_set.task_type_id == 8: # Снятие ОУ
-                data['task_type'] = 'Снятие ОУ'
-                db_sentry.client_object_dir_device.objects.filter(
+            ### Снятие ОУ
+            elif task_set.task_type_id == 8:
+                data['task_type'] = 'Снятие ОУ'.decode('utf-8')
+                install = db_sentry.client_object_dir_device.objects.filter(
                     object_id = task_set.object.id,
                     device_id = task_set.device.id,
-                    uninstall_date = None,
                     is_active = 1
-                ).update(
-                    uninstall_date = task_set.complete_date
                 )
+                install.uninstall_date = task_set.complete_date
+                install.uninstall_user_id = report_set.user_id
+                install.save()
+                install.device.checkPriority()
+
         data['status'] = db_sentry.client_bind.objects.filter(client_object=task_set.object.id, is_active=1).first().check_bind_status()
         data['answer'] = 'done'
     #object_event_ajax.event_update(request);
@@ -388,8 +412,6 @@ def get_log(request, data):
 def change_complete_date(request, data):
     new_date = date_convert.convert(request.POST['new_date'])
     task_set = task_models.task.objects.get(id=int(request.POST['task_id']))
-    task_set.complete_date = new_date
-    task_set.save()
     task_models.task_log.objects.create(
         task_id = task_set.id,
         create_date = datetime.datetime.now(),
@@ -398,6 +420,8 @@ def change_complete_date(request, data):
         new_date = new_date,
         comment = request.POST['comment']
     )
+    task_set.complete_date = new_date
+    task_set.save()
     data['answer'] = 'done'
     return data
 

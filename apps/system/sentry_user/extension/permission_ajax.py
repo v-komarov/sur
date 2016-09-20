@@ -4,7 +4,6 @@ import json
 from django.contrib.auth.models import User, UserManager
 from django.contrib.auth.models import Group, Permission
 from apps.system import models as db_sentry
-from apps.system.sentry_user.models import permission_ext, permission_ext_group
 
 
 def search(request,data):
@@ -80,7 +79,7 @@ def update(request,data):
 
     return data
 
-
+'''
 def parse(request, data):
     data['permission_list'] = []
     for permission in Permission.objects.filter(content_type__app_label='system'):
@@ -92,3 +91,4 @@ def parse(request, data):
         data['permission_list'].append(permission.id)
 
     return data
+'''

@@ -10,41 +10,151 @@ from apps.system import models as db_sentry
 def balance(request,data):
     begin_date = datetime.datetime.strptime(request.GET['begin_date'], '%d.%m.%Y')
     end_date = datetime.datetime.strptime(request.GET['end_date'], '%d.%m.%Y')
-    charge_set = db_sentry.client_object_service_charge.objects.filter(begin_date__range=(begin_date, end_date), is_active=1)
+    charge_set = db_sentry.client_bind_charge.objects.filter(
+        begin_date__range = (begin_date, end_date),
+        bind__client_contract__is_active = 1,
+        bind__client_object__is_active = 1,
+        bind__is_active = 1,
+        is_active = 1
+    )
 
+    connected_set = db_sentry.client_workflow.objects.filter(
+        contract__is_active = 1,
+        bind__is_active = 1,
+        workflow_type__label = 'client_object_connect',
+        workflow_date__range = (begin_date, end_date),
+        is_active = 1
+    )
+    disconnected_set = db_sentry.client_workflow.objects.filter(
+        contract__is_active = 1,
+        bind__is_active = 1,
+        workflow_type__label = 'client_object_disconnect',
+        workflow_date__range = (begin_date, end_date),
+        is_active = 1
+    )
+
+    if 'holding' in request.GET and request.GET['holding'] != '':
+        charge_set = charge_set.filter(bind__client_contract__client__holding_id=int(request.GET['holding']))
+        connected_set = connected_set.filter(contract__client__holding=int(request.GET['holding']))
+        disconnected_set = disconnected_set.filter(contract__client__holding=int(request.GET['holding']))
     if 'client' in request.GET and request.GET['client'] != '':
-        charge_set = charge_set.filter(service__object__client_id=int(request.GET['client']))
-    if 'locality_id' in request.GET and request.GET['locality_id'] != '':
-        charge_set = charge_set.filter(service__object__address_building__street__locality_id=int(request.GET['locality_id']))
+        charge_set = charge_set.filter(bind__client_contract__client_id=int(request.GET['client']))
+        connected_set = connected_set.filter(contract__client=int(request.GET['client']))
+        disconnected_set = disconnected_set.filter(contract__client=int(request.GET['client']))
+    if 'service_organization' in request.GET and request.GET['service_organization'] != '':
+        charge_set = charge_set.filter(bind__client_contract__service_organization_id=int(request.GET['service_organization']))
+        connected_set = connected_set.filter(contract__service_organization=int(request.GET['service_organization']))
+        disconnected_set = disconnected_set.filter(contract__service_organization=int(request.GET['service_organization']))
+    if 'locality' in request.GET and request.GET['locality'] != '':
+        charge_set = charge_set.filter(bind__client_object__address_building__street__locality_id=int(request.GET['locality']))
+        connected_set = connected_set.filter(object__address_building__street__locality_id=int(request.GET['locality']))
+        disconnected_set = disconnected_set.filter(object__address_building__street__locality_id=int(request.GET['locality']))
     if 'service_list' in request.GET:
-        charge_set = charge_set.filter(service__service_type_id__in=json.loads(request.GET['service_list']))
-    if 'warden_id' in request.GET and request.GET['warden_id'] != '':
-        charge_set = charge_set.filter(warden_id=int(request.GET['warden_id']))
+        charge_set = charge_set.filter(bind__client_contract__service_type_id__in=json.loads(request.GET['service_list']))
+        connected_set = connected_set.filter(contract__service_type_id__in=json.loads(request.GET['service_list']))
+        disconnected_set = disconnected_set.filter(contract__service_type_id__in=json.loads(request.GET['service_list']))
+    if 'warden' in request.GET and request.GET['warden'] != '':
+        charge_set = charge_set.filter(warden_id=int(request.GET['warden']))
 
-    data['count'] = 0
-    data['object_list'] = {}
+        #connected_set = connected_set.filter(contract__=json.loads(request.GET['warden']))
+        #disconnected_set = disconnected_set.filter(contract__=json.loads(request.GET['warden']))
+    if not 'other' in request.GET:
+        charge_set = charge_set.exclude(charge_type='manual', value__lt=0)
+
+    data['client_list'] = []
+    data['charge_list'] = []
+    data['charge_count'] = charge_set.count()
+    data['bind_list'] = {}
+    data['bind_count'] = 0
     for charge in charge_set:
-        if not data['object_list'].has_key(charge.service.object.id):
-            data['object_list'][charge.service.object.id] = {
+        data['client_list'].append(charge.bind.client_contract.client.id)
+        item = {
+            'pay_type': charge.bind.client_contract.client.pay_type,
+            'charge_type': charge.charge_type,
+            'id': charge.id,
+            'value': int(charge.value),
+            'total': int(charge.total),
+            'client': charge.bind.client_contract.client.id,
+            'client__name': charge.bind.client_contract.client.name,
+            'contract': charge.bind.client_contract.id,
+            'bind': charge.bind.id,
+            'object': charge.bind.client_object.id,
+            'object__name': charge.bind.client_object.name,
+            'comment': charge.bind.client_object.comment,
+            }
+        item['warden'] = charge.bind.client_object.get_warden()['id']
+        item['warden__full_name'] = charge.bind.client_object.get_warden()['full_name']
+        #if charge.warden:
+        #item['warden'] = charge.warden.id
+        #item['warden__full_name'] = charge.warden.full_name
+        if charge.bind.client_contract.service_organization:
+            item['service_organization'] = charge.bind.client_contract.service_organization.id
+            item['service_organization__name'] = charge.bind.client_contract.service_organization.name
+        data['charge_list'].append(item)
+
+
+        if not data['bind_list'].has_key(charge.bind.id):
+            data['bind_list'][charge.bind.id] = {
                 'balance': 0,
                 'charge': 0,
                 'payment': 0,
                 'transaction': 0,
-                'client_id': charge.service.object.client.id,
-                'client__name': charge.service.object.client.name,
-                'object_id': charge.service.object.id,
-                'object__name': charge.service.object.name,
-                'comment': charge.service.object.comment,
-                'warden_id': charge.warden_id,
-                'address': charge.service.object.get_address(),
-                'service_list': charge.service.object.get_service_list()
+                'client': charge.bind.client_contract.client.id,
+                'client__name': charge.bind.client_contract.client.name,
+                'contract': charge.bind.client_contract.id,
+                'bind': charge.bind.id,
+                'object': charge.bind.client_object.id,
+                'object__name': charge.bind.client_object.name,
+                'comment': charge.bind.client_object.comment,
+                'address': charge.bind.client_object.get_address(),
+                'status': charge.bind.status.label,
+                'ovd_status': charge.bind.ovd_status.label,
+                'service_type__name': charge.bind.client_contract.service_type.name,
+                'subtype_list': charge.bind.get_subtype_list()
             }
-            data['count'] += 1
-        data['object_list'][charge.service.object.id]['balance'] += float(charge.value)
+            try:
+                data['bind_list'][charge.bind.id]['begin_date'] = charge.bind.client_contract.begin_date.strftime('%d.%m.%Y')
+            except:
+                data['bind_list'][charge.bind.id]['begin_date'] = ''
+            if charge.warden:
+                data['bind_list'][charge.bind.id]['warden'] = charge.warden.id
+                data['bind_list'][charge.bind.id]['warden__full_name'] = charge.warden.full_name
+            data['bind_count'] += 1
+
+        data['bind_list'][charge.bind.id]['balance'] += float(charge.value)
         if charge.value < 0:
-            data['object_list'][charge.service.object.id]['charge'] += float(charge.value)
+            data['bind_list'][charge.bind.id]['charge'] += float(charge.value)
         else:
-            data['object_list'][charge.service.object.id]['payment'] += float(charge.value)
+            data['bind_list'][charge.bind.id]['payment'] += float(charge.value)
+
+
+
+    payment_set = db_sentry.client_payment.objects.filter(
+        client__in = data['client_list'],
+        date__range = (begin_date, end_date),
+        is_active = 1
+    )
+    data['payment_list'] = []
+    for payment in payment_set:
+        data['payment_list'].append({
+            'value': int(payment.value),
+            'payment_type': payment.payment_type,
+            })
+
+    data['connected'] = {
+        'count': connected_set.count(),
+        'total': decimal.Decimal(0.0)
+    }
+    for item in connected_set:
+        bind = db_sentry.client_bind.objects.filter(client_object=item.object.id, is_active=1).first()
+        if bind:
+            try:
+                data['connected']['total'] += decimal.Decimal(bind.get_connect_cost())
+            except:
+                pass
+    data['connected']['total'] = str(data['connected']['total'])
+
+    data['disconnected'] = disconnected_set.count()
 
     return data
 
@@ -96,9 +206,9 @@ def bonus_click(request,data):
         .exclude(cost=None)
 
     data['count'] = 0
-    data['object_list'] = []
+    data['bind_list'] = []
     for bonus in bonus_set:
-        data['object_list'].append({
+        data['bind_list'].append({
             'client_id': bonus.object.client.id,
             'client__name': bonus.object.client.name,
             'object_id': bonus.object.id,

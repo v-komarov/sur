@@ -53,7 +53,8 @@ function setting_Update(){
             'bonus_connection': $('.tableInfo input[name=bonus_connection]').val(),
             'bonus_programming': $('.tableInfo input[name=bonus_programming]').val(),
             'region': $('.tableInfo select[name=region]').val(),
-            'locality': $('.tableInfo select[name=locality]').val()
+            'locality': $('.tableInfo select[name=locality]').val(),
+            'currency': $('.tableInfo select[name=currency]').val()
         },
         success: function(data){
             if(data['error']!=null){

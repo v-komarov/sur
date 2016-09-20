@@ -7,8 +7,7 @@ $(document).ready(function() {
         }
         else if(action=='object_delete') {
             if(confirm('Удалить объект?')) {
-                object_Delete( $('#object_pop').attr('object_id') );
-                object_Cancel();
+                object_Delete($('#object_pop').attr('object_id'));
             }
         }
         else if(action=='object_tag_add') {
@@ -22,10 +21,10 @@ $(document).ready(function() {
     });
 
     $('#object_pop').on('change', 'select[name=console]', function() {
-        console_number_interval_Set();
+        //console_number_interval_Set();
     });
 
-    $('#object_pop').on('click', 'td.switch', function() {
+    $(document).on('click', 'td.switch', function() {
         if($(this).attr('checked') == 'checked') {
             $(this).removeAttr('checked');
         } else {
@@ -159,10 +158,12 @@ function console_number_interval_Set(number) {
 function object_Delete(object_id) {
     var ajax_array = {};
     ajax_array['client'] = client_id;
-    ajax_array['object'] = object_id;
+    ajax_array['bind'] = $('#object_pop').attr('bind_id');
     $.ajax({ url:'/system/client/object/ajax/delete/', type:'get', dataType:'json', data:ajax_array,
         success: function(data) {
-            if(data['error']!=null) alert(data['error']);
+            if(data['errors']) {
+                message_Pop_array(data['errors'], 'red');
+            }
             else {
                 contract_Reset();
             }
@@ -171,19 +172,46 @@ function object_Delete(object_id) {
 }
 
 
-function object_Edit(object_id) {
+function object_Show(action, bind_id) {
+    var object_div = $('#object_list .object__item[bind_id='+bind_id+']');
+    if(action=='hide') {
+        object_div.find('.btn_ui[action=object_hide]').hide();
+        object_div.find('.btn_ui[action=object_show]').show();
+        object_div.find('.tableInfo:eq(0)').hide();
+        object_div.find('.event_list').hide();
+        object_div.find('.device_list').hide();
+        object_div.find('.bonus_list').hide();
+    }
+    else {
+        object_div.find('.btn_ui[action=object_hide]').show();
+        object_div.find('.btn_ui[action=object_show]').hide();
+        object_div.find('.tableInfo:eq(0)').show();
+        object_div.find('.event_list').show();
+        object_div.find('.device_list').show();
+        object_div.find('.bonus_list').show();
+    }
+
+
+}
+
+
+function object_Edit(object_id, bind_id, from) {
+    console.log('object_Edit');
     object_Cancel();
     popMenuPosition('#object_pop','single');
     var contract_string = $('#contract .service_string').html();
     var service_type_id = $('#contract').attr('service_type_id');
     $('#object_pop tr').show();
+    $('#object_pop [name=time24]').removeAttr('checked');
     /* ПЦН */
     if(service_type_id!=1) {
         $('#object_pop [name=console]').parents('tr').hide();
         $('#object_pop [name=security_squad]').parents('tr').hide();
     }
+
     if(!!object_id) {
         $('#object_pop').attr('object_id',object_id);
+        $('#object_pop').attr('bind_id',bind_id);
         $.ajax({ url:'/system/client/object/ajax/get/?object='+object_id, type:'post', dataType:'json',
             success: function(data){
                 if(data['error']!=null) {
@@ -208,14 +236,29 @@ function object_Edit(object_id) {
                         $('#object_pop .select_cost_type').val('').show();
                         $('#object_pop [action=cost_add]').hide();
                     }
+                    // Если объект подключен, то редактировать цену нельзяяя!!!!
+                    if(!$('.object__item[object_id='+object_id+'] [event_type=client_object_connect] [name=event_date]').text()==''){
+                        $('#object_pop tr[name=cost_string] input[name=cost_value]').attr('disabled','disabled');
+                        $('#object_pop tr[name=cost_string] select[name=cost_type]').attr('disabled','disabled');
+                    } else {
+                        $('#object_pop tr[name=cost_string] input[name=cost_value]').removeAttr('disabled');
+                        $('#object_pop tr[name=cost_string] select[name=cost_type]').removeAttr('disabled');
+                    }
+
                     //$('#object_pop tr[name=cost_string] td:eq(1)').html(data['object']['cost_list']['cost']+' '+data['object']['cost_list']['cost_type__name']);
                     //$('#object_pop tr[name=cost_string]').attr('service_cost_id',data['object']['cost_list']['id']);
                     $('#object_pop .header b').html('Карточка Обьекта.  Договор: '+contract_string);
                     $('#object_pop .header b .service_string').removeAttr('class').attr('style','display: inline-block');
                     for(var key in data['object']) {
-                        $('#object_pop [name='+key+']').val(data['object'][key]);
+                        if(key == 'time24' && data['object']['time24'] == true){
+                            $('#object_pop [name=time24]').attr('checked','checked');
+                        }
+                        else {
+                            $('#object_pop [name='+key+']').val(data['object'][key]);
+                        }
                     }
-                    console_number_interval_Set(data['object']['console_number']);
+
+                    //console_number_interval_Set(data['object']['console_number']);
 
                     $('#object_pop select[name=client_object_warden]').val('');
                     if(data['object']['event_list']) {
@@ -227,7 +270,7 @@ function object_Edit(object_id) {
                         }
                     }
                     if('address' in data['object']) {
-                        address_locality_Search('set',data['object']['address']);
+                        address_locality_Search('set', data['object']['address']);
                     }
                     else {
                         address_locality_Search();
@@ -243,6 +286,15 @@ function object_Edit(object_id) {
                     } else {
                         $('#object_pop select[name=referer_user]').hide().attr('disabled','disabled');
                     }
+
+
+                    $('#object_pop').removeAttr('from_bind_id');
+                    if(from && from=='archive') {
+                        $('#object_pop').attr('from_bind_id',bind_id);
+                        $('#object_pop').removeAttr('bind_id');
+                        $('#object_pop').removeAttr('object_id');
+                    }
+
                 }
             },
             complete: function() {
@@ -251,6 +303,7 @@ function object_Edit(object_id) {
         });
     }
     else {
+        $('#object_pop').removeAttr('bind_id');
         $('#object_pop').removeAttr('object_id');
         $('#object_pop select').val('').removeAttr('disabled');
         $('#object_pop [name=referer_user]').hide();
@@ -285,6 +338,7 @@ function object_Tag(action, object_id, data) {
         if( $('#object_pop [name=financial_responsibility]').is('[checked]') ){
             tag_list.push( 2 );
         }
+
         return JSON.stringify(tag_list);
     }
     else if(action=='set'){
@@ -389,13 +443,13 @@ function service_subtype(action, data) {
 
 
 function address_locality_Search(action, data_address) {
-    //console.log('address_locality_Search:',action);
-    console.log(lunchbox['setting']['region']);
+    //console.log('address_locality_Search:', action);
+    //console.log(lunchbox['setting']['region']);
     var region_id = '';
     if(action=='change') {
-        region_id = $('#object_pop select[name=address_region]').val();
+        region_id = $('#object_pop [name=address_region]').val();
     }
-    if(data_address && data_address['region']) {
+    else if(data_address && data_address['region']) {
         region_id = data_address['region'];
     }
     else {
@@ -439,13 +493,10 @@ function address_street_Clear() {
 }
 
 
-function object_Update() {
-    var service_array = get_each_value('#object_pop');
-    service_array['client_contract'] = contract_id;
-    service_array['client_object'] = $('#object_pop').attr('object_id');
-    service_array['dir_service_subtype'] = service_subtype('get');
-    service_array['dir_tag'] = object_Tag('get');
-    $.ajax({ url:'/system/client/object/ajax/update/', type:'post', dataType:'json', traditional:true, data:service_array,
+function object_Archive(bind_id, action) {
+    var ajax_array = {'bind_id': bind_id};
+    if(action) ajax_array['action'] = 'unarchive';
+    $.ajax({ url:'/system/client/object/ajax/archive/', type:'get', dataType:'json', traditional:true, data:ajax_array,
         success: function(data) {
             if(data['error']) {
                 popMessage(data['error'],'red');
@@ -466,9 +517,45 @@ function object_Update() {
 }
 
 
+function object_Update() {
+    var service_array = get_each_value('#object_pop');
+    service_array['client_contract'] = contract_id;
+    service_array['client_object'] = $('#object_pop').attr('object_id');
+    service_array['from'] = $('#object_pop').attr('from');
+    service_array['dir_service_subtype'] = service_subtype('get');
+    service_array['dir_tag'] = object_Tag('get');
+    if( $('#object_pop [name=time24]').attr('checked') ){
+        service_array['time24'] = 'true';
+    } else {
+        service_array['time24'] = 'false';
+    }
+
+    $.ajax({ url:'/system/client/object/ajax/update/', type:'post', dataType:'json', traditional:true, data:service_array,
+        success: function(data) {
+            if(data['errors']) message_Pop_array(data['errors'], 'red');
+            else if(data['error']) {
+                popMessage(data['error'],'red');
+            }
+            else if(data['form_errors']) {
+                message_Pop_array(data['form_errors'],'red');
+            }
+            else {
+                popMessage('Сохранено','green');
+                contract_Reset();
+                //if('object_service_id' in data) object_Edit(data['object_service_id']);
+            }
+        },
+        complete: function() {
+
+        }
+    });
+}
+
+
 function object_Cancel() {
-    $('.pop input, .pop textarea').val('');
+    $('.pop input, .pop select, .pop textarea').val('');
     $('#object_pop .in_pop_sublist .item').remove();
+    $('#object_pop [name=time24]').attr('checked','checked');
 }
 
 

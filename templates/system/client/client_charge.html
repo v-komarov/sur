@@ -6,8 +6,9 @@
     <script type="text/javascript" src="{{ STATIC_URL }}index/js/pop_menu.js"></script>
     <script type="text/javascript" src="{{ STATIC_URL }}index/js/sentry/system/client/client_charge.js"></script>
 
-    <div class="middleBlock" client_id="{{ client_id }}">
-        <h2 class="cabinet_title">Клиент: {{ client_set.name }}</h2>
+    <div class="middleBlock" client_id="{{ client_id }}"
+         {% if request.session.history.contract %}contract_id={{ request.session.history.contract }}{% endif %}>
+        <h2 class="cabinet_title">Клиент: {{ client.name }}</h2>
 
         <table class="tableInfo" id="charge_list">
             <thead>
@@ -16,9 +17,15 @@
                     <select id="object_select">
                         <option class="item" value="">Все</option>
                         {% for contract in contract_set %}
-                            <option class="item" value="{{ contract.id }}" level="contract" status="{{ contract.status }}">Договор: {{ contract.name }}</option>
+                            <option class="item" value="{{ contract.id }}" level="contract" status="{{ contract.status }}">
+                                Договор: {{ contract.name }} [{{ contract.service_type.name }}] - {{ contract.status.name }} - {{ contract.service_organization.name }}
+                            </option>
                             {% for bind in contract.client_bind_set.all %}
-                                <option class="item" value="{{ bind.id }}" level="bind" status="{{ bind.status }}">Объект: {{ bind.client_object.name }}</option>
+                                {% if bind.is_active == 1 and bind.client_object.is_active == 1 %}
+                                    <option class="item" contract_id="{{ contract.id }}" value="{{ bind.id }}" level="bind" status="{{ bind.status }}">
+                                        Договор: {{ contract.name }} [{{ contract.service_type.name }}] > Объект: {{ bind.client_object.name }} [{{ bind.console_number }}]
+                                    </option>
+                                {% endif %}
                             {% endfor %}
                         {% endfor %}
                     </select>

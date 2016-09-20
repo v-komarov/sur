@@ -28,22 +28,22 @@ def index(request):
 def ajax(request,action):
     data = {'error':None}
 
-    if action=='search':
+    if action == 'search':
         if request.user.has_perm('system.client'):
             data = dir_device_console_ajax.search(request,data)
         else: data['error'] = 'Доступ запрещен'
 
-    elif action=='create':
+    elif action == 'create':
         if request.user.has_perm('system.client'):
             data = dir_device_console_ajax.create(request,data)
         else: data['error'] = 'Доступ запрещен'
 
-    elif action=='update':
+    elif action == 'update':
         if request.user.has_perm('system.client'):
             data = dir_device_console_ajax.update(request,data)
         else: data['error'] = 'Доступ запрещен'
 
-    elif action=='delete':
+    elif action == 'delete':
         if request.user.has_perm('system.client'):
             data = dir_device_console_ajax.delete(request,data)
         else: data['error'] = 'Доступ запрещен'

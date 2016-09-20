@@ -7,7 +7,6 @@ from django.shortcuts import render_to_response, redirect
 from django.contrib.auth.models import Group, Permission
 
 from apps.system import models as db_sentry
-from apps.system.sentry_user.models import permission_ext
 
 
 def search(request,data):
@@ -19,23 +18,25 @@ def search(request,data):
 
 
 def get_permission(request,data):
-    content_type_list = ['system']
-    data['permissions'] = []
+    content_type_list = ['system','task','monitor']
     group = Group.objects.get(id=int(request.GET['group']))
-    for permission in Permission.objects \
-            .filter(content_type__app_label__in=content_type_list) \
-            .exclude(content_type__app_label='notice'):
+    data['permissions'] = []
+    for permission in Permission.objects.filter(content_type__app_label__in=content_type_list):
+        app_label = permission.content_type.app_label
+        if permission.content_type.app_label=='system' and permission.content_type.model=='permissions': app_label = 'settings'
+        if app_label == 'monitor': app_label = u'ПЦН'
+        elif app_label == 'system': app_label = u'Клиенты'
+        elif app_label == 'task': app_label = u'Заявки'
+        elif app_label == 'settings': app_label = u'Вкладки'
         if group.permissions.filter(codename=permission.codename).exists():
             choice = 'yes'
         else:
             choice = 'no'
-        ext = permission_ext.objects.get(auth_permission_id=permission.id)
         data['permissions'].append({
             'id': permission.id,
+            'app_label': app_label,
+            'model': permission.content_type.model,
             'name': permission.name,
-            'position': str(ext.position),
-            'model_name': ext.permission_group.name,
-            'model_description': ext.permission_group.name,
             'codename': permission.codename,
             'choice': choice })
 

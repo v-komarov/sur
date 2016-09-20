@@ -10,9 +10,9 @@ $(document).ready(function() {
     }
     else {
         check_legal_type_base();
-        address_locality_Search('address_actual','begin');
-        address_locality_Search('address_legal','begin');
-        address_locality_Search('address_postal','begin');
+        address_locality_Search('address_actual', 'begin');
+        address_locality_Search('address_legal', 'begin');
+        address_locality_Search('address_postal', 'begin');
     }
 
     $(".tableInfo").on('click', '.btn_ui', function(){

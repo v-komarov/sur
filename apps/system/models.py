@@ -3,6 +3,8 @@
 import datetime
 from django.utils import timezone
 from django.db import models
+from django.contrib.postgres.fields import JSONField
+from django.contrib.postgres.fields import ArrayField
 
 
 class dir_address_0_country(models.Model):
@@ -12,6 +14,7 @@ class dir_address_0_country(models.Model):
     class Meta:
         db_table = 'dir_address_0_country'
         ordering = ['name']
+        default_permissions = ()
 
 class dir_address_1_region(models.Model):
     country = models.ForeignKey(dir_address_0_country, default=1)
@@ -21,6 +24,7 @@ class dir_address_1_region(models.Model):
     class Meta:
         db_table = 'dir_address_1_region'
         ordering = ['name']
+        default_permissions = ()
 
 class dir_address_2_locality(models.Model):
     region = models.ForeignKey(dir_address_1_region)
@@ -30,6 +34,7 @@ class dir_address_2_locality(models.Model):
     class Meta:
         db_table = 'dir_address_2_locality'
         ordering = ['region','name']
+        default_permissions = ()
 
 class dir_address_3_street(models.Model):
     locality = models.ForeignKey(dir_address_2_locality)
@@ -39,6 +44,7 @@ class dir_address_3_street(models.Model):
     class Meta:
         db_table = 'dir_address_3_street'
         ordering = ['name']
+        default_permissions = ()
 
 class dir_address_4_building(models.Model):
     street = models.ForeignKey(dir_address_3_street)
@@ -49,6 +55,7 @@ class dir_address_4_building(models.Model):
     class Meta:
         db_table = 'dir_address_4_building'
         ordering = ['name']
+        default_permissions = ()
 
 class dir_address_placement_type(models.Model):
     label = models.CharField(max_length=128, help_text='')
@@ -58,6 +65,7 @@ class dir_address_placement_type(models.Model):
         return self.label
     class Meta:
         db_table = 'dir_address_placement_type'
+        default_permissions = ()
 
 class dir_holding(models.Model):
     name = models.CharField(max_length=256)
@@ -67,6 +75,7 @@ class dir_holding(models.Model):
     class Meta:
         db_table = 'dir_holding'
         ordering = ['name']
+        default_permissions = ()
 
 class dir_user_post(models.Model):
     name = models.CharField(max_length=128, help_text='Должность')
@@ -76,6 +85,7 @@ class dir_user_post(models.Model):
     class Meta:
         db_table = 'dir_user_post'
         ordering = ['name']
+        default_permissions = ()
 
 class dir_user_status(models.Model):
     name = models.CharField(max_length=128, help_text='Статус')
@@ -84,10 +94,11 @@ class dir_user_status(models.Model):
     class Meta:
         db_table = 'dir_user_status'
         ordering = ['name']
+        default_permissions = ()
 
 class dir_bank(models.Model):
-    name = models.CharField(max_length=512, help_text='Наименование банка')
     bik = models.CharField(max_length=9, help_text='БИК')
+    name = models.CharField(max_length=512, help_text='Наименование банка')
     correspondent_account = models.CharField(max_length=32, help_text='Корреспондентский счёт')
     locality = models.CharField(max_length=512)
     def __unicode__(self):
@@ -95,6 +106,7 @@ class dir_bank(models.Model):
     class Meta:
         db_table = 'dir_bank'
         ordering = ['name']
+        default_permissions = ()
 
 class dir_cost_type(models.Model):
     label = models.CharField(max_length=128)
@@ -105,6 +117,7 @@ class dir_cost_type(models.Model):
     class Meta:
         db_table = 'dir_cost_type'
         ordering = ['name']
+        default_permissions = ()
 
 class dir_charge_month(models.Model):
     name = models.CharField(max_length=128)
@@ -113,6 +126,7 @@ class dir_charge_month(models.Model):
         return self.name
     class Meta:
         db_table = 'dir_charge_month'
+        default_permissions = ()
 
 class dir_device_console(models.Model):
     hard_id = models.IntegerField(null=True, blank=True)
@@ -123,6 +137,7 @@ class dir_device_console(models.Model):
         return self.name
     class Meta:
         db_table = 'dir_device_console'
+        default_permissions = ()
 
 class dir_device_communication_type(models.Model):
     name = models.CharField(max_length=128)
@@ -131,6 +146,7 @@ class dir_device_communication_type(models.Model):
         return self.name
     class Meta:
         db_table = 'dir_device_communication_type'
+        default_permissions = ()
 
 class dir_device_communication(models.Model):
     communication_type = models.ForeignKey(dir_device_communication_type)
@@ -141,6 +157,7 @@ class dir_device_communication(models.Model):
         return self.name
     class Meta:
         db_table = 'dir_device_communication'
+        default_permissions = ()
 
 class dir_device_type(models.Model):
     name = models.CharField(max_length=32)
@@ -151,6 +168,7 @@ class dir_device_type(models.Model):
         return self.name
     class Meta:
         db_table = 'dir_device_type'
+        default_permissions = ()
 
 class dir_object_status(models.Model):
     label = models.CharField(max_length=32)
@@ -162,6 +180,7 @@ class dir_object_status(models.Model):
     class Meta:
         db_table = 'dir_object_status'
         ordering = ['position']
+        default_permissions = ()
 
 class dir_tag(models.Model):
     root = models.CharField(max_length=256)
@@ -172,6 +191,7 @@ class dir_tag(models.Model):
         return self.name
     class Meta:
         db_table = 'dir_tag'
+        default_permissions = ()
 
 class dir_service_type(models.Model):
     label = models.CharField(max_length=128)
@@ -183,6 +203,7 @@ class dir_service_type(models.Model):
     class Meta:
         ordering = ['name']
         db_table = 'dir_service_type'
+        default_permissions = ()
 
 class dir_service_subtype(models.Model):
     service_type = models.ForeignKey(dir_service_type)
@@ -194,6 +215,7 @@ class dir_service_subtype(models.Model):
     class Meta:
         ordering = ['name']
         db_table = 'dir_service_subtype'
+        default_permissions = ()
 
 class dir_security_squad(models.Model):
     name = models.CharField(max_length=64, help_text='Название ГБР')
@@ -203,6 +225,7 @@ class dir_security_squad(models.Model):
     class Meta:
         ordering = ['name']
         db_table = 'dir_security_squad'
+        default_permissions = ()
 
 class sentry_user(models.Model):
     full_name = models.CharField(max_length=128)
@@ -218,6 +241,8 @@ class sentry_user(models.Model):
     passport_number = models.CharField(max_length=6, blank=True, help_text='Номер паспорта')
     passport_date = models.DateTimeField(null=True, blank=True, help_text='Когда выдан')
     passport_issued = models.CharField(max_length=256, blank=True, help_text='Кем выдан')
+    address_building = models.ForeignKey(dir_address_4_building, null=True, blank=True, help_text='Здание')
+    address_placement = models.CharField(max_length=128, null=True, blank=True, help_text='Помещение')
     address = models.CharField(max_length=256, blank=True)
     address2 = models.CharField(max_length=256, blank=True)
     comment = models.TextField(blank=True)
@@ -225,6 +250,7 @@ class sentry_user(models.Model):
     class Meta:
         db_table = 'sentry_user'
         ordering = ['full_name']
+        default_permissions = ()
 
     def get_status(self):
         if self.status_id: status__name = self.status.name
@@ -261,6 +287,7 @@ class dir_post_reason(models.Model):
         return self.name
     class Meta:
         db_table = 'dir_post_reason'
+        default_permissions = ()
 
 class dir_service_organization(models.Model):
     name = models.CharField(max_length=256)
@@ -282,6 +309,7 @@ class dir_service_organization(models.Model):
     class Meta:
         db_table = 'dir_service_organization'
         ordering = ['name']
+        default_permissions = ()
 
 class dir_console_interval(models.Model):
     service_organization = models.ForeignKey(dir_service_organization)
@@ -291,12 +319,14 @@ class dir_console_interval(models.Model):
     is_active = models.SmallIntegerField(default=1)
     class Meta:
         db_table = 'dir_console_interval'
+        default_permissions = ()
 
 class dir_weapon_type(models.Model):
     name = models.CharField(max_length=128)
     is_active = models.SmallIntegerField(default=1)
     class Meta:
         db_table = 'dir_weapon_type'
+        default_permissions = ()
 
 class dir_weapon(models.Model):
     series = models.CharField(max_length=16)
@@ -308,6 +338,7 @@ class dir_weapon(models.Model):
     class Meta:
         db_table = 'dir_weapon'
         ordering = ['series','number']
+        default_permissions = ()
 
 class sentry_user_card(models.Model):
     user = models.ForeignKey(sentry_user)
@@ -320,6 +351,7 @@ class sentry_user_card(models.Model):
     class Meta:
         db_table = 'sentry_user_card'
         ordering = ['-date']
+        default_permissions = ()
 
     def get_status(self,field=None):
         today = datetime.date.today()
@@ -342,6 +374,7 @@ class sentry_user_card_status(models.Model):
     class Meta:
         db_table = 'sentry_user_card_status'
         ordering = ['-date']
+        default_permissions = ()
 
 class sentry_user_certificate(models.Model):
     user = models.ForeignKey(sentry_user)
@@ -356,6 +389,7 @@ class sentry_user_certificate(models.Model):
     class Meta:
         db_table = 'sentry_user_certificate'
         ordering = ['-date']
+        default_permissions = ()
 
 class sentry_user_certificate_check(models.Model):
     certificate = models.ForeignKey(sentry_user_certificate)
@@ -366,6 +400,7 @@ class sentry_user_certificate_check(models.Model):
     class Meta:
         db_table = 'sentry_user_certificate_check'
         ordering = ['-plan_check_date']
+        default_permissions = ()
 
 class sentry_user_identity(models.Model):
     user = models.ForeignKey(sentry_user)
@@ -380,6 +415,7 @@ class sentry_user_identity(models.Model):
     class Meta:
         db_table = 'sentry_user_identity'
         ordering = ['-expire_date']
+        default_permissions = ()
 
 class sentry_user_weapon(models.Model):
     user = models.ForeignKey(sentry_user)
@@ -392,6 +428,7 @@ class sentry_user_weapon(models.Model):
     class Meta:
         db_table = 'sentry_user_weapon'
         ordering = ['-date']
+        default_permissions = ()
 
 class dir_event_group(models.Model):
     name = models.CharField(max_length=32)
@@ -401,6 +438,7 @@ class dir_event_group(models.Model):
         return self.name
     class Meta:
         db_table = 'dir_event_group'
+        default_permissions = ()
 
 class dir_client_workflow_type(models.Model):
     type = models.CharField(max_length=32)
@@ -416,6 +454,7 @@ class dir_client_workflow_type(models.Model):
     class Meta:
         db_table = 'dir_client_workflow_type'
         ordering = ['position']
+        default_permissions = ()
 
 class dir_event(models.Model):
     group = models.ForeignKey(dir_event_group)
@@ -425,6 +464,7 @@ class dir_event(models.Model):
         return self.name
     class Meta:
         db_table = 'dir_event'
+        default_permissions = ()
 
 class dir_incident_type(models.Model):
     name = models.CharField(max_length=32)
@@ -434,12 +474,14 @@ class dir_incident_type(models.Model):
     class Meta:
         db_table = 'dir_incident_type'
         ordering = ['name']
+        default_permissions = ()
 
 class dir_legal_type(models.Model):
     label = models.CharField(max_length=125)
     name = models.CharField(max_length=125)
     class Meta:
         db_table = 'dir_legal_type'
+        default_permissions = ()
 
 class dir_legal_type_base(models.Model):
     legal_type = models.ForeignKey(dir_legal_type)
@@ -447,6 +489,7 @@ class dir_legal_type_base(models.Model):
     name = models.CharField(max_length=125)
     class Meta:
         db_table = 'dir_legal_type_base'
+        default_permissions = ()
 
 class dir_code(models.Model):
     code = models.CharField(max_length=8)
@@ -456,6 +499,7 @@ class dir_code(models.Model):
     class Meta:
         db_table = 'dir_event_code'
         ordering = ['code']
+        default_permissions = ()
 
 class dir_contract_interval(models.Model):
     service_organization = models.ForeignKey(dir_service_organization)
@@ -465,6 +509,7 @@ class dir_contract_interval(models.Model):
     is_active = models.SmallIntegerField(default=1)
     class Meta:
         db_table = 'dir_contract_interval'
+        default_permissions = ()
 
 class dir_referer_type(models.Model):
     label = models.CharField(max_length=32)
@@ -473,12 +518,16 @@ class dir_referer_type(models.Model):
     is_active = models.SmallIntegerField(default=1)
     class Meta:
         db_table = 'dir_referer_type'
+        default_permissions = ()
+
 
 class dir_weekday(models.Model):
     weekday = models.IntegerField()
     name = models.CharField(max_length=32)
     class Meta:
         db_table = 'dir_weekday'
+        default_permissions = ()
+
 
 class client_user_phone(models.Model):
     code = models.CharField(max_length=4, blank=True)
@@ -490,6 +539,7 @@ class client_user_phone(models.Model):
     class Meta:
         db_table = 'client_user_phone'
         ordering = ['phone_type']
+        default_permissions = ()
 
 class client_user_email(models.Model):
     email = models.CharField(max_length=128)
@@ -498,6 +548,7 @@ class client_user_email(models.Model):
         return self.email
     class Meta:
         db_table = 'client_user_email'
+        default_permissions = ()
 
 
 class client_user(models.Model):
@@ -506,16 +557,50 @@ class client_user(models.Model):
     post = models.ForeignKey(dir_user_post, blank=True, null=True)
     birthday = models.DateTimeField(blank=True, null=True)
     passport = models.CharField(max_length=256, blank=True, null=True)
+    address_building = models.ForeignKey(dir_address_4_building, null=True, blank=True, help_text='Здание')
+    address_placement = models.CharField(max_length=128, null=True, blank=True, help_text='Помещение')
     address = models.CharField(max_length=512, blank=True, null=True, help_text='Адрес')
     comment = models.TextField(blank=True, help_text='Комментарий')
     is_active = models.SmallIntegerField(default=1)
     client_user_phone = models.ManyToManyField(client_user_phone)
     client_user_email = models.ManyToManyField(client_user_email)
+    data = JSONField(default={})
     def __unicode__(self):
         return self.full_name
     class Meta:
         db_table = 'client_user'
         ordering = ['full_name']
+        default_permissions = ()
+        permissions = (
+            ('client_user', 'Доступ к ответственным лицам'),
+            ('add_client_user', 'Добавлять ответственные лица'),
+            ('change_client_user', 'Редактировать ответственные лица'),
+            ('delete_client_user', 'Удалять ответственные лица'),
+        )
+
+    def get_address(self):
+        address_string = ''
+        if self.address_building:
+            address_string = self.address_building.street.locality.name \
+                             +', '+ self.address_building.street.name \
+                             +', '+ self.address_building.name \
+                             +u', кв.'+self.address_placement
+        return address_string
+
+
+class permissions(models.Model):
+    name = models.CharField(max_length=256)
+    class Meta:
+        default_permissions = ()
+        permissions = (
+            ('finance', 'Доступ к финансам'),
+            ('sentry_user', 'Доступ к пользователям'),
+            ('directory', 'Доступ к справочникам'),
+            ('setting', 'Доступ к настройкам'),
+            ('search', 'Доступ к поиску'),
+            ('egg_squad', 'Доступ к ГБР'),
+            ('egg_client', 'Доступ к клиентам'),
+        )
 
 
 class client(models.Model):
@@ -549,7 +634,13 @@ class client(models.Model):
         return self.name
     class Meta:
         db_table = 'client'
-        default_permissions = ('view', 'add', 'change', 'delete')
+        default_permissions = ()
+        permissions = (
+            ('client', 'Доступ к карточке клиента'),
+            ('add_client', 'Добавлять клиентов'),
+            ('change_client', 'Редактировать клиентов'),
+            ('delete_client', 'Удалять клиентов'),
+        )
 
 
 class client_payment(models.Model):
@@ -557,28 +648,68 @@ class client_payment(models.Model):
     sentry_user = models.ForeignKey(sentry_user, null=True, blank=True)
     value = models.DecimalField(max_digits=10, decimal_places=2, help_text='Сумма пополнения')
     payment_type = models.CharField(max_length=128, help_text='Способ оплаты')
-    date = models.DateTimeField(help_text='Когда пополняли баланс')
+    date = models.DateTimeField(help_text='Дата пополнения')
     comment = models.TextField(blank=True)
     is_active = models.SmallIntegerField(default=1)
     class Meta:
         db_table = 'client_payment'
         ordering = ['date']
+        default_permissions = ()
+        permissions = (
+            ('client_payment', 'Доступ к платежам'),
+            ('add_client_payment', 'Добавлять платежи'),
+            ('change_client_payment', 'Редактировать платежи'),
+            ('delete_client_payment', 'Удалять платежи'),
+        )
 
 
 class dir_device(models.Model):
     device_console = models.ForeignKey(dir_device_console, null=True, blank=True, verbose_name='Пульт')
     device_type = models.ForeignKey(dir_device_type, null=True, blank=True, verbose_name='Тип устройства')
-    name = models.CharField(max_length=128, verbose_name='Инвентарный номер', help_text='Серийный / инвентарный номер')
+    name = models.CharField(max_length=128, unique=True,
+                            verbose_name='Инвентарный номер', help_text='Серийный / инвентарный номер')
     number = models.IntegerField(null=True, blank=True)
     series = models.CharField(max_length=16, blank=True)
     belong = models.CharField(max_length=64, default='rent')
     comment = models.TextField(blank=True, verbose_name='Комментарий')
+    code = models.CharField(max_length=8, null=True, blank=True)
+    data = JSONField(default={})
     is_active = models.SmallIntegerField(default=1)
     class Meta:
         verbose_name = 'Объектовое устройство'
         db_table = 'dir_device'
         ordering = ['name']
-        #unique_together = ('name', 'device_type')
+        default_permissions = ()
+        permissions = (
+            ('dir_device', 'Доступ к объектовым устройствам'),
+            ('add_dir_device', 'Добавлять объектовые устройства'),
+            ('change_dir_device', 'Редактировать объектовые устройства'),
+            ('delete_dir_device', 'Удалять объектовые устройства'),
+        )
+        #unique_together = ('name', 'is_active')
+
+    def checkPriority(self):
+        install = self.client_object_dir_device_set.filter(uninstall_date=None, is_active=1)
+        primary_install = install.filter(priority='primary').first()
+
+        if install:
+            if primary_install:
+                self.client_object_dir_device_set \
+                    .filter(uninstall_date=None, is_active=1) \
+                    .exclude(id=primary_install.id) \
+                    .update(priority='secondary')
+
+            elif install:
+                install_set = self.client_object_dir_device_set \
+                    .filter(uninstall_date=None, is_active=1)
+                install_set.update(priority='secondary')
+
+                primary_install = install_set.first()
+                primary_install.priority = 'primary'
+                primary_install.save()
+            return primary_install.id
+        else:
+            return 'no install'
 
 
 class dir_sim_card(models.Model):
@@ -586,7 +717,15 @@ class dir_sim_card(models.Model):
     dir_device = models.ForeignKey(dir_device, null=True, blank=True, on_delete=models.SET_NULL)
     is_active = models.SmallIntegerField(default=1)
     class Meta:
+        ordering = ['number']
         db_table = 'dir_sim_card'
+        default_permissions = ()
+        permissions = (
+            ('dir_sim_card', 'Доступ к сим картам'),
+            ('add_dir_sim_card', 'Добавлять сим карты'),
+            ('change_dir_sim_card', 'Редактировать сим карты'),
+            ('delete_dir_sim_card', 'Удалять сим карты'),
+        )
         #unique_together = ('number', 'dir_device')
 
 
@@ -606,7 +745,14 @@ class client_contract(models.Model):
     dir_tag = models.ManyToManyField(dir_tag)
     class Meta:
         db_table = 'client_contract'
-        default_permissions = ('view', 'add', 'change', 'delete')
+        unique_together = ('name', 'service_organization')
+        default_permissions = ()
+        permissions = (
+            ('client_contract', 'Доступ к договорам'),
+            ('add_client_contract', 'Добавлять договора'),
+            ('change_client_contract', 'Редактировать договора'),
+            ('delete_client_contract', 'Удалять договора'),
+        )
 
     def get_event_list(self):
         workflow_list = {'id':self.id, 'core':[], 'bonus':[]}
@@ -620,7 +766,7 @@ class client_contract(models.Model):
                 'event_type_name': workflow.workflow_type.name,
                 'event_type_description': workflow.workflow_type.description
             }
-            if workflow.workflow_type.type == 'bonus':
+            if workflow.cost:
                 workflow_dict['cost'] = str(workflow.cost)
             if workflow.sentry_user_id:
                 workflow_dict['sentry_user_id'] = workflow.sentry_user.id
@@ -661,7 +807,9 @@ class client_contract(models.Model):
         bind_list = []
         ovd_status = 'disconnected'
         ovd_status_list = []
-        for bind in self.client_bind_set.filter(is_active=1).exclude(status__label='new'):
+
+        for bind in self.client_bind_set.filter(is_active=1) \
+                .exclude(status__label='new').exclude(status__label='archive'):
             bind_list.append(bind.status.label)
             ovd_status_list.append(bind.ovd_status.label)
 
@@ -676,6 +824,9 @@ class client_contract(models.Model):
             ovd_status = 'disconnected'
         elif 'connected' in ovd_status_list:
             ovd_status = 'connected'
+
+        if self.client_workflow_set.filter(workflow_type__label='client_contract_close', done=True, is_active=1):
+            status = 'archive'
 
         self.status_id = dir_object_status.objects.get(label=status).id
         self.ovd_status_id = dir_object_status.objects.get(label=ovd_status).id
@@ -702,13 +853,15 @@ class client_object(models.Model):
     class Meta:
         db_table = 'client_object'
         ordering = ['name']
+        default_permissions = ()
+
 
     def get_device_list(self):
         device_list = []
-        for item in self.client_object_dir_device_set.filter(uninstall_date=None,is_active=1):
+        for item in self.client_object_dir_device_set.filter(is_active=1):#uninstall_date=None,
             install = {
                 'id': item.id,
-                'device': item.device_id,
+                'device': item.device.id,
                 'device__name': item.device.name,
                 'install_date': item.install_date.strftime("%d.%m.%Y"),
                 'password': item.password,
@@ -722,6 +875,10 @@ class client_object(models.Model):
             if item.install_user_id:
                 install['install_user'] = item.install_user.id
                 install['install_user__full_name'] = item.install_user.full_name
+            if item.uninstall_date and item.uninstall_user:
+                install['uninstall_date'] = item.uninstall_date.strftime("%d.%m.%Y"),
+                install['uninstall_user'] = item.uninstall_user.id
+                install['uninstall_user__full_name'] = item.uninstall_user.full_name
             device_list.append(install)
         return device_list
 
@@ -744,7 +901,7 @@ class client_object(models.Model):
                 'event_type_name': workflow.workflow_type.name,
                 'event_type_description': workflow.workflow_type.description
             }
-            if workflow.workflow_type.type == 'bonus':
+            if workflow.cost:
                 workflow_dict['cost'] = str(workflow.cost)
             if workflow.sentry_user_id:
                 workflow_dict['sentry_user_id'] = workflow.sentry_user.id
@@ -789,7 +946,7 @@ class client_object(models.Model):
         return tag_list
 
     def get_warden(self):
-        workflow_set = self.client_workflow_set.filter(workflow_type=1, is_active=1)
+        workflow_set = self.client_workflow_set.filter(workflow_type=1, done=True, is_active=1)
         if workflow_set.exists():
             return {'id': workflow_set[0].sentry_user.id, 'full_name': workflow_set[0].sentry_user.full_name}
         else:
@@ -799,27 +956,102 @@ class client_object(models.Model):
 class client_bind(models.Model):
     client_contract = models.ForeignKey(client_contract)
     client_object = models.ForeignKey(client_object)
-    console = models.ForeignKey(dir_device_console, null=True, blank=True)
-    console_number = models.IntegerField(null=True, blank=True)
+    console = models.ForeignKey(dir_device_console, null=True, blank=True, help_text='Тип пульта')
+    console_number = models.IntegerField(null=True, blank=True, help_text='Номер объекта на пульте')
     status = models.ForeignKey(dir_object_status, default=1, related_name='client_bind_status')
     ovd_status = models.ForeignKey(dir_object_status, default=1, related_name='client_bind_ovd_status')
     begin_date = models.DateTimeField(null=True, blank=True)
     end_date = models.DateTimeField(null=True, blank=True)
     charge_month_day = models.PositiveSmallIntegerField(null=True, blank=True, help_text='День оплаты')
     charge_month = models.ForeignKey(dir_charge_month, null=True, blank=True, help_text='Месяц оплаты')
+    time24 = models.BooleanField(default=True, help_text='Контроль режима работы')
+    watch = models.BooleanField(default=False) # Флаг объект под охраной или нет
+    watch_sections = ArrayField(models.IntegerField(), default=[]) # Список разделов под охраной
     is_active = models.SmallIntegerField(default=1)
     dir_tag = models.ManyToManyField(dir_tag)
     dir_service_subtype = models.ManyToManyField(dir_service_subtype)
+    data = JSONField(default={})
     class Meta:
         db_table = 'client_bind'
-        default_permissions = ('view', 'add', 'change', 'delete')
+        #unique_together = ('console', 'console_number')
+        default_permissions = ()
+        permissions = (
+            ('client_object', 'Доступ к объектам'),
+            ('add_client_bind', 'Добавлять объекты'),
+            ('change_client_bind', 'Редактировать объекты'),
+            ('delete_client_bind', 'Удалять объекты'),
+        )
+
+
+    ### Список разделов по данным расшлейфовки
+    def get_sections_list(self):
+        sections = [0]
+        if not self.data.has_key("stub"):
+            return sections
+        for stub in self.data["stub"]:
+            if stub["id_razdel"] not in sections:
+                sections.append(stub["id_razdel"])
+        return sections
+
+
+    ### Проверка наличия услуги у объекта
+    def CheckService(self, service_name):
+        if service_name == self.client_contract.service_type.name:
+            return True
+        else:
+            return False
+            #bind = self..objects.get(pk=item.id)
+            #dir_service_subtype.all()
+
+
+    ### Получение закрепленного ГБР
+    def GetSquad(self):
+        return self.client_object.security_squad.name
+
+
+    ### Получение ключа шифрования
+    def GetCode(self):
+        try:
+            return self.client_object.client_object_dir_device_set.filter(uninstall_date=None, is_active=1).first().device.code
+        except:
+            return ''
+
+    ### Информация о контроле режима работы
+    def TimeControl(self):
+        if self.time24:
+            return u"С контролем режима работы"
+        else:
+            return u"Без контроля режима работы"
+
+
+    ### Свободен ли номер на пульте
+    def checkConsoleNumber(self, **kwargs):
+        check = client_bind.objects. \
+            filter(console=kwargs['console'], console_number=kwargs['console_number'], is_active=1). \
+            exclude(status__label='archive')
+        if check.exists() and check[0].id != self.id:
+            return {kwargs['console_number']: u'Есть такой номер на пульте'}
+        else:
+            pass
+
+
+    def get_connect_cost(self, **kwargs):
+        try:
+            connect_cost = str(self.client_bind_cost_set \
+                               .filter(cost_type__label='client_object_connect', is_active=1) \
+                               .first().cost_value)
+        except:
+            connect_cost = None
+        return connect_cost
+
 
     def get_cost(self, **kwargs):
         cost_array = {'client_bind': self.id}
+        cost_type_exclude = ['once', 'pause', 'client_object_connect']
         if 'current' in kwargs:
             cost = self.client_bind_cost_set \
                 .filter(begin_date__lte=datetime.date.today(), is_active=1) \
-                .exclude(cost_type__label='pause').last()
+                .exclude(cost_type__label__in=cost_type_exclude).last()
             if not cost:
                 cost = self.client_bind_cost_set \
                     .filter(is_active=1).exclude(cost_type__label='pause').last()
@@ -882,6 +1114,7 @@ class client_bind(models.Model):
                     contract = self.client_contract.id,
                     object = self.client_object.id,
                     workflow_type__type = 'core',
+                    done = True,
                     is_active = 1):
                 workflow_list.append(workflow.workflow_type.label)
 
@@ -894,7 +1127,6 @@ class client_bind(models.Model):
             device_install = False
             if self.client_object.client_object_dir_device_set.filter(uninstall_date=None, is_active=1).exists():
                 device_install = True
-
 
             if 'client_object_connect' in workflow_list:
                 if ovd_status == 'connected' and device_install:
@@ -911,8 +1143,7 @@ class client_bind(models.Model):
                 elif ovd_status=='disconnected' and device_install:
                     status = 'blue'
                 elif ovd_status=='disconnected' and not device_install:
-                    status = 'white'
-
+                    status = 'archive'
 
             cost = self.client_bind_cost_set.filter(
                 cost_type__label='pause', is_active=1,
@@ -927,6 +1158,7 @@ class client_bind(models.Model):
             contract_status = self.client_contract.check_contract_status()
             return [workflow_list,
                     'bind status: '+status,
+                    'device_install: '+str(device_install),
                     'contract ovd_status: '+str(ovd_status),
                     'contract status: '+str(contract_status)]
         else:
@@ -947,7 +1179,13 @@ class client_bind_cost(models.Model):
     class Meta:
         db_table = 'client_bind_cost'
         ordering = ['begin_date']
-        default_permissions = ('view', 'add', 'change', 'delete')
+        default_permissions = ()
+        permissions = (
+            ('add_client_bind_cost', 'Добавлять стоимость услуг'),
+            ('change_client_bind_cost', 'Редактировать стоимость услуг'),
+            ('delete_client_bind_cost', 'Удалять стоимость услуг'),
+        )
+
 
 class client_object_weapon(models.Model):
     object = models.ForeignKey(client_object, on_delete=models.CASCADE)
@@ -956,19 +1194,30 @@ class client_object_weapon(models.Model):
     is_active = models.SmallIntegerField(default=1)
     class Meta:
         db_table = 'client_object_weapon'
+        default_permissions = ()
+        permissions = (
+            ('client_object_weapon', 'Доступ к оружию на объекте'),
+            ('add_client_object_weapon', 'Добавлять оружие на объекте'),
+            ('change_client_object_weapon', 'Редактировать оружие на объекте'),
+            ('delete_client_object_weapon', 'Удалять оружие на объекте'),
+        )
+
 
 class client_workflow(models.Model):
     contract = models.ForeignKey(client_contract, null=True, blank=True)
+    bind = models.ForeignKey(client_bind, null=True, blank=True)
     object = models.ForeignKey(client_object, null=True, blank=True)
     sentry_user = models.ForeignKey(sentry_user, null=True, blank=True)
     workflow_type = models.ForeignKey(dir_client_workflow_type)
     workflow_date = models.DateTimeField(default=timezone.now)
     cost = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     comment = models.TextField(blank=True)
+    done = models.BooleanField(default=True) # Если workflow_date = дата из будущего
     is_active = models.SmallIntegerField(default=1)
     class Meta:
         db_table = 'client_workflow'
         ordering = ['-workflow_date']
+        default_permissions = ()
 
 class client_object_salary(models.Model):
     object = models.ForeignKey(client_object)
@@ -979,10 +1228,10 @@ class client_object_salary(models.Model):
     class Meta:
         db_table = 'client_object_salary'
         ordering = ['-begin_date']
-        default_permissions = ('view', 'add', 'change', 'delete')
+        default_permissions = ()
 
 class client_object_timetable(models.Model):
-    object = models.ForeignKey(client_object)
+    bind = models.ForeignKey(client_bind)
     weekday = models.ForeignKey(dir_weekday)
     shift = models.SmallIntegerField()
     timetable_type = models.CharField(max_length=128, default='суточная')
@@ -992,7 +1241,7 @@ class client_object_timetable(models.Model):
     class Meta:
         db_table = 'client_object_timetable'
         ordering = ['shift']
-        default_permissions = ('view', 'add', 'change', 'delete')
+        default_permissions = ()
 
 class client_bind_charge(models.Model):
     bind = models.ForeignKey(client_bind)
@@ -1007,7 +1256,7 @@ class client_bind_charge(models.Model):
     class Meta:
         db_table = 'client_bind_charge'
         ordering = ['begin_date']
-        default_permissions = ('view', 'add', 'change', 'delete')
+        default_permissions = ()
 
 class client_bind_post(models.Model):
     bind = models.ForeignKey(client_bind)
@@ -1029,7 +1278,7 @@ class client_bind_post(models.Model):
     class Meta:
         db_table = 'client_bind_post'
         ordering = ['completed_begin_date']
-        default_permissions = ('view', 'add', 'change', 'delete')
+        default_permissions = ()
 
 class client_object_dir_device(models.Model):
     object = models.ForeignKey(client_object)
@@ -1044,7 +1293,7 @@ class client_object_dir_device(models.Model):
     is_active = models.SmallIntegerField(default=1)
     class Meta:
         db_table = 'client_object_dir_device'
-        default_permissions = ('view', 'add', 'change', 'delete')
+        default_permissions = ()
 
     def check_priority(self):
         # Если ОУ не подключена, но назначается priority == 'primary', иначе по умолчанию 'secondary'
@@ -1059,6 +1308,7 @@ class client_object_dir_device(models.Model):
                 device_install_set[0].save()
         return 'done'
 
+
 class client_object_incident(models.Model):
     object = models.ForeignKey(client_object)
     incident_type = models.ForeignKey(dir_incident_type)
@@ -1070,7 +1320,7 @@ class client_object_incident(models.Model):
     class Meta:
         db_table = 'client_object_incident'
         ordering = ['-incident_date']
-        default_permissions = ('view', 'add', 'change', 'delete')
+        default_permissions = ()
 
 class setting_general(models.Model):
     user = models.ForeignKey(sentry_user, null=True, blank=True, related_name='setting_general_user')
@@ -1081,8 +1331,10 @@ class setting_general(models.Model):
     region = models.ForeignKey(dir_address_1_region, null=True, blank=True)
     locality = models.ForeignKey(dir_address_2_locality, null=True, blank=True)
     contract_string = models.CharField(max_length=512)
+    currency = models.CharField(max_length=16, default="руб.")
     class Meta:
         db_table = 'setting_general'
+        default_permissions = ()
 
 class setting_interface(models.Model):
     section = models.CharField(max_length=128)
@@ -1093,12 +1345,15 @@ class setting_interface(models.Model):
     class Meta:
         db_table = 'setting_interface'
         ordering = ['position']
+        default_permissions = ()
 
 class parser_debug(models.Model):
     date = models.DateTimeField(default=timezone.now)
     sentry_id = models.IntegerField(null=True, blank=True)
     security_id = models.IntegerField(null=True, blank=True)
     comment = models.TextField()
+    class Meta:
+        default_permissions = ()
 
 class sentry_log(models.Model):
     #log_type = models.ForeignKey(auth_permission)
@@ -1113,7 +1368,9 @@ class sentry_log(models.Model):
     comment = models.TextField()
     noticed = models.IntegerField(default=0)
     class Meta:
+        ordering = ['log_date']
         db_table = 'sentry_log'
+        default_permissions = ()
 
 class sentry_log_notice(models.Model):
     sentry_log = models.ForeignKey(sentry_log)
@@ -1124,6 +1381,7 @@ class sentry_log_notice(models.Model):
     class Meta:
         db_table = 'sentry_log_notice'
         ordering = ['create_date','alert_date']
+        default_permissions = ()
 
 
 

@@ -100,6 +100,7 @@ function bank_Delete(bank_id) {
     });
 }
 
+
 function bankCancel() {
     var tr = $('.tableInfo tbody tr.hover').attr('class','row');
     $('#pop_bank').hide();

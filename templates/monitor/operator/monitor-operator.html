@@ -4,20 +4,26 @@
 
 
 
-    <link href="{{ STATIC_URL }}monitor/css/monitor.css" type="text/css" rel="stylesheet">
-
     {# bootstrap #}
     <link href="{{ STATIC_URL }}monitor/css/bootstrap.css" type="text/css" rel="stylesheet">
     <script type="text/javascript" src="{{ STATIC_URL }}monitor/js/bootstrap.js"></script>
 
-    <link href="{{ STATIC_URL }}monitor/css/monitorplus.css" type="text/css" rel="stylesheet">
 
     <script type="text/javascript" src="{{ STATIC_URL }}monitor/js/operator/monitor.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}monitor/js/operator/maps.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}monitor/js/operator/switch.js"></script>
+    <script type="text/javascript" src="{{ STATIC_URL }}monitor/js/operator/clock.js"></script>
 
+
+    <link href="{{ STATIC_URL }}monitor/css/archive/jquery-ui.theme.css" type="text/css" rel="stylesheet">
+    <script type="text/javascript" src="{{ STATIC_URL }}monitor/js/jquery-ui.js"></script>
+
+    <script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU" type="text/javascript"></script>
+
+    <link href="{{ STATIC_URL }}monitor/css/monitor.css" type="text/css" rel="stylesheet">
 
 
 <div class="container col-md-12" border="ok">
-
 
 
     {# Список объектов #}
@@ -28,39 +34,94 @@
             {# Строка меню #}
             <div class="row" style="padding-left:20px; padding-bottom:5px;">
                 <ul class="nav nav-pills" group="1">
-                  <li role="presentation" class="active"><a href="#">Все</a></li>
-                  <li role="presentation"><a href="#">Охраняемые</a></li>
-                  <li role="presentation"><a href="#">Не под<br>охраной</a></li>
-                  <li role="presentation"><a href="#">Тревожные</a></li>
-                  <li role="presentation"><a href="#">Нет теста</a></li>
-                  <li role="presentation"><a href="#">Обслуживание</a></li>
+                  <li role="presentation" class="active small text-center"><a href="#">Все</a></li>
+                  <li role="presentation" class="small text-center"><a href="#">Охраняемые</a></li>
+                  <li role="presentation" class="small text-center"><a href="#">Не под<br>охраной</a></li>
+                  <li role="presentation" class="small text-center"><a href="#">Тревожные</a></li>
+                  <li role="presentation" class="small text-center"><a href="#">Нет теста</a></li>
+                  <li role="presentation" class="small text-center"><a href="#">Обслуживание</a></li>
                 </ul>
             </div>
 
 
-            {# Заголовок таблицы #}
-            <div class="row" style="background-color:rgb(24,85,116);color:rgb(255,255,255);padding-bottom:5px;margin-right:10px;margin-left:0px;">
-                <div class="col-md-4 text-center">Населенный пункт</div>
-                <div class="col-md-4 text-center">Адрес</div>
-                <div class="col-md-4 text-center">Объект</div>
+            <div class="row">
+                <div class="col-md-2 text-right">
+                    <label><small>Вид охраны</small></label>
+
+                </div>
+                <div class="col-md-2" style="margin-bottom:5px;">
+                    <select id="service-type" class="form-control input-sm">
+                        <option value="0" selected>Все</option>
+                        {% for item in service_type %}
+                            <option value="{{ item.id }}">{{ item.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2 text-right">
+                    <label><small>Тип пульта</small></label>
+                </div>
+                <div class="col-md-2" style="margin-bottom:5px;">
+                    <select id="device" class="form-control input-sm">
+                        <option value="0" selected>Все</option>
+                        {% for item in device %}
+                            <option value="{{ item.id }}">{{ item.name }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-2 text-right" style="padding-bottom:0px;">
+                    <label><small>Номер на пульте</small></label>
+
+                </div>
+                <div>
+                    <small>
+                        <input type="text" style="height:28px;padding-left:2px;" id="np" class="col-md-1" placeholder="">
+                        <button id="clearconsolenumber" type="button" class="btn btn-default btn-xs"><span class="glyphicon glyphicon-remove" aria-hidden="true"></span></button>
+                    </small>
+                </div>
             </div>
 
-            <div  style="height:320px; overflow:scroll;">
-                <table group="1" class="table table-bordered table-condensed" >
+            {# Заголовок таблицы #}
 
-                    <tbody group="1">
-                        {% for row in data %}
-                            <tr client_bind={{ row.id }} status={{ row.status }} alarm="no" test="no" marked="no" service="no">
-                                <td>{{ row.client_object.address_building.street.locality.name }}</td>
-                                <td>{{ row.client_object.address_building.street.name }} {{ row.client_object.address_building.name }}</td>
-                                <td>{{ row.client_object.name }}</td>
+            <div class="row" style="background-color:rgb(24,85,116);color:rgb(255,255,255);padding-bottom:5px;margin-right:10px;margin-left:0px;">
+
+                <table width="100%">
+
+                        <thead>
+                            <tr>
+                                <th width="10%">#</th>
+                                <th width="10%">Пульт</th>
+                                <th width="30%">Объект</th>
+                                <th width="40%">Адрес</th>
+                                <th width="10%">Город</th>
                             </tr>
-                        {% endfor %}
-                    </tbody>
-
+                        </thead>
 
                 </table>
+
             </div>
+
+
+
+                 <div  style="height:300px; overflow:scroll;">
+
+                    <table group="1" class="table table-bordered table-condensed" >
+
+                        <tbody group="1">
+                            {% for row in data %}
+                                <tr client_bind={{ row.id }} status={{ row.watch }} console_number="{{ row.console_number }}" alarm="no" test="yes" marked="no" service="no" device="{{ row.console.id }}" service_id="{{ row.client_contract.service_type.id }}">
+                                    <td width="10%">{{ row.console_number }}</td>
+                                    <td width="10%">{{ row.console }}</td>
+                                    <td width="30%">{{ row.client_object.name }}</td>
+                                    <td width="40%">{{ row.client_object.address_building.street.name }} {{ row.client_object.address_building.name }} {{ row.client_object.address_placement_type.name }}{{ row.client_object.address_placement }}</td>
+                                    <td width="10%"><a id="tooltip" title="{{ row.client_object.address_building.street.locality.name }}">{{ row.client_object.address_building.street.locality.name|truncatechars:6 }}</a></td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+
+                    </table>
+
+                </div>
+
 
 
 
@@ -90,25 +151,30 @@
     {# Строка меню #}
     <div class="row" style="padding-top:5px; padding-left:5px;">
         <ul class="nav nav-pills" group="2">
-          <li role="presentation" class="active"><a href="#">Все</a></li>
-          <li role="presentation"><a href="#">Тревоги</a></li>
-          <li role="presentation"><a href="#">На объекте</a></li>
+          <li role="presentation" class="active small"><a href="#">Все</a></li>
+          <li role="presentation" class="small"><a href="#">Тревоги</a></li>
+          <li role="presentation" class="small"><a href="#">На объекте</a></li>
         </ul>
     </div>
 
     {# Заголовок таблицы #}
     <div class="row" style="background-color:rgb(24,85,116);color:rgb(255,255,255);margin-top:5px;padding-bottom:5px;">
-        <div class="col-md-1 text-center">Дата</div>
-        <div class="col-md-1 text-center">Время</div>
-        <div class="col-md-1 text-center">Номер на пульте</div>
-        <div class="col-md-5 text-center">Событие</div>
-        <div class="col-md-2 text-center">Раздел</div>
-        <div class="col-md-2 text-center">Шлейф</div>
+        <table>
+            <thead>
+                <th width="10%">Дата</th>
+                <th width="5%">Время</th>
+                <th width="5%">НП</th>
+                <th width="15%">Объект</th>
+                <th width="20%">Адрес</th>
+                <th width="50%">Событие</th>
+                <th width="10%">Шлейф</th>
+            </thead>
+        </table>
     </div>
 
 
 
-    <div class="row" style="padding-top:5px;">
+    <div class="row" style="padding-top:0px;">
 
             <div  style="height:330px; overflow:scroll;">
                 <table group="2" class="table table-bordered table-condensed" >
@@ -116,11 +182,12 @@
                         {% for row in data_log %}
                             <tr row_id="{{ row.id }}" alert_level="{{ row.data.alert_level }}" client_bind_id="{{ row.data.client_bind_id }}">
                                 <td width="10%">{{ row.data.date_text }}</td>
-                                <td width="10%">{{ row.data.time_text }}</td>
-                                <td width="10%">{{ row.data.device_number }}</td>
-                                <td width="40%">{{ row.data.message_text }}</td>
-                                <td width="15%">{{ row.data.zone_text }}</td>
-                                <td width="15%">{{ row.data.stub_text }}</td>
+                                <td width="5%">{{ row.data.time_text }}</td>
+                                <td width="5%">{{ row.data.device_number }}</td>
+                                <td width="15%">{{ row.data.object }}</td>
+                                <td width="20%">{{ row.data.address }}</td>
+                                <td width="50%">{{ row.data.message_text }}</td>
+                                <td width="10%">{{ row.data.stub }}</td>
                             </tr>
                         {% endfor %}
                     </tbody>
@@ -133,6 +200,7 @@
 </div>
 
 
+{% include "monitor/operator/dialogs.html" %}
 
 
 

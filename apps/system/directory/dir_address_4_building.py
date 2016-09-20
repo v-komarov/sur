@@ -22,11 +22,12 @@ def index(request):
         return render_to_response('403.html', locals(), RequestContext(request) )
 
 def ajax(request,action):
-    data = {'error':None}
+    data = {}
 
-    if action=='search':
+    if action == 'search':
         if request.user.has_perm('system.client'):
             data = dir_address_4_building_ajax.search(request,data)
-        else: data['error'] = 'Доступ запрещен'
+        else:
+            data['errors'] = {'access': 'Доступ запрещен'}
 
     return HttpResponse(json.dumps(data, ensure_ascii=False), content_type='application/json')

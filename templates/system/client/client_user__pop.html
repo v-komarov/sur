@@ -4,9 +4,14 @@
 
     <form id="client_user_form">
         <table class="tableInfo wide margin_null">
-            <tr class="row"><td class="cell middle">Ф.И.О.</td>
+
+            <tr class="row"><td class="padding_9 text_right">Номер ключа<br />(код пользователя на пульте)</td>
+                <td class="cell secondary"><input style="width:45px; margin-top:8px" name="object_key" type="text"></td></tr>
+
+            <tr class="row"><td class="padding_9 text_right">Ф.И.О.</td>
                 <td class="cell secondary">{{ form.full_name }}</td></tr>
-            <tr class="row"><td class="cell middle">Должность</td>
+
+            <tr class="row"><td class="padding_9 text_right">Должность</td>
                 <td class="cell secondary">
                     <select name="post">
                         <option></option>
@@ -28,6 +33,27 @@
             <tr class="row">
                 <td class="padding_9 text_right">Комментарий</td>
                 <td class="padding_5550">{{ form.comment }}</td></tr>
+
+
+            <tr>
+                <td class="padding_9 text_right">Адрес</td>
+                <td class="secondary">
+                    <select style="width:190px; margin-top:3px" name="address_region">
+                        {% for region in dir_address_1_region_set %}
+                            <option value="{{ region.id }}">{{ region.name }}</option>
+                        {% endfor %}
+                    </select>
+                    <select style="width:184px; margin-top: 3px" name="address_locality"></select></td></tr>
+            <tr>
+                <td class="padding_5 text_right">Улица</td>
+                <td class="text_left">
+                    <input style="width:178px" name="address_street" class="address_input" type="text">
+                    <div class="address_txt" style="width:34px; margin: 6px 8px 0 0;">Дом</div><input name="address_building" class="address_input" type="text"></td></tr>
+            <tr>
+                <td class="padding_5 text_right">Квартира</td>
+                <td class="text_left"><input style="width:40px" name="address_placement" class="address_input" type="text" />
+                </td></tr>
+
 
             <tr class="row"><td colspan="2">
 
@@ -63,13 +89,15 @@
 
                 <div>
                     <button class="btn_ui bg" type="submit" icon="save"><div class="txt">Сохранить</div><div class="icon"></div></button>
+                    <!-- span class="btn_ui bg" action="user_unlink" icon="user_minus"><div class="txt">Отключить</div><div class="icon"></div></span-->
                     <!--div class="btn_ui bg" action="reset" icon="reset"><div class="txt">Сбросить</div><div class="icon"></div></div-->
                     {% if perms.system.client_user_delete %}
-                        <span class="btn_ui bg" action="remove" icon="delete"><div class="txt">Удалить</div><div class="icon"></div></span>
+                        <span class="btn_ui bg left" action="remove" icon="delete"><div class="txt">Удалить</div><div class="icon"></div></span>
                     {% endif %}
                 </div>
 
             </td></tr>
+
             </tbody>
         </table>
     </form>

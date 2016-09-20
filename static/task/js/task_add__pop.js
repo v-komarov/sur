@@ -42,7 +42,12 @@ $(document).ready(function() {
     $('#task_add__pop input[name=device]').autocomplete({
         source: function(request, response) {
             $.ajax({ url:'/system/client/object/device/ajax/search_device/', type:'get', dataType:'json',
-                data:{ name:request.term, install:true, limit:7 },
+                data:{
+                    name: request.term,
+                    install: true,
+                    exclude_object: $('#task_add__pop').attr('object_id'),
+                    limit: 7
+                },
                 success: function(data) {
                     response($.map(data['device_list'], function(item) {
                         return { label:item.name, device_id:item.id, install:item.install }

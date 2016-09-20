@@ -15,6 +15,7 @@ def index(request, client_id=None, contract_id=None):
 
     access = False
     client = db_sentry.client.objects.get(id=client_id)
+    dir_address_1_region_set = db_sentry.dir_address_1_region.objects.all()
 
     if client and not contract_id and request.user.has_perm('system.client'):
         access = True
@@ -59,6 +60,11 @@ def ajax(request, action=None):
             and 'object' in request.POST and request.POST['object'] != '':
         if request.user.has_perm('system.client'):
             data = client_user_ajax.update(request,data)
+        else: data['error'] = 'Доступ запрещен'
+
+    elif action == 'unlink':
+        if request.user.has_perm('system.client'):
+            data = client_user_ajax.unlink(request,data)
         else: data['error'] = 'Доступ запрещен'
 
     elif action == 'delete' \

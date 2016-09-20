@@ -1,35 +1,88 @@
 <div class="row" style="padding-bottom:10px;">
 
 
-    <div class="col-lg-8">
-        <div class="input-group">
-                <span class="input-group-addon">
-                    <input service="ok" type="checkbox" aria-label="">
-                </span>
-            <input service="ok" type="text" class="form-control" placeholder="" aria-label="">
+    <div class="col-lg-12">
+        <div class="input-group input-group-sm">
+                <span class="input-group-addon">Время (ч.м.)</span>
+                <select id="service-time" class="form-control" style="width:70px;">
+                    <option value=0 class="text-center" >-----</option>
+                    <option value=600 class="text-center" >0:10</option>
+                    <option value=1200 class="text-center">0:20</option>
+                    <option value=1800 class="text-center">0:30</option>
+                    <option value=2400 class="text-center">0:40</option>
+                    <option value=3000 class="text-center">0:50</option>
+                    <option value=3600 class="text-center">1:00</option>
+                    <option value=4200 class="text-center">1:10</option>
+                    <option value=4800 class="text-center">1:20</option>
+                    <option value=5400 class="text-center">1:30</option>
+                    <option value=6000 class="text-center">1:40</option>
+                    <option value=6600 class="text-center">1:50</option>
+                    <option value=7200 class="text-center">2:00</option>
+                    <option value=7800 class="text-center">2:10</option>
+                    <option value=8400 class="text-center">2:20</option>
+                    <option value=9000 class="text-center">2:30</option>
+                    <option value=9600 class="text-center">2:40</option>
+                    <option value=10200 class="text-center">2:50</option>
+                    <option value=10800 class="text-center">3:00</option>
+                    <option value=11400 class="text-center">3:10</option>
+                    <option value=12000 class="text-center">3:20</option>
+                    <option value=12600 class="text-center">3:30</option>
+                    <option value=13200 class="text-center">3:40</option>
+                    <option value=13800 class="text-center">3:50</option>
+                </select>
+                <span class="input-group-addon">Техник</span>
+                <select id="service-tech" class="form-control" style="width:300px;">
+                    <option value="0">-----</option>
+                    {% for item in tech_list %}
+                        <option value="{{ item.id }}">{{ item.full_name }}</option>
+                    {% endfor %}
+                </select>
+
         </div>
     </div>
+    <div class="col-lg-8" style="padding-top:5px;">
+        {% comment %}
+        <div class="input-group input-group-sm">
+                <span class="input-group-addon">Вид обслуживания</span>
+                <select id="service" class="form-control" style="width:300px;">
+                </select>
+
+        </div>
+        {% endcomment %}
+        <div class="input-group input-group-sm">
+                <span class="input-group-addon">Вид обслуживания</span>
+                <input id="service-reason" class="form-control" type="text" />
+        </div>
 
 
-    <div class="col-md-3 col-md-offset-1">
-        <button service="ok" type="button" class="btn btn-warning btn-xs btn-block">Установить</button>
+    </div>
+
+    <div class="col-xs-2" style="padding-top:5px;">
+        <button service="ok" type="button" class="btn btn-warning btn-xs btn-block"><small>Установить</small></button>
+    </div>
+    <div class="col-xs-2" style="padding-top:5px;">
+        <button service="end" type="button" class="btn btn-success btn-xs btn-block"><small>Завершить</small></button>
     </div>
 
 </div>
 
 <div class="row" style="background-color:rgb(24,85,116);color:rgb(255,255,255);padding-bottom:5px;">
-    <div class="col-md-1 text-center">Дата</div>
-    <div class="col-md-1 text-center">Время</div>
-    <div class="col-md-3 text-center">Статус</div>
-    <div class="col-md-5 text-center">Коментарий</div>
-
-
+    <table width="100%">
+        <thead>
+            <tr>
+                <th width="20%">Начало</th>
+                <th width="20%">Окончание</th>
+                <th width="25%">Техник</th>
+                <th width="35%">Вид <br>обслуживания</th>
+            </tr>
+        </thead>
+    </table>
 </div>
 
 <div class="row">
 
 
-    <div  style="height:150px; overflow:scroll;">
+    <div  style="height:100px; overflow:scroll;">
         <table group="3" class="table table-bordered table-condensed" >
 
             <tbody group="3">

@@ -14,7 +14,8 @@ class dir_device_form(forms.ModelForm):
             'series',
             'number',
             'belong',
-            'comment'
+            'comment',
+            'code',
         ]
 
 

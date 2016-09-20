@@ -109,7 +109,15 @@ table {
     display: none;
     padding: 5px;
 }
-
+.tableInfo .listing .text {
+    white-space: nowrap;
+    width: 100%;
+    padding: 3px 0;
+    display: block;
+}
+.tableInfo .listing .values {
+    white-space: nowrap;
+}
 .tableInfo .txt {
     padding: 4px 0 0 5px;
 }
@@ -304,7 +312,8 @@ div.pop .add:hover,
 .btn_ui[icon=card] .icon { background-position: -66px -130px }
 .btn_ui[icon=certificate] .icon { background-position: -354px -98px }
 .btn_ui[icon=checkbox] .icon { background-position: -577px -34px }
-.btn_ui[icon=close] .icon { background-position: -609px -2px }
+.btn_ui[icon=close] .icon { background-position: -609px -2px; }
+.btn_ui[icon=link] .icon { background-position: -98px -257px; }
 .btn_ui[icon=done] .icon { background-position: -512px -33px }
 .btn_ui[icon=download] .icon { background-position: -321px -98px }
 .btn_ui[icon=details] .icon { background-position: -1px -130px }
@@ -318,6 +327,7 @@ div.pop .add:hover,
 .btn_ui[icon=email] .icon { background-position: -2px -194px }
 .btn_ui[icon=object_add] .icon { background-position: -225px -98px }
 .btn_ui[icon=user_add] .icon { background-position: -258px -129px }
+.btn_ui[icon=user_minus] .icon { background-position: -289px -129px }
 .btn_ui[icon=user_shift] .icon { background-position: -129px -132px }
 .btn_ui[icon=filter] .icon { background-position: -354px -194px }
 .btn_ui[icon=time] .icon { background-position: -66px -65px }
@@ -326,16 +336,16 @@ div.pop .add:hover,
 .btn_ui[icon=folder] .icon { background-position: -1px -129px }
 .btn_ui[icon=folder2] .icon { background-position: -34px -129px }
 .btn_ui[icon=weapon] .icon { background-position: -1px -33px }
-.btn_ui[icon=unpack] .icon { background-position: -2px -290px }
-.btn_ui[icon=pack] .icon { background-position: -34px -290px }
+.btn_ui[icon=pack] .icon { background-position: -2px -290px }
+.btn_ui[icon=unpack] .icon { background-position: -34px -290px }
 .btn_ui[icon=shield] .icon { background-position: -545px -65px }
 .btn_ui[icon=rescue] .icon { background-position: -545px -258px }
 .btn_ui[icon=primary] .icon { background-position: -354px -162px }
 .btn_ui[icon=secondary] .icon { background-position: -291px -162px }
 .btn_ui[icon=arrow_left] .icon { background-position: -515px -1px }
 .btn_ui[icon=arrow_right] .icon { background-position: -547px -1px }
-.btn_ui[icon=arrow_up] .icon { background-position: -577px -2px }
-.btn_ui[icon=arrow_down] .icon { background-position: -482px -1px }
+.btn_ui[icon=arrow_down] .icon { background-position: -577px -2px }
+.btn_ui[icon=arrow_up] .icon { background-position: -482px -1px }
 
 
 .btn_ui[type=submit]:focus:not(.disabled),
@@ -466,13 +476,15 @@ div.switchInside .btn_ui {
 }
 .tableInfo .result .add {
     cursor: pointer;
-    color: #c0d7e0;
+    color: #3379A5;
+    background-color: #e1ebf7;
     float: right;
     padding: 5px 10px;
 }
 .tableInfo .result .add:hover {
     color: #FF0000;
-    background-color: #e1ebf7;
+    color: #fff;
+    background-color: #75a7dd;
 }
 .tableInfo input#id_founding_date {
     width: 80px; margin: 5px 0; float: left;
@@ -996,8 +1008,12 @@ table.compact tr.title td.cell {
     float: left;
     width: 100%;
 }
+
 .margin_5 {
     margin: 5px 0;
+}
+.margin-5-5-0 {
+    margin: 5px 5px 0;
 }
 
 .padding {
@@ -1038,6 +1054,9 @@ table.compact tr.title td.cell {
 }
 .padding_36 {
     padding: 11px 10px 10px;
+}
+.padding_0015 {
+    padding: 0 0 15px;
 }
 
 

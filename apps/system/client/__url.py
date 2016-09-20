@@ -31,6 +31,7 @@ urlpatterns = [
     # Client info
     url(r'^add/$', client.add),
     url(r'^(?P<client_id>\d{1,11})/$', client.index),
+    url(r'^ajax/(?P<action>\w{1,32})/$', client.ajax),
     url(r'^info/ajax/(?P<action>\w{1,32})/$', client.ajax),
     # Requisite
     url(r'^(?P<client_id>\d{1,11})/requisite/$', client_requisite.index),
@@ -74,8 +75,8 @@ urlpatterns = [
     url(r'^(?P<client_id>\d{1,11})/object/(?P<object_id>\d{1,11})/salary/$', object_salary.index),
     url(r'^object/salary/ajax/(?P<action>\w{1,32})/$', object_salary.ajax),
     # Object timetable
-    url(r'^(?P<client_id>\d{1,11})/object/(?P<object_id>\d{1,11})/timetable/$', object_timetable.index),
-    url(r'^object/timetable/ajax/(?P<action>\w{1,32})/$', object_timetable.ajax),
+    url(r'^(?P<client_id>\d{1,11})/contract/(?P<contract_id>\d{1,11})/timetable/$', object_timetable.index),
+    url(r'^timetable/ajax/(?P<action>\w{1,32})/$', object_timetable.ajax),
     # Object weapons
     url(r'^(?P<client_id>\d{1,11})/object/(?P<object_id>\d{1,11})/weapon/$', object_weapon.index),
     url(r'^object/weapon/ajax/(?P<action>\w{1,32})/$', object_weapon.ajax),

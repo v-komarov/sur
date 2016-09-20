@@ -25,14 +25,14 @@ def index(request, client_id=None):
 def ajax(request,action=None):
     data = {'error':None}
 
-    if action=='get':
+    if action == 'get':
         if request.user.has_perm('system.client'):
-            data = general_ajax.get(request,data)
+            data = general_ajax.get(request, data)
         else: data['error'] = 'Доступ запрещен'
 
-    elif action=='update':
+    elif action == 'update':
         if request.user.has_perm('system.client'):
-            data = general_ajax.update(request,data)
+            data = general_ajax.update(request, data)
         else: data['error'] = 'Доступ запрещен'
 
     return HttpResponse(json.dumps(data, ensure_ascii=False), content_type='application/json')

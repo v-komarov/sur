@@ -52,19 +52,31 @@ def get(request, data):
 
 
 def each_client_user(client_user):
-    profile = {}
+    profile = {'data': client_user.data}
+    profile['get_address'] = client_user.get_address()
     profile['general'] = {
         'client_user': client_user.id,
         'full_name': client_user.full_name,
         'priority': client_user.priority,
         'passport': client_user.passport,
         'address': client_user.address,
-        'comment': client_user.comment,
-        }
+        'comment': client_user.comment
+    }
     if client_user.birthday:
         profile['general']['birthday'] = client_user.birthday.strftime("%d.%m.%Y")
     if client_user.post:
         profile['general']['post'] = client_user.post.id
+
+    if client_user.address_building_id:
+        profile['address'] = {
+            'region': client_user.address_building.street.locality.region.id,
+            'locality': client_user.address_building.street.locality.id,
+            'street': client_user.address_building.street.id,
+            'street__name': client_user.address_building.street.name,
+            'placement': client_user.address_placement,
+        }
+        profile['address']['building'] = client_user.address_building.id
+        profile['address']['building__name'] = client_user.address_building.name
 
     profile['phone_list'] = []
     for phone in client_user.client_user_phone.all():
@@ -90,6 +102,8 @@ def update(request, data):
         client_user = db_sentry.client_user.objects.get(id=request.POST['client_user'])
     except:
         client_user = db_sentry.client_user.objects.create(full_name=request.POST['full_name'])
+
+    object = None
     client_form = client__form.client_user(request.POST, instance=client_user)
 
     if client_form.is_valid():
@@ -102,7 +116,6 @@ def update(request, data):
             client = db_sentry.client.objects.get(id=int(request.POST['client']))
             client.client_user.add(client_user.id)
             client.save()
-
 
         client_user.client_user_phone.clear()
         for phone in json.loads(request.POST['phone_list']):
@@ -117,12 +130,46 @@ def update(request, data):
             email_set, created = db_sentry.client_user_email.objects.get_or_create(email=email['email'])
             client_user.client_user_email.add(email_set.id)
 
+        try:
+            object_key = int(request.POST['object_key'])
+        except:
+            object_key = ''
+        if object:
+            if 'object_key' in client_user.data:
+                client_user.data['object_key'][str(object.id)] = object_key
+            else:
+                client_user.data['object_key'] = {str(object.id): object_key}
+
+
+        if request.POST['address_building'] != '' and not 'address_building__text' in request.POST:
+            address_building, created = db_sentry.dir_address_4_building.objects.get_or_create(
+                street_id = int(request.POST['address_street']),
+                name = request.POST['address_building']
+            )
+            address_building_id = address_building.id
+        else:
+            try:
+                address_building_id = int(request.POST['address_building'])
+            except:
+                address_building_id = None
+        client_user.address_building_id = address_building_id
+
+
         client_user.save()
     else:
         data['errors'] = form.errors
 
     return data
 
+
+def unlink(request,data):
+    try:
+        object_set = db_sentry.client_object.objects.get(id=int(request.POST['object']))
+    except:
+        object_set = db_sentry.client.objects.get(id=int(request.POST['client']))
+    object_set.client_user.remove(int(request.POST['client_user']))
+
+    return data
 
 
 def delete(request,data):

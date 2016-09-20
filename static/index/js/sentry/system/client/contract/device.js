@@ -1,6 +1,10 @@
 $(document).ready(function() {
     $('#device_install_list').on('click', 'tr.row', function() {
-        device_install_Edit( $(this).attr('device_install_id') );
+        device_install_Edit(
+            $(this).parents('[bind_id]').attr('bind_id'),
+            $(this).parents('[object_id]').attr('object_id'),
+            $(this).attr('device_install_id')
+        );
     });
     $('#device_install_pop tbody').on('click', 'div.device_link', function() {
         device_Edit();
@@ -19,7 +23,12 @@ $(document).ready(function() {
     $('#device_install_pop [name=device]').autocomplete({
         source: function(request, response) {
             $.ajax({ url:'/system/client/object/device/ajax/search_device/', type:'get', dataType:'json',
-                data:{ name:request.term, install:true, limit:7 },
+                data:{
+                    name: request.term,
+                    install: true,
+                    exclude_object: $('#device_install_pop').attr('object_id'),
+                    limit: 7
+                },
                 success: function(data) {
                     response($.map(data['device_list'], function(item) {
                         return { label:item.name, device_id:item.id, install:item.install }
@@ -107,13 +116,19 @@ function device_install_Draw(object_id,device_install_list){
     }
     var table_list = $('[object_id='+object_id+'] div.device_list table');
     for(var install_key in device_install_list){
+        var td_bg_ = td_bg;
         var install = device_install_list[install_key];
         var priority = install['priority'];
+        var uninstall = '';
+        if(install['uninstall_date']) {
+            uninstall = ' Снято: '+install['uninstall_date']+' / '+install['uninstall_user__full_name'];
+            td_bg_ = '123';
+        }
         var tr = '<tr class="row" action="device_install" device_install_id="'+install['id']+'" sentry_user_id="'+install['install_user']+'">' +
             '<td class="padding">'+install['device__device_type__name']+'</td>' +
             '<td class="padding">'+install['device__name']+'</td>' +
-            '<td class="padding">'+install['install_date']+' / '+install['install_user__full_name']+'</td>' +
-            '<td '+td_bg+'><div class="btn_ui btn_28 disabled" action="device_install_priority" icon="'+priority+'"><div class="icon"></div></div></td>' +
+            '<td class="padding">'+install['install_date']+' / '+install['install_user__full_name']+uninstall+'</td>' +
+            '<td '+td_bg_+'><div class="btn_ui btn_28 disabled" action="device_install_priority" icon="'+priority+'"><div class="icon"></div></div></td>' +
             '</tr>';
         table_list.find('thead').show();
         table_list.find('tbody').append(tr);
@@ -121,10 +136,11 @@ function device_install_Draw(object_id,device_install_list){
 }
 
 
-function device_install_Edit(object_id,device_install_id){
+function device_install_Edit(bind_id, object_id, device_install_id){
     //console.log(object_id,device_install_id);
     device_install_Reset();
-    $('#device_install_pop').attr('object_id',object_id);
+    $('#device_install_pop').attr('bind_id', bind_id);
+    $('#device_install_pop').attr('object_id', object_id);
     $('#device_install_pop .device_link').hide();
     $('#device_install_pop [action=device_install_delete]').hide();
     if(!device_install_id){
@@ -134,7 +150,7 @@ function device_install_Edit(object_id,device_install_id){
         $('#device_install_pop .device_link').show();
         $('#device_install_pop').attr('device_install_id',device_install_id);
         $('#device_install_pop [name=device]').attr('disabled','disabled');
-        $.ajax({ url:'/system/client/object/device/ajax/get_install/?device_install_id='+device_install_id,
+        $.ajax({ url:'/system/client/object/device/ajax/get_install/?device_install_id='+device_install_id+'&bind_id='+bind_id,
             type:'get', dataType:'json', traditional:true,
             success: function(data){
                 $('#device_install_pop [action=device_install_delete]').show();
@@ -149,6 +165,7 @@ function device_install_Edit(object_id,device_install_id){
                 $('#device_install_pop [name=uninstall_date]').val( data['uninstall_date'] );
                 $('#device_install_pop [name=uninstall_user]').val(data['uninstall_user_id'] );
                 $('#device_install_pop [name=comment]').val( data['comment'] );
+                eachWire('set',data['data']);
             }
         });
     }
@@ -159,11 +176,12 @@ function device_install_Edit(object_id,device_install_id){
 function device_install_Update(){
     console.log('device install Update');
     var device_array = get_each_value('#device_install_pop');
+    device_array['bind'] = $('#device_install_pop').attr('bind_id');
     device_array['object'] = $('#device_install_pop').attr('object_id');
     device_array['device_install'] = $('#device_install_pop').attr('device_install_id');
     var device_id = $('#device_install_pop input[name=device]').attr('device_id');
     if(device_id) device_array['device'] = device_id;
-
+    device_array['data'] = eachWire('get');
     $.ajax({ url:'/system/client/object/device/ajax/install_update/',
         type:'post', dataType:'json', traditional:true, data:device_array,
         success: function(data){
@@ -175,6 +193,39 @@ function device_install_Update(){
             }
         }
     });
+}
+
+
+function eachWire(action, data){
+    if(action=='get') {
+        var data_array = {};
+        $("#wires tbody tr").each(function() {
+            var check = false;
+            if($(this).find('.switch').attr('checked')) check = true;
+            data_array[$(this).attr('name')] = {
+                'description': $(this).find('[name=description]').val(),
+                'zone': $(this).find('[name=zone]').val(),
+                'time24': check
+            };
+        });
+        return JSON.stringify(data_array);
+    }
+    else if(action=='set') {
+        console.log(data);
+        $('#wires tbody input').val('');
+        $('#wires tbody td.switch').attr('checked','checked');
+        var wires = jQuery.parseJSON(data);
+        for(key in wires){
+            console.log(key);
+            var wire = wires[key];
+            console.log(wire);
+            console.log(wire['description']);
+            var tr = $('#wires tbody tr[name='+key+']');
+            tr.find('[name=description]').val(wire['description']);
+            tr.find('[name=zone]').val(wire['zone']);
+            if(wire['time24']==false) tr.find('td.switch').removeAttr('checked');
+        }
+    }
 }
 
 

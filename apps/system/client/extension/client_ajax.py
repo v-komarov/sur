@@ -5,6 +5,17 @@ from apps.system.client.extension import client__form
 from apps.toolset import date_convert
 
 
+def search(request,data):
+    client_set = db_sentry.client.objects.all().values('id', 'name')
+    if 'id' in request.GET:
+        client_set = client_set.filter(id=request.GET['id'])
+    else:
+        if 'name' in request.GET and request.GET['name']!='':
+            client_set = client_set.filter(name__icontains=request.GET['name'])
+    data['client_list'] = [item for item in client_set]
+    return data
+
+
 def update(request, data):
     data['error'] = {}
     new = False
@@ -37,7 +48,7 @@ def update(request, data):
             if not 'address_actual_building__text' in request.POST:
                 client_address_actual_building, created = db_sentry.dir_address_4_building.objects.get_or_create(
                     street_id = int(request.POST['address_actual_street']),
-                    name = request.POST['address_postal_building']
+                    name = request.POST['address_actual_building']
                 )
                 address_actual_building_id = client_address_actual_building.id
             else:
@@ -49,7 +60,7 @@ def update(request, data):
             if not 'address_legal_building__text' in request.POST:
                 client_address_legal_building, created = db_sentry.dir_address_4_building.objects.get_or_create(
                     street_id = int(request.POST['address_legal_street']),
-                    name = request.POST['address_postal_building']
+                    name = request.POST['address_legal_building']
                 )
                 address_legal_building_id = client_address_legal_building.id
             else:
@@ -156,7 +167,7 @@ def update(request, data):
     return data
 
 
-def delete(request,data):
+def delete(request, data):
     client_set = db_sentry.client.objects.get(id=request.GET['client_id'])
     client_set.is_active = 0
     client_set.save()

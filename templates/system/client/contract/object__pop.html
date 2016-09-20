@@ -8,7 +8,8 @@
                     <select style="width:100px;" name="console"><option />
                         {% for item in dir_device_console_set %}<option value="{{ item.id }}">{{ item.name }}</option>{% endfor %}
                     </select>
-                    <select style="float:right; width:90px;" name="console_number"></select>
+                    <input style="float:right; width:80px;" name="console_number" type="text">
+                    <!--select style="float:right; width:90px;" name="console_number"></select-->
                     <div class="address_txt" style="width:130px; margin:4px 6px 0 0; float:right;"><div class="required">*</div>Номер на пульте</div>
                 </td></tr>
             <tr class="row2"><td class="padding_9 nowrap right"><div class="required">*</div>Название объекта</td>
@@ -41,16 +42,26 @@
                         {% endfor %}
                     </select>
                 </td></tr>
+
             <tr class="row2" name="cost_string">
                 <td class="padding_9 right">Стоимость услуги</td>
                 <td>
                     <input name="cost_value" class="input_cost" type="text" aria-invalid="false">
-                    <select name="cost_type" class="select_cost_type"><option></option>
+                    <span style="float: left; margin: 10px 5px 0 0;">{{ request.session.currency }} /</span>
+                    <select name="cost_type" class="select_cost_type" style="width: 100px"><option></option>
                         {% for item in dir_cost_type_set %}
                             <option value="{{ item.id }}" cost_type_label="{{ item.label }}">{{ item.name }}</option>
                         {% endfor %}
                     </select>
                     <div class="btn_ui bg" action="cost_add" icon="edit" title="Изменить стоимость"><div class="icon"></div><div class="txt">Изменить</div></div>
+                </td>
+            </tr>
+
+            <tr class="row2" name="cost_string">
+                <td class="padding_9 right">Стоимость подключения</td>
+                <td>
+                    <input name="connect_cost" class="input_cost" type="text" aria-invalid="false">
+                    <span style="float: left; margin: 10px 5px 0 0;">{{ request.session.currency }}</span>
                 </td>
             </tr>
 
@@ -64,6 +75,7 @@
                     </select>
                     <!--input name="referer_user" class="wide" type="text"-->
                 </td></tr>
+
             <tr>
                 <td class="padding_9 text_right">Адрес</td>
                 <td class="secondary">
@@ -99,6 +111,9 @@
 
             <tr class="row2"><td class="padding_9 right">Мат. ответственность</td>
                 <td class="switch" name="financial_responsibility" checked="checked"><div class="chechbox"></div><div class="txt"></div></td></tr>
+
+            <tr class="row2"><td class="padding_9 right">Контроль режима охраны</td>
+                <td class="switch" name="time24" checked="checked"><div class="chechbox"></div><div class="txt"></div></td></tr>
 
             <tr class="row2"><td class="padding_9 right">Вид деятельности</td>
                 <td class="secondary"><input name="occupation" class="wide" type="text" /></td></tr>

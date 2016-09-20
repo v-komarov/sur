@@ -1,6 +1,10 @@
 $(document).ready(function() {
     client_id =  $('.middleBlock').attr('client_id');
-    charge_list = '';
+    console.log( lunchbox['setting']['currency'] );
+
+    contract_id = $('.middleBlock').attr('contract_id');
+    if(contract_id) $('#charge_list select#object_select').val(contract_id);
+    charge_list = {};
     $('.select_year a.next').hide();
     $('#charge_list select#object_select').clone().appendTo('#charge_pop tr[name=object] td');
     $('#charge_pop tr[name=object] select#object_select option:eq(0)').remove();
@@ -61,7 +65,7 @@ $(document).ready(function() {
         charge_Refresh();
     });
 
-    $('#charge_list select#object_select').change(function(){
+    $('#charge_list select#object_select').change(function() {
         charge_Refresh()
     });
 
@@ -81,6 +85,7 @@ $(document).ready(function() {
         var month_number = $(this).parents('tr').attr('month');
         charge_Edit(action, charge_id, month_number);
     });
+
     $(document).on('click', '#charge_list .result .add', function(){
         var month_number = $(this).parents('tr').attr('month');
         charge_Edit($(this).attr('action'), 'add', month_number);
@@ -116,6 +121,7 @@ function charge_Recharge() {
         },
         error: function(){
             loading('end');
+            popMessage('system error','red');
         }
     });
 }
@@ -132,7 +138,7 @@ function charge_Update(action) {
     if(action=='update'){
         console.log( $('#charge_pop select#object_select option:selected').attr('level') );
         if($('#charge_pop select#object_select option:selected').attr('level')!='bind'){
-            alert('Выберите услугу');
+            alert('Выберите объект');
             error = 'true';
         } else {
             ajax_array['bind_id'] = $('#charge_pop select#object_select').val();
@@ -149,10 +155,14 @@ function charge_Update(action) {
         loading('begin');
         $.ajax({ url:'/system/client/charge/ajax/'+action+'/', type:'post', dataType:'json', data:ajax_array,
             success: function(data) {
-                if(data['answer']=='done'){
-                    charge_Refresh();
+                if(data['error']){
+                    loading('end');
+                    popMessage(data['error'], 'red');
+                }
+                else {
                     loading('end');
                     popMessage('Сохранено','green');
+                    charge_Refresh();
                 }
             }
         });
@@ -161,8 +171,29 @@ function charge_Update(action) {
 
 
 function charge_Edit(action, charge_id, month) {
-    var charge = charge_list[month]['list'][charge_id];
-    console.log(charge);
+    var list_select = $('#charge_list select#object_select');
+    var pop_select = $('#charge_pop select#object_select');
+    //pop_select.val(list_select.val()).attr("disabled","disabled");
+    if(charge_id!='add' && charge_list[month]['list'][charge_id]) {
+        pop_select.val(charge_list[month]['list'][charge_id]['bind_id']);
+        var charge = charge_list[month]['list'][charge_id];
+    }
+    else if(list_select.find(':selected').attr('level')=='bind') {
+        console.log('bind');
+        pop_select.val(list_select.val());
+    }
+    else if(contract_id) {
+        console.log('contract');
+        var bind_first = list_select.find('[contract_id='+contract_id+'][level=bind]').attr('value');
+        console.log(bind_first);
+        pop_select.val(bind_first);
+    }
+    else {
+        var bind_first = list_select.find('[level=bind]:eq(0)').attr('value');
+        console.log(bind_first);
+        pop_select.val(bind_first);
+    }
+
     $('#charge_pop .datepicker').datepicker("destroy");
     $('.datepicker').datepicker({
         showOn: "both",
@@ -182,20 +213,9 @@ function charge_Edit(action, charge_id, month) {
     var month_name = $('#charge_list .month[month='+month+'] td:eq(0)').text();
     if(month=='0') { month = '01' }
     else if(month<10){ month = '0'+month }
-    if(charge_id=='add'){
-        var service = $('.selectService select#object_select option:selected');
+
+    if(charge_id=='add') {
         $('#charge_pop .datepicker').datepicker( "option", "disabled", false );
-
-        if( service.attr('level')=='service' ){
-            var service_id = service.val();
-            $('#charge_pop select#object_select option[value='+service_id+'] ').attr("selected", "selected");
-            $('#charge_pop select#object_select').attr("disabled","disabled");
-        }
-        else {
-            $('#charge_pop select.selectObject option[value=all]').attr("selected", "selected");
-            $('#charge_pop select.selectObject').removeAttr('disabled');
-        }
-
         var year = $('select.year').val();
         $('#charge_pop input[name=begin_date]').val('01.'+month+'.'+year);
         $('#charge_pop input[name=value]').val('');
@@ -223,7 +243,7 @@ function charge_Edit(action, charge_id, month) {
             $('#charge_pop span[name=end_date_]').text('Конец периода');
             $('#charge_pop input[name=end_date]').val('01.'+month+'.'+year);
         }
-        else if(action=='pay'){
+        else if(action=='pay') {
             $('#charge_pop .header b').html('Новая оплата за '+month_name);
             $('#charge_pop span[name=begin_date_]').text('За какой период');
             $('#charge_pop span[name=end_date_]').text('Когда оплачено');
@@ -231,7 +251,7 @@ function charge_Edit(action, charge_id, month) {
         }
     }
     else {
-        if(action=='cost'){
+        if(action=='cost') {
             $('#charge_pop .header b').html('Начисление №'+charge_id);
             $('#charge_pop span[name=begin_date_]').text('Начало периода');
             $('#charge_pop span[name=end_date_]').text('Конец периода');
@@ -263,15 +283,14 @@ function charge_Edit(action, charge_id, month) {
             $('#charge_pop input[name=end_date]').removeAttr('disabled');
             $('#charge_pop .datepicker').datepicker( "option", "disabled", false );
         }
-        $('#charge_pop select#object_select option[value='+charge['bind_id']+'] ').attr("selected", "selected");
-        $('#charge_pop select#object_select').attr("disabled","disabled");
         $('#charge_pop [name=begin_date]').val(charge['begin_date']);
         $('#charge_pop [name=end_date]').val(charge['end_date']);
         $('#charge_pop [name=value]').val(charge['value'].replace('-',''));
         $('#charge_pop [name=comment]').val(charge['comment']);
     }
-    popMenuPosition('#charge_pop','single');
-    $('#charge_pop').attr('action',action);
+
+    popMenuPosition('#charge_pop', 'single');
+    $('#charge_pop').attr('action', action);
 }
 
 
@@ -301,7 +320,7 @@ function charge_Refresh() {
 }
 
 
-function charge_Draw(data, year){
+function charge_Draw(data, year) {
     charge_list = data['charge'];
     $('table#charge_list div.balance').text('Баланс: '+data['balance']);
     $('table#charge_list tbody tr').remove();
@@ -347,19 +366,44 @@ function charge_Draw(data, year){
                 '<td name="cost">'+ cost_title + cost_bottom + '</td>' +
                 '<td name="pay">'+ pay_title + pay_bottom + '</td></tr>' +
                 '<tr class="row result" month="'+ key +'"><td></td>' +
-                '<td><div class="total">Всего: '+ format_number(charge['cost_total']) +' руб.</div><div class="add" action="cost">Добавить</div></td>' +
-                '<td><div class="total">Всего: '+ format_number(charge['pay_total']) +' руб.</div><div class="add" action="pay">Добавить</div></td></tr>'
+                '<td><div class="total">Всего: '+ format_number(charge['cost_total']) + ' '+lunchbox['setting']['currency']+'</div><div class="add" action="cost">Добавить</div></td>' +
+                '<td><div class="total">Всего: '+ format_number(charge['pay_total']) + ' '+lunchbox['setting']['currency']+'</div><div class="add" action="pay">Добавить</div></td></tr>'
             );
 
             for(var key in charge['list']){
                 var item = charge['list'][key];
                 var item_p = '';
 
-                if(parseInt(item['value'])<0){
+                if(parseInt(item['value']) < 0){
                     var cost_count = 0;
-                    total_cost += parseInt(item['value']);
+                    total_cost += parseFloat(item['value']);
                     cost_count++;
-                    item_p += '<p name="cost" charge_id="'+ item['id'] +'" bind_id="'+ item['bind_id'] +'">Объект: ' + item['object__name'] + ' ';
+
+                    var text = '<span class="text">';
+                    if(item['user']) {
+                        text += ''+item['user__full_name']+' ['+item['log_date']+']';
+                    }
+                    if(item['comment']) {
+                        text += ' '+item['comment'];
+                    }
+                    text += '</span>';
+
+                    var console_number = '';
+                    if(item['console_number']) {
+                        console_number = ' ['+item['console_number']+'] ';
+                    }
+                    var address = '';
+                    if(item['object__address']) {
+                        address = item['object__address']+' > ';
+                    }
+
+                    item_p +=
+                        '<p name="cost" charge_id="'+ item['id'] +'" bind_id="'+ item['bind_id'] +'">' +
+                        '<span class="text">' +
+                        'Объект: ' + item['object__name'] + ' > ' +
+                        address +
+                        'Пульт: ' + item['console__name'] + console_number + '</span>' +
+                        '<span class="values">';
                     if(item['charge_type']=='manual'){
                         var date_range = ' [<span class="interval">';
                         if(item['begin_date']==item['end_date']){
@@ -367,20 +411,30 @@ function charge_Draw(data, year){
                         } else {
                             date_range += item['begin_date'] +' - '+ item['end_date'] +'</span>]';
                         }
-                        item_p += '<b>другое'+date_range+' = '+format_number(item['value'])+' руб.</b></p>';
+                        item_p += '<b>другое'+date_range+' = '+format_number(item['value'])+' '+lunchbox['setting']['currency']+'</b></p>';
                     } else {
                         item_p += '[<span class="interval">'+ item['begin_date'] +' - '+ item['end_date'] +'</span>] = ' +
-                        format_number(item['value']) +' руб.</p>';
+                        format_number(item['value']) +' '+lunchbox['setting']['currency']+'</span></p>';
                     }
                     $('#charge_list tr[month=' + item['month'] + '] td[name=cost] div.listing').append(item_p);
                 }
                 else {
                     var pay_count = 0;
-                    total_pay += parseInt(item['value']);
+                    total_pay += parseFloat(item['value']);
                     pay_count++;
-                    item_p += '<p name="pay" charge_id="'+ item['id'] +'">' +
-                    '<span class="interval">'+ item['end_date'] +'</span> : ' +
-                    format_number(item['value']) +' руб.</p>';
+                    var text = '<span class="text">';
+                    if(item['user']) {
+                        text += ''+item['user__full_name']+' ['+item['log_date']+']';
+                    }
+                    if(item['comment']) {
+                        text += ' '+item['comment'];
+                    }
+                    text += '</span>';
+                    item_p +=
+                        '<p name="pay" charge_id="'+ item['id'] +'">' + text +
+                        '<span class="values">' +
+                        '<span class="interval">'+ item['end_date'] +'</span> : ' +
+                        format_number(item['value']) +' '+lunchbox['setting']['currency']+'</span></p>';
                     $('#charge_list tr[month='+item['month']+'] td[name=pay] div.listing').append(item_p);
                 }
             }
@@ -390,36 +444,29 @@ function charge_Draw(data, year){
 
     var balance = total_pay + total_cost;
     if(balance < 0 ){
-        balance = 'Долг: <b class="red">'+ format_number(balance) +' руб.</b>'
+        balance = 'Долг: <b class="red">'+ format_number(balance) +' '+lunchbox['setting']['currency']+'</b>'
     } else if(balance > 0 ){
-        balance = 'Переплата: <b class="green">'+ format_number(balance) +' руб.</b>'
+        balance = 'Переплата: <b class="green">'+ format_number(balance) +' '+lunchbox['setting']['currency']+'</b>'
     } else {
         balance = '<b class="green">Всё оплачено</b>';
     }
     var row_total = '<tr class="row total">' +
-        '<td class="cell text_right" colspan="2">Начислено: <b>'+ format_number(total_cost) +' руб.</b></td>' +
-        '<td class="cell">Оплачено: <b>'+ format_number(total_pay) +' руб.</b>' +
+        '<td class="cell text_right" colspan="2">Начислено: <b>'+ format_number(total_cost) +' '+lunchbox['setting']['currency']+'</b></td>' +
+        '<td class="cell">Оплачено: <b>'+ format_number(total_pay) +'  '+lunchbox['setting']['currency']+'</b>' +
         '<p class="saldo">'+ balance +'</p></td></tr>';
     $('table#charge_list tbody').append(row_total);
+
+    //if(select.attr('level') != 'bind'){
+    //   $('#charge_list div.add').hide();
+    //}
 }
 
 
 function format_number(number) {
-    var piece = Math.round(number*100)/100+'';
-    var num = '';
-    var cnt = 0;
-    var result = 1;
-    for(i=piece.length-1; i>-1; i--) {
-        if( $.isNumeric(piece[i]) ){
-            cnt++;
-            result = cnt%3;
-        } else {
-            cnt = 0;
-        }
-//        console.log( piece[i] +': '+ $.isNumeric(piece[i]) +', '+ cnt +', '+ result );
-        if (result == 0) num=' '+piece[i]+num; else num=piece[i]+num;
-    }
-    return num.replace('.',',').replace('-','');
+    var num = Math.round(number*100)/100;
+    num = num.toFixed(2);
+    num = num.replace('.',',').replace('-','');
+    return num
 }
 
 
@@ -456,6 +503,7 @@ function charge_Validate(){
     $('#charge_pop form').validate({ // validate the comment form when it is submitted
         rules: {
             value: {
+                number: true,
                 required: true
             },
             begin_date: {
@@ -467,6 +515,7 @@ function charge_Validate(){
         },
         messages: {
             value: {
+                number: "Десятичная часть через точку",
                 required: "Необходима сумма"
             },
             begin_date: {

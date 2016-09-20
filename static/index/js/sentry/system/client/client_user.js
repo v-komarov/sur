@@ -2,16 +2,16 @@ $(document).ready(function() {
     client_id = $(".middleBlock").attr('client_id');
     contract_id = $(".middleBlock").attr('contract_id');
     object_id = $(".middleBlock").attr('object_id');
-    client_user_Cancel();
-    client_user_Refresh();
+    clientUserCancel();
+    clientUserRefresh();
 
-    $('#pop_user .header').on('click', '.close', function() { client_user_Cancel() });
+    $('#pop_user .header').on('click', '.close', function() { clientUserCancel() });
 
     $('.objectsList').on('click', 'div.item', function() {
         //if(8>0){
-            var object_id = $(this).parents('[object_id]').attr('object_id');
-            client_user_Cancel();
-            client_user_Edit($(this).attr('client_user_id'), object_id);
+        var object_id = $(this).parents('[object_id]').attr('object_id');
+        clientUserCancel();
+        clientUserEdit($(this).attr('client_user_id'), object_id);
         //}
     });
 
@@ -24,7 +24,7 @@ $(document).ready(function() {
             delete_emails.push( delete_tr.attr('email_id') );
         }
         delete_tr.remove();
-        client_user_Phone('check');
+        clientUserPhone('check');
     });
 
     $('body').on('click', '.btn_ui', function() {
@@ -32,23 +32,30 @@ $(document).ready(function() {
         var object_id = $(this).parents('[object_id]').attr('object_id');
         if(action=='reset') {
             var user_id = $('#pop_user').attr('user_id');
-            client_user_Cancel();
+            clientUserCancel();
             if(user_id=='new'){
-                client_user_Add();
+                clientUserAdd();
             } else {
-                client_user_Edit($('#pop_user').attr('client_user_id'), object_id);
+                clientUserEdit($('#pop_user').attr('client_user_id'), object_id);
             }
         }
         else if(action=='user_add'){
-            client_user_Add(object_id);
+            clientUserAdd(object_id);
         }
+
+        else if(action == 'user_unlink'){
+            var client_user_id = $(this).parents('[client_user_id]').attr('client_user_id');
+            clientUserUnlink(client_user_id, object_id);
+        }
+
         else if(action=='list_refresh'){
-            client_user_Refresh(object_id);
+            clientUserRefresh(object_id);
         }
         else if(action=='remove'){
             if(confirm('Удалить контакт?')){
-                client_user_Delete( $('#pop_user').attr('client_user_id') );
-                client_user_Cancel();
+                var client_user_id = $(this).parents('[client_user_id]').attr('client_user_id');
+                clientUserDelete(object_id, client_user_id);
+                clientUserCancel();
             }
         }
         else if(action=='phone'){
@@ -57,7 +64,7 @@ $(document).ready(function() {
             tr_phone.find('input[name=comment]').val('');
             tr_phone.clone().appendTo('#client_user_phone_list').attr('class','row').attr('phone_id','new'+phones_new_cnt);
             phones_new_cnt++;
-            client_user_Phone('check');
+            clientUserPhone('check');
         }
         else if(action=='email'){
             var tr_email = $('#pop_user #client_user_emails tr.hide');
@@ -79,12 +86,135 @@ $(document).ready(function() {
         }
     });
 
-    client_user_Validate();
+
+    $('#pop_user').on('change', 'select[name=address_region]', function() {
+        address_locality_Search('change');
+    });
+
+    $('#pop_user input[name=address_street]').autocomplete({
+        source: function(request, response) {
+            $.ajax({
+                url: '/system/directory/street/ajax/search/', type:'get', dataType:'json', data: {
+                    locality_id: $('#pop_user select[name=address_locality]').val(),
+                    street_name: $('#pop_user input[name=address_street]').val(),
+                    limit: 19 },
+                success: function(data) {
+                    response($.map(data['street'], function(item) {
+                        return {
+                            label: item.name,
+                            street_id: item.id
+                        }
+                    }));
+                }
+            });
+        },
+        select: function(event, ui) {
+            if(ui.item){
+                var street_id = ui.item.street_id
+            } else {
+                $(this).removeAttr('item_id');
+                $('input[name=address_street]').val('');
+            }
+            $('#pop_user input[name=address_street]').attr('item_id',street_id);
+            $('#pop_user input[name=address_building]').val('');
+        },
+        change: function(event, ui) { // change duplicate select
+            if(ui.item){
+                $(this).attr('item_id',ui.item.street_id);
+                $('#pop_user input[name=address_building]').autocomplete('enable');
+            } else {
+                $(this).removeAttr('item_id');
+                $('input[name=address_street]').val('');
+                $('#pop_user input[name=address_building]').autocomplete('disable');
+            }
+        },
+        minChars: 2, zIndex: 100, deferRequestBy: 200
+    });
+
+    $('#pop_user input[name=address_building]').autocomplete({
+        source: function(request, response) {
+            $.ajax({
+                url: '/system/directory/building/ajax/search/', type:'get', dataType:'json', data: {
+                    street_id: $('#pop_user input[name=address_street]').attr('item_id'),
+                    building_name: request.term ,
+                    limit: 9 },
+                success: function(data) {
+                    response($.map(data['buildings'], function(item) {
+                        return {
+                            label: item.name,
+                            building_id: item.id
+                        }
+                    }));
+                }
+            });
+        },
+        change: function(event, ui) {
+            if(ui.item){
+                $(this).attr('item_id',ui.item.building_id);
+            } else {
+                $(this).removeAttr('item_id')
+            }
+        },
+        minChars: 2, zIndex: 100, deferRequestBy: 200
+    });
+
+
+    clientUserValidate();
 });
 
 
-function client_user_Refresh(object_id) {
-    client_user_Cancel();
+function address_locality_Search(action, data_address) {
+    console.log('address_locality_Search:', action);
+    console.log(data_address);
+    var region_id = '';
+    if(action=='change') {
+        region_id = $('#pop_user [name=address_region]').val();
+    }
+    else if(data_address && data_address['region']) {
+        region_id = data_address['region'];
+    }
+    else {
+        region_id = lunchbox['setting']['region'];
+    }
+    $('[name=address_region]').val(region_id);
+    $.ajax({ url:'/system/directory/locality/ajax/search/?region_id='+region_id, type:'get', dataType:'json',
+        success: function(data) {
+            if(data['error']!=null) alert(data['error']);
+            else if(data['locality']) {
+                var locality_select = $('#pop_user select[name=address_locality]');
+                locality_select.find('option').remove();
+                for(var key in data['locality']) {
+                    var selected = '';
+                    if(data['locality'][key]['id']==lunchbox['setting']['locality']) selected = 'selected';
+                    var option = '<option value="'+data['locality'][key]['id']+'" '+selected+'>'+data['locality'][key]['name']+'</option>';
+                    locality_select.append(option);
+                }
+            }
+        },
+        complete: function() {
+            address_street_Clear();
+            if(data_address) {
+                $('#pop_user [name=address_locality] [value=' +data_address['locality']+ ']').attr('selected', 'selected');
+                $('#pop_user [name=address_street]').attr('item_id',data_address['street']);
+                $('#pop_user [name=address_street]').val(data_address['street__name']);
+                $('#pop_user [name=address_building]').attr('item_id',data_address['building']);
+                $('#pop_user [name=address_building]').val(data_address['building__name']);
+                $('#pop_user [name=address_placement]').val(data_address['placement']);
+            }
+        }
+    });
+}
+
+
+function address_street_Clear() {
+    $('#pop_user [name=address_street]').val('').removeAttr('item_id');
+    $('#pop_user [name=address_building]').val('').removeAttr('item_id');
+    $('#pop_user [name=address_placement]').val('');
+}
+
+
+function clientUserRefresh(object_id) {
+    clientUserCancel();
     loading('begin');
     var client_user_array = {};
     client_user_array['client'] = client_id;
@@ -161,13 +291,30 @@ function setTable(data, object_id) {
         }
         /* Address */
         var address_div = '';
-        if(item['general']['address']){
-            address_div =  '<div class="block"><div class="client" name="address">Адрес: '+item['general']['address']+'</div></div>';
+        if(item['get_address']){
+            address_div =  '<div class="block"><div class="client" name="address">Адрес: '+item['get_address']+'</div></div>';
         }
+
+
+        var object_key = '';
+        if('object_key' in client_user_list[key]['data']
+            && client_user_list[key]['object'] in client_user_list[key]['data']['object_key']){
+            console.log('object_key',client_user_list[key]['data']['object_key'][client_user_list[key]['object']]);
+            object_key = client_user_list[key]['data']['object_key'][client_user_list[key]['object']];
+            if(object_key != '') {
+                object_key += '. ';
+            }
+        }
+
         /* Collect divs */
-        var item_div = '<div class="item" client_user_id="'+item['general']['client_user']+'">' +
-            '<div class="title"><div class="padding_85"><b>'+item['general']['full_name']+'</b>'+post_div+'</div></div>' +
-            phone_list_div + email_list_div + comment_div + address_div+'</div>';
+        var object_key_attr = ' object_key="999999999"';
+        if(object_key != '') {
+            object_key_attr = ' object_key="'+object_key+'"';
+        }
+
+        var item_div = '<div class="item" client_user_id="'+item['general']['client_user']+'"'+object_key_attr+'>' +
+            '<div class="title"><div class="padding_85"><b>'+object_key+item['general']['full_name']+'</b>'+post_div+'</div></div>' +
+            address_div + phone_list_div + email_list_div + comment_div + '</div>';
 
 
         if(client_user_list[key]['object']){
@@ -176,19 +323,46 @@ function setTable(data, object_id) {
             div_list.append(item_div);
         }
 
+        /* Сортировка по object_key */
+        console.log(client_user_list[key]['object']);
+        var mylist = $('div[object_id='+client_user_list[key]['object']+'] .objectsList');
+        var listitems = mylist.children('.item').get();
+        listitems.sort(function(a, b){
+            var distA = parseInt($(a).attr('object_key'));
+            var distB = parseInt($(b).attr('object_key'));
+            return (distA < distB) ? -1 : (distA > distB) ? 1 : 0;
+        });
+        $.each(listitems, function(idx, itm){
+            mylist.append(itm);
+        });
     }
+
+
+
 }
 
 
-function client_user_Add(object_id) {
+function clientUserUnlink(client_user_id, object_id) {
+    var ajax_array = {'client_user_id':client_user_id, 'object':object_id };
+    $.ajax({ url:'/system/client/user/ajax/unlink/', type:'post', dataType:'json', data:ajax_array,
+        success: function(data) {
+            $('[object_id='+object_id+'] .objectsList [client_user_id='+client_user_id+']').remove();
+        }
+    });
+}
+
+
+function clientUserAdd(object_id) {
     $('#pop_user').removeAttr('client_user_id');
     if(object_id) {
         $('#pop_user').attr('object_id', object_id);
+        $('#pop_user input[name=object_key]').parents('tr').show();
     } else {
         $('#pop_user').removeAttr('object_id');
+        $('#pop_user input[name=object_key]').parents('tr').hide();
     }
     $('#pop_user #client_user_phone_list tr.row').remove();
-    client_user_Phone('check');
+    clientUserPhone('check');
     $('#pop_user #client_user_emails tr.row').remove();
     $('#pop_user [name=post] :contains(--)').attr('selected', 'selected');
     $('#pop_user input').each(function(){ $(this).val(''); });
@@ -211,14 +385,14 @@ function client_user_Add(object_id) {
         },
         select: function(event, ui) {
             if(ui.item){
-                client_user_Edit(ui.item.client_user_id, object_id)
+                clientUserEdit(ui.item.client_user_id, object_id)
             } else {
                 $('#pop_user').removeAttr('client_user_id');
             }
         },
         change: function(event, ui) {
             if(ui.item){
-                client_user_Edit(ui.item.client_user_id, object_id)
+                clientUserEdit(ui.item.client_user_id, object_id)
             } else {
                 $('#pop_user').removeAttr('client_user_id');
             }
@@ -229,29 +403,35 @@ function client_user_Add(object_id) {
 }
 
 
-function client_user_Delete(client_user_id) {
+function clientUserDelete(object_id, client_user_id) {
     var client_user_array = {};
     client_user_array['client'] = client_id;
     if(object_id) client_user_array['object'] = object_id;
     client_user_array['client_user'] = client_user_id;
     $.ajax({ url:'/system/client/user/ajax/delete/', type:'post', dataType:'json', data:client_user_array,
         success: function(data){
-            $('.objectsList [client_user_id='+client_user_id+']').remove();
+            if(object_id) {
+                $('[object_id='+object_id+'] .objectsList [client_user_id='+client_user_id+']').remove();
+            } else {
+                $('.objectsList [client_user_id='+client_user_id+']').remove();
+            }
         }
     });
 }
 
 
-function client_user_Edit(client_user_id, object_id) {
+function clientUserEdit(client_user_id, object_id) {
+    clientUserCancel();
     var post_array = {'client_user': client_user_id};
     $('#pop_user').attr('client_user_id', client_user_id);
     if(object_id){
         post_array['object'] = object_id;
         $('#pop_user').attr('object_id', object_id);
+        $('#pop_user input[name=object_key]').parents('tr').show();
     } else {
         $('#pop_user').removeAttr('object_id');
+        $('#pop_user input[name=object_key]').parents('tr').hide();
     }
-
     popMenuPosition('#pop_user');
     $.ajax({ url:'/system/client/user/ajax/get/', type:'get', dataType:'json', data: post_array,
         success: function(data){
@@ -270,20 +450,30 @@ function client_user_Edit(client_user_id, object_id) {
                 }
                 $('#pop_user #client_user_phone_list tr.row').remove();
                 $('#pop_user #client_user_emails tr.row').remove();
-                client_user_Phone('set', client_user_phone);
+                clientUserPhone('set', client_user_phone);
                 for(var key in client_user_email){
                     var tr_email = $('#pop_user #client_user_emails tr.hide');
                     tr_email.find('[name=email]').val(client_user_email[key]['client_user_email__email']);
                     tr_email.clone().appendTo('#client_user_emails').attr('class','row').attr('email_id',client_user_email[key]['client_user_email']);
                     $('#pop_user #client_user_emails tr.hide input').val('');
                 }
+
+                if('address' in data['client_user_list'][0]) {
+                    address_locality_Search('set', data['client_user_list'][0]['address']);
+                }
+                else {
+                    address_locality_Search();
+                }
+
+                var client_user_data = data['client_user_list'][0]['data'];
+                $('#pop_user input[name=object_key]').val(data['client_user_list'][0]['data']['object_key'][object_id]);
             }
         }
     });
 }
 
 
-function client_user_Phone(action, client_user_phone) {
+function clientUserPhone(action, client_user_phone) {
     console.log('client_user_Phone: '+action+', '+client_user_phone);
     if(action=='set') {
         for(var key in client_user_phone) {
@@ -309,7 +499,7 @@ function client_user_Phone(action, client_user_phone) {
 }
 
 
-function client_user_Update() {
+function clientUserUpdate() {
     var client_user_array = get_each_value('#pop_user');
     client_user_array['client'] = client_id;
     client_user_array['comment'] = $('#pop_user textarea[name=comment]').val();
@@ -342,27 +532,28 @@ function client_user_Update() {
             if(data['errors']) message_Pop_array(data['errors'], 'red');
             else {
                 popMessage('Сохранено','green');
-                client_user_Refresh(client_user_array['client_id'],client_user_array['object_id'])
+                clientUserRefresh(client_user_array['client_id'],client_user_array['object_id'])
             }
         }
     });
 }
 
 
-function client_user_Cancel() {
+function clientUserCancel() {
     $('div[role=tooltip]').remove();
     phone_list_delete = [];
     delete_emails = [];
     phones_new_cnt = 0;
     emails_new_cnt = 0;
+    $('#pop_user input').val('');
     $('#pop_user').hide();
 }
 
 
-function client_user_Validate() {
+function clientUserValidate() {
     $.validator.setDefaults({
         submitHandler: function() {
-            client_user_Update();
+            clientUserUpdate();
         },
         showErrors: function(map, list) { // there's probably a way to simplify this
             var focussed = document.activeElement;
@@ -391,6 +582,11 @@ function client_user_Validate() {
 
     $("form#client_user_form").validate({ // validate the comment form when it is submitted
         rules: {
+            object_key: {
+                required: false,
+                number: true,
+                maxlength: 6
+            },
             full_name: {
                 required: true,
                 minlength: 3
@@ -407,6 +603,10 @@ function client_user_Validate() {
             }
         },
         messages: {
+            object_key: {
+                number: "Только цифры",
+                maxlength: "Максимум 6 знаков"
+            },
             full_name: {
                 required: "Необходимо Ф.И.О.",
                 minlength: "Минимум 3 знака"

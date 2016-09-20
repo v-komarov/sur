@@ -26,38 +26,37 @@ def index(request,client_id=None,object_id=None):
 def ajax(request,action=None):
     data = {'error': None}
 
-    if action=='get_install':
+    if action == 'get_install':
         if request.user.has_perm('system.client'):
             data = object_device_ajax.get(request,data)
         else: data['error'] = 'Доступ запрещен'
 
-    elif action=='install_update':
+    elif action == 'install_update':
         if request.user.has_perm('system.client'):
             data = object_device_ajax.install_update(request,data)
         else: data['error'] = 'Доступ запрещен'
 
-    elif action=='install_delete':
+    elif action == 'install_delete':
         if request.user.has_perm('system.client'):
             data = object_device_ajax.install_delete(request,data)
         else: data['error'] = 'Доступ запрещен'
 
-
-    elif action=='search_device':
+    elif action == 'search_device':
         if request.user.has_perm('system.client'):
             data = dir_device_ajax.search(request,data)
         else: data['error'] = 'Доступ запрещен'
 
-    elif action=='get_device':
+    elif action == 'get_device':
         if request.user.has_perm('system.client'):
             data = dir_device_ajax.get(request,data)
         else: data['error'] = 'Доступ запрещен'
 
-    elif action=='update_device':
+    elif action == 'update_device':
         if request.user.has_perm('system.client'):
             data = dir_device_ajax.update(request,data)
         else: data['error'] = 'Доступ запрещен'
 
-    elif action=='delete_device':
+    elif action == 'delete_device':
         if request.user.has_perm('system.client'):
             data = dir_device_ajax.delete(request,data)
         else: data['error'] = 'Доступ запрещен'
